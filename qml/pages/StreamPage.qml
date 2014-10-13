@@ -3,28 +3,51 @@ import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 
 Page {
-    id: page
-    MediaPlayer {
-        id: player
-        function httpget(){
-            var http = new XMLHttpRequest()
-            var url = "https://api.twitch.tv/api/channels/versuta/access_token";
-            http.open("GET", url, true);
-            http.setRequestHeader("Connection", "close");
-            http.onreadystatechange = function() { // Call a function when the state changes.
-                if (http.readyState == 4) {
-                    if (http.status == 200) {
-                        console.log("ok")
-                    } else {
-                        console.log("error: " + http.status)
-                    }
-                }
-            }
-            http.send(params);
-            return http.responseXML;
-        }
+	id: page
 
-        source: httpget().sig
+	property var token
+	function getToken() {
+		var request = new XMLHttpRequest()
+		request.open('GET', 'https://api.twitch.tv/api/channels/versuta/access_token')
+		request.onreadystatechange = function() {
+			if (request.readyState === XMLHttpRequest.DONE) {
+				if (request.status && request.status === 200) {
+					console.log("response", request.responseText)
+					//var result = JSON.parse(request.responseText)
+					//page.token = result.response
+					page.token = JSON.parse(request.responseText)
+					getURL()
+				} else {
+					console.log("HTTPS:", request.status, request.statusText)
+				}
+			}
+		}
+		//request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+		request.send()
+	}
+	property var url
+	function getURL() {
+		var request = new XMLHttpRequest()
+		request.open('GET', encodeURI('https://usher.twitch.tv/select/versuta.json?nauthsig=' + page.token.sig + '&nauth=' + page.token.token))
+		request.onreadystatechange = function() {
+			if (request.readyState === XMLHttpRequest.DONE) {
+				if (request.status && request.status === 200) {
+					console.log("response", request.responseText)
+					var result = JSON.parse(request.responseText)
+					page.url = result.response
+				} else {
+					console.log("HTTPS:", request.status, request.statusText)
+				}
+			}
+		}
+		//request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+		request.send()
+	}
+
+    MediaPlayer {
+		id: player
+
+		source: url['url']
         autoPlay: true
     }
 
@@ -33,4 +56,7 @@ Page {
         source: player
         anchors.fill: parent
     }
+	Component.onCompleted: {
+		getToken();
+	}
 }
