@@ -32,10 +32,11 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    Label {
+	Text {
         id: label
         anchors.centerIn: parent
-        text: qsTr("TODO: Print current stream name here")
+		horizontalAlignment: Text.AlignHCenter
+		text: qsTr("TODO: \nPrint current \nstream name here")
     }
 
     //I dont't think twitch needs actions on cover
