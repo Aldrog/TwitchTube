@@ -5,18 +5,20 @@ import QtMultimedia 5.0
 Page {
 	id: page
 
-	property var token
-	function getToken() {
+	//property var token
+	function getPlaylist() {
 		var request = new XMLHttpRequest()
-		request.open('GET', 'https://api.twitch.tv/api/channels/versuta/access_token')
+		request.open('GET', 'https://api.twitch.tv/api/channels/dotastarladder_en/access_token')
 		request.onreadystatechange = function() {
 			if (request.readyState === XMLHttpRequest.DONE) {
 				if (request.status && request.status === 200) {
 					console.log("response", request.responseText)
-					//var result = JSON.parse(request.responseText)
-					//page.token = result.response
-					page.token = JSON.parse(request.responseText)
-					getURL()
+					var result = JSON.parse(request.responseText)
+					//page.token = result
+					//page.token = JSON.parse(request.responseText)
+					for (var x in result)
+						console.log(x)
+					getURLFromToken(result)
 				} else {
 					console.log("HTTPS:", request.status, request.statusText)
 				}
@@ -25,10 +27,12 @@ Page {
 		//request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 		request.send()
 	}
-	property var url
-	function getURL() {
+	property var playlist
+	function getURLFromToken(token) {
 		var request = new XMLHttpRequest()
-		request.open('GET', encodeURI('https://usher.twitch.tv/select/versuta.json?nauthsig=' + page.token.sig + '&nauth=' + page.token.token))
+		var url = 'https://usher.twitch.tv/select/starladder.json?nauthsig=' + encodeURI(token.sig) + '&nauth=' + crypto.createHmac(token.token)
+		console.log(url)
+		request.open('GET', url)
 		request.onreadystatechange = function() {
 			if (request.readyState === XMLHttpRequest.DONE) {
 				if (request.status && request.status === 200) {
@@ -47,7 +51,7 @@ Page {
     MediaPlayer {
 		id: player
 
-		source: url['url']
+		source: url.url
         autoPlay: true
     }
 
@@ -57,6 +61,6 @@ Page {
         anchors.fill: parent
     }
 	Component.onCompleted: {
-		getToken();
+		getPlaylist()();
 	}
 }
