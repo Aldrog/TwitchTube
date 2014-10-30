@@ -21,6 +21,15 @@ URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  Twitch.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
+Requires:   qt5-qtmultimedia
+Requires:   qt5-qtmultimedia-plugin-playlistformats-m3u
+Requires:   qt5-qtmultimedia-plugin-mediaservice-gstaudiodecoder
+Requires:   qt5-qtmultimedia-plugin-mediaservice-gstmediaplayer
+Requires:   gstreamer0.10-ffmpeg
+Requires:   gst-plugins-bad
+#Requires:   gst-plugins-ugly
+#Requires:   nemo-qtmultimedia-plugins-gstvideotexturebackend
+Requires:   gst-av
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
