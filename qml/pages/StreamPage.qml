@@ -1,66 +1,51 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
+import 'scripts/httphelper.js' as HTTP
 
 Page {
 	id: page
 
-	//property var token
-	function getPlaylist() {
-		var request = new XMLHttpRequest()
-		request.open('GET', 'https://api.twitch.tv/api/channels/dotastarladder_en/access_token')
-		request.onreadystatechange = function() {
-			if (request.readyState === XMLHttpRequest.DONE) {
-				if (request.status && request.status === 200) {
-					console.log("response", request.responseText)
-					var result = JSON.parse(request.responseText)
-					//page.token = result
-					//page.token = JSON.parse(request.responseText)
-					for (var x in result)
-						console.log(x)
-					getURLFromToken(result)
-				} else {
-					console.log("HTTPS:", request.status, request.statusText)
-				}
-			}
+	property var url
+	property string channel
+
+	function searchURL(s, q) {
+		for (var x in s) {
+			if (s[x].substring(0,4) === 'http' && s[x].indexOf(q) >= 0)
+				return s[x]
 		}
-		//request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-		request.send()
-	}
-	property var playlist
-	function getURLFromToken(token) {
-		var request = new XMLHttpRequest()
-		var url = 'https://usher.twitch.tv/select/starladder.json?nauthsig=' + encodeURI(token.sig) + '&nauth=' + crypto.createHmac(token.token)
-		console.log(url)
-		request.open('GET', url)
-		request.onreadystatechange = function() {
-			if (request.readyState === XMLHttpRequest.DONE) {
-				if (request.status && request.status === 200) {
-					console.log("response", request.responseText)
-					var result = JSON.parse(request.responseText)
-					page.url = result.response
-				} else {
-					console.log("HTTPS:", request.status, request.statusText)
-				}
-			}
-		}
-		//request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-		request.send()
 	}
 
-    MediaPlayer {
-		id: player
+	Video {
+		id: stream
+		anchors.fill: parent
+		source: url['high']
+		MouseArea {
+			anchors.fill: parent
+			onClicked: {
+				console.log("starting")
+				stream.play()
+			}
+		}
+	}
 
-		source: url.url
-        autoPlay: true
-    }
-
-    VideoOutput {
-        id: streamVideo
-        source: player
-        anchors.fill: parent
-    }
 	Component.onCompleted: {
-		getPlaylist()();
+		HTTP.getRequest('http://api.twitch.tv/api/channels/' + channel + '/access_token', function (tokendata) {
+			if (tokendata) {
+				var token = JSON.parse(tokendata)
+				HTTP.getRequest(encodeURI('http://usher.twitch.tv/select/' + channel + '.json?allow_source=true&nauthsig=' + token.sig + '&nauth=' + token.token + '&type=any'), function (data) {
+					if (data) {
+						var video = data.split('\n')
+						url = {
+							source: searchURL(video, "source"),
+							high: searchURL(video, "high"),
+							medium: searchURL(video, "medium"),
+							low: searchURL(video, "low"),
+							mobile: searchURL(video, "mobile")
+						}
+					}
+				})
+			}
+		})
 	}
 }
