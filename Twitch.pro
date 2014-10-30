@@ -25,10 +25,12 @@ OTHER_FILES += qml/Twitch.qml \
     Twitch.desktop \
     qml/pages/GamesPage.qml \
     qml/pages/ChannelsPage.qml \
-    qml/pages/StreamPage.qml
+    qml/pages/StreamPage.qml \
+    Twitch.png \
+    qml/pages/scripts/httphelper.js
 
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/Twitch-de.ts
+#TRANSLATIONS += translations/Twitch-de.ts
 
