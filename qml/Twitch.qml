@@ -4,7 +4,7 @@ import "pages"
 
 ApplicationWindow
 {
-    initialPage: Component { GamesPage { } }
+	initialPage: Component { GamesPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }
 

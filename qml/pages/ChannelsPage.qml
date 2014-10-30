@@ -7,11 +7,14 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
+	property bool bygame: false
+	property string game
 	property var streams
 	property int row: isPortrait ? 2 : 3
 
 	SilicaGridView {
 		id: gridChannels
+		anchors.fill: parent
 
 		PullDownMenu {
 			MenuItem {
@@ -21,17 +24,19 @@ Page {
 		}
 
 		model: streams
-		anchors.fill: parent
 		cellWidth: width/row
 		cellHeight: cellWidth*5/8
+
 		header: PageHeader {
-			title: qsTr("Live Channels")
+			title: bygame ? game : qsTr("Live Channels")
 		}
+
 		delegate: BackgroundItem {
 			id: delegate
 			width: gridChannels.cellWidth
 			height: gridChannels.cellHeight
 			onClicked: pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: modelData.channel.name })
+
 			Image {
 				id: preview
 				source: modelData.preview.medium
@@ -43,10 +48,13 @@ Page {
 					bottomMargin: Theme.paddingSmall
 				}
 			}
+
 			Label {
+				id: name
 				anchors {
 					left: parent.left; leftMargin: Theme.paddingLarge
 					right: parent.right; rightMargin: Theme.paddingLarge
+					topMargin: Theme.paddingSmall
 				}
 				text: modelData.channel.display_name
 				truncationMode: TruncationMode.Fade
@@ -58,7 +66,10 @@ Page {
 	}
 
 	Component.onCompleted: {
-		HTTP.getRequest("https://api.twitch.tv/kraken/streams",function(data) {
+		var url = "https://api.twitch.tv/kraken/streams"
+		if (bygame)
+			url += encodeURI("?game=" + game)
+		HTTP.getRequest(url,function(data) {
 			if (data)
 				streams = JSON.parse(data).streams
 		})
