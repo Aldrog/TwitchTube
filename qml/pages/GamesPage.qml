@@ -7,21 +7,51 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	property var games
 	property int row: isPortrait ? 2 : 4
+	//in brackets should be row lengths for portrait and landscape orientations
+	property int countOnPage: (2*4)*2
+	property string nextlink
 
 	SilicaGridView {
 		id: gridGames
 		anchors.fill: parent
 
-        PullDownMenu {
+		PullDownMenu {
+			MenuItem {
+				text: qsTr("Settings")
+			}
+
+			MenuItem {
+				text: qsTr("Search")
+			}
+
+			MenuItem {
+				text: qsTr("Following")
+			}
+
             MenuItem {
                 text: qsTr("Channels")
                 onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
-            }
-        }
+			}
+		}
 
-		model: games
+		PushUpMenu {
+			MenuItem {
+				text: qsTr("Load more")
+				onClicked: {
+					HTTP.getRequest(nextlink,function(data) {
+						if (data) {
+							var result = JSON.parse(data)
+							nextlink = result._links.next
+							for (var i in result.top)
+								gameList.append(result.top[i])
+						}
+					})
+				}
+			}
+		}
+
+		model: ListModel { id: gameList }
 		cellWidth: width/row
 		cellHeight: cellWidth*18/13
 
@@ -33,12 +63,12 @@ Page {
 			id: delegate
 			width: gridGames.cellWidth
 			height: gridGames.cellHeight
-			onClicked: pageStack.push (Qt.resolvedUrl("ChannelsPage.qml"),{ bygame: true, game: modelData.game.name })
+			onClicked: pageStack.push (Qt.resolvedUrl("ChannelsPage.qml"),{ bygame: true, game: game.name })
 
 			Image {
 				id: logo
 				fillMode: Image.PreserveAspectCrop
-				source: modelData.game.box.large
+				source: game.box.large
 				anchors {
 					fill: parent
 					leftMargin: Theme.paddingSmall
@@ -56,7 +86,7 @@ Page {
 					right: parent.right; rightMargin: Theme.paddingLarge
 					topMargin: Theme.paddingSmall
 				}
-				text: modelData.game.name
+				text: game.name
 				truncationMode: TruncationMode.Fade
 				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
 			}
@@ -66,9 +96,12 @@ Page {
     }
 
 	Component.onCompleted: {
-		HTTP.getRequest("https://api.twitch.tv/kraken/games/top", function (data) {
+		HTTP.getRequest("https://api.twitch.tv/kraken/games/top?limit="+countOnPage, function (data) {
 			if (data) {
-				games = JSON.parse(data).top
+				var result = JSON.parse(data)
+				nextlink = result._links.next
+				for (var i in result.top)
+					gameList.append(result.top[i])
 			}
 		})
 	}

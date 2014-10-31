@@ -9,8 +9,10 @@ Page {
 
 	property bool bygame: false
 	property string game
-	property var streams
 	property int row: isPortrait ? 2 : 3
+	//in brackets should be row lengths for portrait and landscape orientations
+	property int countOnPage: (2*4)*2
+	property string nextlink
 
 	SilicaGridView {
 		id: gridChannels
@@ -18,12 +20,47 @@ Page {
 
 		PullDownMenu {
 			MenuItem {
+				text: qsTr("Settings")
+			}
+
+			MenuItem {
+				text: qsTr("Search")
+			}
+
+			MenuItem {
+				text: qsTr("Following")
+			}
+
+			MenuItem {
 				text: qsTr("Games")
 				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
+				visible: !bygame
+			}
+
+			MenuItem {
+				text: qsTr("Channels")
+				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
+				visible: bygame
 			}
 		}
 
-		model: streams
+		PushUpMenu {
+			MenuItem {
+				text: qsTr("Load more")
+				onClicked: {
+					HTTP.getRequest(nextlink,function(data) {
+						if (data) {
+							var result = JSON.parse(data)
+							nextlink = result._links.next
+							for (var i in result.streams)
+								streamList.append(result.streams[i])
+						}
+					})
+				}
+			}
+		}
+
+		model: ListModel { id: streamList }
 		cellWidth: width/row
 		cellHeight: cellWidth*5/8
 
@@ -35,11 +72,11 @@ Page {
 			id: delegate
 			width: gridChannels.cellWidth
 			height: gridChannels.cellHeight
-			onClicked: pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: modelData.channel.name })
+			onClicked: pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: channel.name })
 
 			Image {
-				id: preview
-				source: modelData.preview.medium
+				id: previewImage
+				source: preview.medium
 				anchors {
 					fill: parent
 					leftMargin: Theme.paddingSmall
@@ -56,7 +93,7 @@ Page {
 					right: parent.right; rightMargin: Theme.paddingLarge
 					topMargin: Theme.paddingSmall
 				}
-				text: modelData.channel.display_name
+				text: channel.display_name
 				truncationMode: TruncationMode.Fade
 				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
 			}
@@ -66,12 +103,16 @@ Page {
 	}
 
 	Component.onCompleted: {
-		var url = "https://api.twitch.tv/kraken/streams"
+		var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage
 		if (bygame)
-			url += encodeURI("?game=" + game)
+			url += encodeURI("&game=" + game)
 		HTTP.getRequest(url,function(data) {
-			if (data)
-				streams = JSON.parse(data).streams
+			if (data) {
+				var result = JSON.parse(data)
+				nextlink = result._links.next
+				for (var i in result.streams)
+					streamList.append(result.streams[i])
+			}
 		})
 	}
 }
