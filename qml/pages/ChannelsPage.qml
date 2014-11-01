@@ -11,7 +11,7 @@ Page {
 	property string game
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations
-	property int countOnPage: (2*4)*2
+	property int countOnPage: (2*3)*2
 	property string nextlink
 
 	SilicaGridView {
