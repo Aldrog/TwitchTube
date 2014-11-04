@@ -4,6 +4,7 @@ import org.nemomobile.configuration 1.0
 
 Dialog {
 	id: page
+	allowedOrientations: Orientation.All
 
 	property var imageSizes: ["large", "medium", "small"]
 

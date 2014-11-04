@@ -88,15 +88,15 @@ Page {
 
 			Label {
 				id: name
-				font.pixelSize: Theme.fontSizeSmall
 				anchors {
 					left: parent.left; leftMargin: Theme.paddingLarge
 					right: parent.right; rightMargin: Theme.paddingLarge
-					topMargin: Theme.paddingSmall
+					topMargin: Theme.paddingMedium
 				}
 				text: game.name
 				truncationMode: TruncationMode.Fade
 				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+				font.pixelSize: Theme.fontSizeSmall
 			}
         }
 

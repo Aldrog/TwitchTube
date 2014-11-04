@@ -6,7 +6,7 @@ CoverBackground {
         id: label
         anchors.centerIn: parent
 		horizontalAlignment: Text.AlignHCenter
-		text: qsTr("TODO: \nPrint current \nstream name here")
+		text: "TODO: \nPrint current \nstream name here"
     }
 
     //I dont't think twitch needs actions on cover
