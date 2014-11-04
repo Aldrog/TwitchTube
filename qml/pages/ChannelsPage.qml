@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import 'scripts/httphelper.js' as HTTP
+import org.nemomobile.configuration 1.0
+import "scripts/httphelper.js" as HTTP
 
 
 Page {
@@ -14,6 +15,12 @@ Page {
 	property int countOnPage: (2*3)*2
 	property string nextlink
 
+	ConfigurationValue {
+		id: previewSize
+		key: "/apps/twitch/settings/gameimgsize"
+		defaultValue: "large"
+	}
+
 	SilicaGridView {
 		id: gridChannels
 		anchors.fill: parent
@@ -21,6 +28,7 @@ Page {
 		PullDownMenu {
 			MenuItem {
 				text: qsTr("Settings")
+				onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
 			}
 
 			MenuItem {
@@ -76,7 +84,7 @@ Page {
 
 			Image {
 				id: previewImage
-				source: preview.medium
+				source: preview[previewSize.value]
 				anchors {
 					fill: parent
 					leftMargin: Theme.paddingSmall
@@ -106,6 +114,7 @@ Page {
 		var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage
 		if (bygame)
 			url += encodeURI("&game=" + game)
+		console.log(url)
 		HTTP.getRequest(url,function(data) {
 			if (data) {
 				var result = JSON.parse(data)

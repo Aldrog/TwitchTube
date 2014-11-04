@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import 'scripts/httphelper.js' as HTTP
+import org.nemomobile.configuration 1.0
+import "scripts/httphelper.js" as HTTP
 
 
 Page {
@@ -12,6 +13,12 @@ Page {
 	property int countOnPage: (2*4)*2
 	property string nextlink
 
+	ConfigurationValue {
+		id: posterSize
+		key: "/apps/twitch/settings/gameimgsize"
+		defaultValue: "large"
+	}
+
 	SilicaGridView {
 		id: gridGames
 		anchors.fill: parent
@@ -19,6 +26,7 @@ Page {
 		PullDownMenu {
 			MenuItem {
 				text: qsTr("Settings")
+				onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
 			}
 
 			MenuItem {
@@ -68,7 +76,7 @@ Page {
 			Image {
 				id: logo
 				fillMode: Image.PreserveAspectCrop
-				source: game.box.large
+				source: game.box[posterSize.value]
 				anchors {
 					fill: parent
 					leftMargin: Theme.paddingSmall
