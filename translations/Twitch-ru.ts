@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru">
+<TS version="2.0" language="ru">
 <context>
     <name>ChannelsPage</name>
     <message>
@@ -58,6 +58,29 @@
     <message>
         <source>Popular Games</source>
         <translation>Популярные игры</translation>
+    </message>
+</context>
+<context>
+    <name>SearchPage</name>
+    <message>
+        <source>Search channels</source>
+        <translation>Поиск каналов</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <source>Following</source>
+        <translation>Любимые</translation>
+    </message>
+    <message>
+        <source>Games</source>
+        <translation>Игры</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Каналы</translation>
     </message>
 </context>
 <context>

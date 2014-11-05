@@ -14,27 +14,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="39"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="40"/>
         <source>Following</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="43"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="50"/>
         <source>Games</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="49"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="44"/>
         <source>Channels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="57"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="58"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="76"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="73"/>
         <source>Live Channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -52,23 +52,51 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="37"/>
+        <location filename="../qml/pages/GamesPage.qml" line="38"/>
         <source>Following</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="41"/>
+        <location filename="../qml/pages/GamesPage.qml" line="42"/>
         <source>Channels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="48"/>
+        <location filename="../qml/pages/GamesPage.qml" line="49"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="67"/>
+        <location filename="../qml/pages/GamesPage.qml" line="64"/>
         <source>Popular Games</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchPage</name>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="48"/>
+        <source>Search channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="26"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="31"/>
+        <source>Following</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="40"/>
+        <source>Games</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="35"/>
+        <source>Channels</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

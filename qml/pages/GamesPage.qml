@@ -16,7 +16,7 @@ Page {
 	ConfigurationValue {
 		id: posterSize
 		key: "/apps/twitch/settings/gameimgsize"
-		defaultValue: "large"
+		defaultValue: "medium"
 	}
 
 	SilicaGridView {
@@ -31,6 +31,7 @@ Page {
 
 			MenuItem {
 				text: qsTr("Search")
+				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("SearchPage.qml"))
 			}
 
 			MenuItem {
@@ -59,13 +60,13 @@ Page {
 			}
 		}
 
-		model: ListModel { id: gameList }
-		cellWidth: width/row
-		cellHeight: cellWidth*18/13
-
 		header: PageHeader {
 			title: qsTr("Popular Games")
 		}
+
+		model: ListModel { id: gameList }
+		cellWidth: width/row
+		cellHeight: cellWidth*18/13
 
 		delegate: BackgroundItem {
 			id: delegate

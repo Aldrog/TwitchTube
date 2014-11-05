@@ -3,26 +3,22 @@ import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
 import "scripts/httphelper.js" as HTTP
 
-
 Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	property bool bygame: false
-	property string game
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*3)*2
-	property string nextlink
 
 	ConfigurationValue {
 		id: previewSize
 		key: "/apps/twitch/settings/previewimgsize"
-		defaultValue: "large"
+		defaultValue: "medium"
 	}
 
 	SilicaGridView {
-		id: gridChannels
+		id: gridResults
 		anchors.fill: parent
 
 		PullDownMenu {
@@ -32,55 +28,50 @@ Page {
 			}
 
 			MenuItem {
-				text: qsTr("Search")
-				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("SearchPage.qml"))
-			}
-
-			MenuItem {
 				text: qsTr("Following")
 			}
 
 			MenuItem {
 				text: qsTr("Channels")
 				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
-				visible: bygame
 			}
 
 			MenuItem {
 				text: qsTr("Games")
 				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
-				visible: !bygame
 			}
 		}
 
-		PushUpMenu {
-			MenuItem {
-				text: qsTr("Load more")
-				onClicked: {
-					HTTP.getRequest(nextlink,function(data) {
-						if (data) {
-							var result = JSON.parse(data)
-							nextlink = result._links.next
-							for (var i in result.streams)
-								streamList.append(result.streams[i])
-						}
-					})
-				}
+		header: SearchField {
+			id: searchQuerry
+			width: parent.width
+			placeholderText: qsTr("Search channels")
+			onTextChanged: {
+				resultList.clear()
+				var url = "https://api.twitch.tv/kraken/search/streams?q=" + encodeURI(text) + "&limit=" + countOnPage
+				console.log(url)
+				HTTP.getRequest(url,function(data) {
+					if (data) {
+						var result = JSON.parse(data)
+						//nextlink = result._links.next
+						for (var i in result.streams)
+							resultList.append(result.streams[i])
+					}
+				})
 			}
 		}
 
-		header: PageHeader {
-			title: bygame ? game : qsTr("Live Channels")
-		}
+		//This prevents search field from loosing focus when grid changes
+		currentIndex: -1
 
-		model: ListModel { id: streamList }
+		model: ListModel { id: resultList }
 		cellWidth: width/row
 		cellHeight: cellWidth*5/8
 
 		delegate: BackgroundItem {
 			id: delegate
-			width: gridChannels.cellWidth
-			height: gridChannels.cellHeight
+			width: gridResults.cellWidth
+			height: gridResults.cellHeight
 			onClicked: pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: channel.name })
 
 			Image {
@@ -109,26 +100,6 @@ Page {
 			}
 		}
 
-		VerticalScrollDecorator { flickable: gridChannels }
-	}
-
-	Component.onCompleted: {
-		var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage
-		if (bygame)
-			url += encodeURI("&game=" + game)
-		console.log(url)
-		HTTP.getRequest(url,function(data) {
-			if (data) {
-				var result = JSON.parse(data)
-				nextlink = result._links.next
-				for (var i in result.streams)
-					streamList.append(result.streams[i])
-			}
-		})
+		VerticalScrollDecorator { flickable: gridResults }
 	}
 }
-
-
-
-
-
