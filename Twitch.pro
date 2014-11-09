@@ -34,5 +34,5 @@ OTHER_FILES += qml/Twitch.qml \
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/Twitch-ru.ts
+#TRANSLATIONS += translations/Twitch-ru.ts
 
