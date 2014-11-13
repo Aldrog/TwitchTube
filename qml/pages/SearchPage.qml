@@ -84,6 +84,33 @@ Page {
 					topMargin: Theme.paddingSmall
 					bottomMargin: Theme.paddingSmall
 				}
+				visible: false
+			}
+
+			ShaderEffect {
+				anchors.fill: previewImage
+				property variant src: previewImage
+				property real h: name.height/height
+				vertexShader: "
+					uniform highp mat4 qt_Matrix;
+					attribute highp vec4 qt_Vertex;
+					attribute highp vec2 qt_MultiTexCoord0;
+					varying highp vec2 coord;
+					void main() {
+						coord = qt_MultiTexCoord0;
+						gl_Position = qt_Matrix * qt_Vertex;
+					}"
+				fragmentShader: "
+					varying highp vec2 coord;
+					uniform sampler2D src;
+					uniform lowp float h;
+					uniform lowp float qt_Opacity;
+					void main() {
+						lowp vec4 tex = texture2D(src, coord);
+						if(coord.y <= h)
+							tex = vec4((tex.rgb)*(coord.y/(h)), coord.y/(h));
+						gl_FragColor = tex * qt_Opacity;
+					}"
 			}
 
 			Label {
