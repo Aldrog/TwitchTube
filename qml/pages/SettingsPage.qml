@@ -27,6 +27,7 @@ Dialog {
 		DialogHeader {
 			title: qsTr("Twitch Settings")
 			acceptText: qsTr("Apply")
+			cancelText: qsTr("Cancel")
 		}
 
 		ComboBox {

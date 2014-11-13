@@ -113,30 +113,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="34"/>
-        <source>Game posters quality</source>
+        <location filename="../qml/pages/SettingsPage.qml" line="30"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="36"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="47"/>
-        <source>High</source>
+        <location filename="../qml/pages/SettingsPage.qml" line="35"/>
+        <source>Game posters quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="37"/>
         <location filename="../qml/pages/SettingsPage.qml" line="48"/>
-        <source>Medium</source>
+        <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="38"/>
         <location filename="../qml/pages/SettingsPage.qml" line="49"/>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="39"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="50"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="45"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="46"/>
         <source>Stream previews quality</source>
         <translation type="unfinished"></translation>
     </message>
