@@ -146,4 +146,32 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>StreamPage</name>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="19"/>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="24"/>
+        <source>High</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="29"/>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="34"/>
+        <source>Low</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="39"/>
+        <source>Mobile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>
