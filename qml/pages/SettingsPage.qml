@@ -9,6 +9,12 @@ Dialog {
 	property var imageSizes: ["large", "medium", "small"]
 
 	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
+	}
+
+	ConfigurationValue {
 		id: gameImageSize
 		key: "/apps/twitch/settings/gameimgsize"
 		defaultValue: "large"
@@ -28,6 +34,24 @@ Dialog {
 			title: qsTr("Twitch Settings")
 			acceptText: qsTr("Apply")
 			cancelText: qsTr("Cancel")
+		}
+
+		BackgroundItem {
+			id: login
+			width: parent.width
+			Label {
+				anchors.fill: parent
+				anchors.margins: Theme.paddingLarge
+				text: authToken.value === "" ? qsTr("Log in") : qsTr("Log out")
+				color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
+			}
+			onClicked: {
+				console.log("old token: ", authToken.value)
+				if(authToken.value === "")
+					pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+				else
+					authToken.value = ""
+			}
 		}
 
 		ComboBox {
