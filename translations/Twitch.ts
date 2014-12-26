@@ -68,7 +68,7 @@
     </message>
     <message>
         <location filename="../qml/pages/FollowedPage.qml" line="69"/>
-        <source>Live Channels</source>
+        <source>Followed Streams</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
