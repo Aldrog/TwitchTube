@@ -149,28 +149,38 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="19"/>
+        <location filename="../qml/pages/StreamPage.qml" line="21"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="24"/>
+        <location filename="../qml/pages/StreamPage.qml" line="26"/>
         <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="29"/>
+        <location filename="../qml/pages/StreamPage.qml" line="31"/>
         <source>Medium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="34"/>
+        <location filename="../qml/pages/StreamPage.qml" line="36"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="39"/>
+        <location filename="../qml/pages/StreamPage.qml" line="41"/>
         <source>Mobile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="68"/>
+        <source>Chat here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="69"/>
+        <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

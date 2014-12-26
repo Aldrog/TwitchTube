@@ -1,18 +1,20 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
-import Sailfish.Media 1.0
 import "scripts/httphelper.js" as HTTP
 
 Page {
 	id: page
+	allowedOrientations: Orientation.All
 
 	property var url
 	property string channel
 	property string quality: "high"
 
 	SilicaFlickable {
+		id: main
 		anchors.fill: parent
+		contentHeight: isPortrait ? height : height*2
 
 		PullDownMenu {
 			MenuItem {
@@ -43,17 +45,53 @@ Page {
 
 		Video {
 			id: video
-			anchors.fill: parent
+			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+			height: isPortrait ? screen.width * 9/16 : screen.width
 			autoPlay: true
 			source: url[quality]
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
+					console.log("video height: ", video.height)
 					console.log("starting")
 					video.play()
 				}
 			}
 		}
+
+		TextField {
+			id: chatMessage
+			anchors.left: parent.left
+			anchors.right: parent.right
+			anchors.top: video.bottom
+			autoScrollEnabled: false
+			placeholderText: qsTr("Chat here.")
+			label: qsTr("Message to send")
+			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+			EnterKey.enabled: text.length > 0
+			EnterKey.onClicked: {
+				messages.insert(0, {nick: "me", message: text})
+				text = ""
+			}
+		}
+
+		SilicaListView {
+			id: chat
+			anchors.left: parent.left
+			anchors.right: parent.right;
+			anchors.top: chatMessage.bottom
+			anchors.bottom: parent.bottom
+			anchors.margins: Theme.paddingMedium
+			model: ListModel { id: messages }
+			delegate: Item {
+				width: chat.view.width
+				height: lbl.height
+				Label { id: lbl; text: nick + ": " + message }
+			}
+
+			VerticalScrollDecorator { flickable: chat }
+		}
+
 	}
 
 	function searchURL(s, q) {
@@ -64,6 +102,7 @@ Page {
 	}
 
 	Component.onCompleted: {
+		messages.append({ nick: "aldrog", message: "Hello, early tester!"})
 		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
 			if (tokendata) {
 				var token = JSON.parse(tokendata)
