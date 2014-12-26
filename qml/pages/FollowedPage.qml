@@ -3,13 +3,9 @@ import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
 import "scripts/httphelper.js" as HTTP
 
-
 Page {
 	id: page
-	allowedOrientations: Orientation.All
 
-	property bool bygame: false
-	property string game
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*3)*2
@@ -19,6 +15,12 @@ Page {
 		id: previewSize
 		key: "/apps/twitch/settings/previewimgsize"
 		defaultValue: "large"
+	}
+
+	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
 	}
 
 	SilicaGridView {
@@ -37,20 +39,13 @@ Page {
 			}
 
 			MenuItem {
-				text: qsTr("Following")
-				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("FollowedPage.qml"))
-			}
-
-			MenuItem {
 				text: qsTr("Channels")
 				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
-				visible: bygame
 			}
 
 			MenuItem {
 				text: qsTr("Games")
 				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
-				visible: !bygame
 			}
 		}
 
@@ -71,7 +66,7 @@ Page {
 		}
 
 		header: PageHeader {
-			title: bygame ? game : qsTr("Live Channels")
+			title: qsTr("Followed Streams")
 		}
 
 		model: ListModel { id: streamList }
@@ -141,9 +136,7 @@ Page {
 	}
 
 	Component.onCompleted: {
-		var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage
-		if (bygame)
-			url += encodeURI("&game=" + game)
+		var url = "https://api.twitch.tv/kraken/streams/followed?oauth_token=" + authToken.value + "&limit=" + countOnPage
 		console.log(url)
 		HTTP.getRequest(url,function(data) {
 			if (data) {
@@ -155,8 +148,3 @@ Page {
 		})
 	}
 }
-
-
-
-
-

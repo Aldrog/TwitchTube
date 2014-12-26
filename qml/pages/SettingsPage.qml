@@ -1,12 +1,14 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
+import "scripts/httphelper.js" as HTTP
 
 Dialog {
 	id: page
 	allowedOrientations: Orientation.All
 
 	property var imageSizes: ["large", "medium", "small"]
+	property string name: ""
 
 	ConfigurationValue {
 		id: authToken
@@ -77,6 +79,13 @@ Dialog {
 		}
 		//Uncomment this when there will be more settings
 		//VerticalScrollDecorator { flickable: settings }
+	}
+
+	Component.onCompleted: {
+		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+			var user = JSON.parse(data)
+			name = user.display_name
+		})
 	}
 
 	onAccepted: {

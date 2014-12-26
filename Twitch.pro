@@ -30,7 +30,8 @@ OTHER_FILES += qml/Twitch.qml \
     qml/pages/scripts/httphelper.js \
     qml/pages/SettingsPage.qml \
     qml/pages/SearchPage.qml \
-    qml/pages/LoginPage.qml
+    qml/pages/LoginPage.qml \
+    qml/pages/FollowedPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

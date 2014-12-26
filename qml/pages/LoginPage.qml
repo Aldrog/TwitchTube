@@ -4,6 +4,7 @@ import org.nemomobile.configuration 1.0
 
 Page {
 	id: page
+	allowedOrientations: Orientation.All
 
 	ConfigurationValue {
 		id: authToken
