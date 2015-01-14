@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
+import org.nemomobile.configuration 1.0
+import irc.chat.twitch 1.0
 import "scripts/httphelper.js" as HTTP
 
 Page {
@@ -9,7 +11,15 @@ Page {
 
 	property var url
 	property string channel
-	property string quality: "high"
+	property string quality: "medium"
+
+
+	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
+	}
+
 
 	SilicaFlickable {
 		id: main
@@ -70,7 +80,8 @@ Page {
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
 			EnterKey.enabled: text.length > 0
 			EnterKey.onClicked: {
-				messages.insert(0, {nick: "me", message: text})
+				twitchChat.sendMessage(text)
+				messages.insert(0, {nick: twitchChat.name, message: text})
 				text = ""
 			}
 		}
@@ -84,9 +95,33 @@ Page {
 			anchors.margins: Theme.paddingMedium
 			model: ListModel { id: messages }
 			delegate: Item {
-				width: chat.view.width
 				height: lbl.height
-				Label { id: lbl; text: nick + ": " + message }
+				Label {
+					id: lbl
+					width: chat.width
+					text: nick + ": " + message
+					textFormat: Text.RichText
+					wrapMode: Text.WordWrap
+				}
+			}
+
+			IrcChat {
+				id: twitchChat
+				pass: 'oauth:' + authToken.value
+				onMessageReceived: {
+					console.log("message from: ", sndnick)
+					console.log("message: ", mesg)
+					messages.insert(0, {nick: sndnick, message: mesg})
+				}
+				onErrorOccured: console.log("Socket error: ", errorDescription)
+
+				Component.onCompleted: {
+					HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+						var user = JSON.parse(data)
+						twitchChat.name = user.name
+						twitchChat.join(channel)
+					})
+				}
 			}
 
 			VerticalScrollDecorator { flickable: chat }
@@ -120,5 +155,6 @@ Page {
 				})
 			}
 		})
+
 	}
 }

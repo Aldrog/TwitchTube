@@ -200,37 +200,37 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="21"/>
+        <location filename="../qml/pages/StreamPage.qml" line="31"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="26"/>
+        <location filename="../qml/pages/StreamPage.qml" line="36"/>
         <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="31"/>
+        <location filename="../qml/pages/StreamPage.qml" line="41"/>
         <source>Medium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="36"/>
+        <location filename="../qml/pages/StreamPage.qml" line="46"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="41"/>
+        <location filename="../qml/pages/StreamPage.qml" line="51"/>
         <source>Mobile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="68"/>
+        <location filename="../qml/pages/StreamPage.qml" line="78"/>
         <source>Chat here.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="69"/>
+        <location filename="../qml/pages/StreamPage.qml" line="79"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>

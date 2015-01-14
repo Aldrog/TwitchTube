@@ -14,7 +14,8 @@ TARGET = Twitch
 
 CONFIG += sailfishapp
 
-SOURCES += src/Twitch.cpp
+SOURCES += src/Twitch.cpp \
+    src/ircchat.cpp
 
 OTHER_FILES += qml/Twitch.qml \
     qml/cover/CoverPage.qml \
@@ -37,4 +38,7 @@ OTHER_FILES += qml/Twitch.qml \
 # following CONFIG line
 CONFIG += sailfishapp_i18n
 #TRANSLATIONS += translations/Twitch-ru.ts
+
+HEADERS += \
+    src/ircchat.h
 

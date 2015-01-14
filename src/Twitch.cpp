@@ -3,6 +3,7 @@
 #endif
 
 #include <sailfishapp.h>
+#include "ircchat.h"
 
 
 int main(int argc, char *argv[])
@@ -16,6 +17,12 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-    return SailfishApp::main(argc, argv);
-}
+	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+	qmlRegisterType<IrcChat>("irc.chat.twitch", 1, 0, "IrcChat");
+	QScopedPointer<QQuickView> view(SailfishApp::createView());
+	view->setSource(SailfishApp::pathTo("qml/Twitch.qml"));
+	view->show();
+	return app->exec();
 
+//	return SailfishApp::main(argc, argv);
+}
