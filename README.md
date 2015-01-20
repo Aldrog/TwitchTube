@@ -1,5 +1,5 @@
-JollaTwitch
-===========
+TwitchTube
+==========
 
 Twitch.tv client for Jolla.
 
