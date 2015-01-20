@@ -19,3 +19,4 @@ TODO
 - Improve settings page
 - Add broadcast titles (maybe optional, like in android version)
 - Rework pulley menu on stream page
+- Colorful nicknames in chat
