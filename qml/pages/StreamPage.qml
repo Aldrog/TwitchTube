@@ -32,13 +32,11 @@ Page {
 	property string channel
 	property string quality: "medium"
 
-
 	ConfigurationValue {
 		id: authToken
 		key: "/apps/twitch/settings/oauthtoken"
 		defaultValue: ""
 	}
-
 
 	SilicaFlickable {
 		id: main

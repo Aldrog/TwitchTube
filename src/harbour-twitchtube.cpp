@@ -22,6 +22,9 @@
 #endif
 
 #include <sailfishapp.h>
+#include <QtQml>
+#include <QGuiApplication>
+#include <QQuickView>
 #include "ircchat.h"
 
 int main(int argc, char *argv[])
