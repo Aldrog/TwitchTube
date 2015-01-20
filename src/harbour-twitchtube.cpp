@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	qmlRegisterType<IrcChat>("irc.chat.twitch", 1, 0, "IrcChat");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
-	view->setSource(SailfishApp::pathTo("qml/Twitch.qml"));
+	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
 	return app->exec();
 

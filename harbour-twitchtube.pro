@@ -10,34 +10,36 @@
 #   - translation filenames have to be changed
 
 # The name of your application
-TARGET = Twitch
+TARGET = harbour-twitchtube
 
 CONFIG += sailfishapp
 
-SOURCES += src/Twitch.cpp \
+SOURCES += \
+    src/harbour-twitchtube.cpp \
     src/ircchat.cpp
 
-OTHER_FILES += qml/Twitch.qml \
+OTHER_FILES += \
     qml/cover/CoverPage.qml \
-    rpm/Twitch.changes.in \
-    rpm/Twitch.spec \
-    rpm/Twitch.yaml \
     translations/*.ts \
-    Twitch.desktop \
     qml/pages/GamesPage.qml \
     qml/pages/ChannelsPage.qml \
     qml/pages/StreamPage.qml \
-    Twitch.png \
     qml/pages/scripts/httphelper.js \
     qml/pages/SettingsPage.qml \
     qml/pages/SearchPage.qml \
     qml/pages/LoginPage.qml \
-    qml/pages/FollowedPage.qml
+    qml/pages/FollowedPage.qml \
+    qml/harbour-twitchtube.qml \
+    harbour-twitchtube.desktop \
+    harbour-twitchtube.png \
+    rpm/harbour-twitchtube.changes.in \
+    rpm/harbour-twitchtube.spec \
+    rpm/harbour-twitchtube.yaml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
-#TRANSLATIONS += translations/Twitch-ru.ts
+#TRANSLATIONS += translations/harbour-twitchtube-ru.ts
 
 HEADERS += \
     src/ircchat.h
