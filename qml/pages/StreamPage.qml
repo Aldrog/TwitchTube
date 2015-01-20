@@ -21,7 +21,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import org.nemomobile.configuration 1.0
-import irc.chat.twitch 1.0
+import harbour.twitchtube.ircchat 1.0
 import "scripts/httphelper.js" as HTTP
 
 Page {

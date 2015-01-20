@@ -20,3 +20,5 @@ TODO
 - Add broadcast titles (maybe optional, like in android version)
 - Rework pulley menu on stream page
 - Colorful nicknames in chat
+- Joins and parts processing
+- Move settings to QSettings usage
