@@ -17,5 +17,5 @@ TODO
 ----
 - Improve followings page
 - Improve settings page
-- Add broadcast titles (maybe optional, like on android version)
+- Add broadcast titles (maybe optional, like in android version)
 - Rework pulley menu on stream page
