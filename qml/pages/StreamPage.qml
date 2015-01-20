@@ -81,7 +81,7 @@ Page {
 			EnterKey.enabled: text.length > 0
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				messages.insert(0, {nick: twitchChat.name, message: text})
+				parseEmoticons(twitchChat.name, text)
 				text = ""
 			}
 		}
@@ -110,8 +110,8 @@ Page {
 				pass: 'oauth:' + authToken.value
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
-					console.log("message: ", mesg)
-					messages.insert(0, {nick: sndnick, message: mesg})
+					console.log("message: ", msg)
+					parseEmoticons(sndnick, msg)
 				}
 				onErrorOccured: console.log("Socket error: ", errorDescription)
 
@@ -126,7 +126,18 @@ Page {
 
 			VerticalScrollDecorator { flickable: chat }
 		}
+	}
 
+	function parseEmoticons(nick, str) {
+		var res = str
+		HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + nick + "/emoticons", function(data) {
+			var emoticons = JSON.parse(data).emoticons
+			for (var i in emoticons) {
+				res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
+			}
+			console.log(res)
+			messages.insert(0, {nick: nick, message: res})
+		})
 	}
 
 	function searchURL(s, q) {

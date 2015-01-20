@@ -30,11 +30,14 @@ void IrcChat::receive() {
 		if(msg.startsWith("PING "))
 			sock->write(("PONG " + msg.remove("PING ")).toStdString().c_str());
 		else if(msg.contains("PRIVMSG")) {
-			//Structure of message: ' :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
-			//nick - from ':' to '!', message - from second ':'
+			// Structure of message: ' :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
+			// nick - from ':' to '!', message - from second ':'
 			QString nick = msg.left(msg.indexOf('!')).remove(0,1);
 			QString message = msg.remove(0, msg.indexOf(':', 2) + 1);
 			messageReceived(nick, message);
+		}
+		else {
+			messageReceived("twitch", msg);
 		}
 	}
 }

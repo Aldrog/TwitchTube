@@ -7,6 +7,7 @@
 const qint16 PORT = 6667;
 const QString HOST = "irc.twitch.tv";
 
+// Backend for chat
 class IrcChat : public QObject
 {
 	Q_OBJECT
@@ -20,7 +21,7 @@ public:
 
 	Q_INVOKABLE void join(const QString channel);
 signals:
-	void messageReceived(QString sndnick, QString mesg);
+	void messageReceived(QString sndnick, QString msg);
 	void errorOccured(QString errorDescription);
 public slots:
 	void sendMessage(const QString &msg);
