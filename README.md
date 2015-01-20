@@ -12,3 +12,10 @@ What works
 - Chat
 
 Video should work but I can't be sure as it doesn't work either on an emulator or on my Galaxy S3 (thanks rusty88 from xda-developers.com for porting).
+
+TODO
+----
+- Improve followings page
+- Improve settings page
+- Add broadcast titles (maybe optional, like on android version)
+- Rework pulley menu on stream page
