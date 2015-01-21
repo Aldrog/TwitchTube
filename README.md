@@ -1,7 +1,7 @@
 TwitchTube
 ==========
 
-Twitch.tv client for Jolla.
+Twitch.tv client for Sailfish OS.
 
 What works
 ----------
@@ -11,7 +11,7 @@ What works
 - Browse followed channels
 - Chat
 
-Video should work but I can't be sure as it doesn't work either on an emulator or on my Galaxy S3 (thanks rusty88 from xda-developers.com for porting).
+Video should work but I can't be sure as it doesn't work either on an emulator or on my Galaxy S3 (thanks to rusty88 from xda-developers.com for porting).
 
 TODO
 ----
