@@ -225,12 +225,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="96"/>
+        <location filename="../qml/pages/StreamPage.qml" line="95"/>
         <source>Chat here.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="97"/>
+        <location filename="../qml/pages/StreamPage.qml" line="96"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>

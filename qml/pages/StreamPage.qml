@@ -42,7 +42,7 @@ Page {
 	SilicaFlickable {
 		id: main
 		anchors.fill: parent
-		contentHeight: isPortrait ? height : height*2
+		contentHeight: isPortrait ? height : height + Screen.width
 
 		PullDownMenu {
 			MenuItem {
@@ -92,7 +92,6 @@ Page {
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: video.bottom
-			autoScrollEnabled: false
 			placeholderText: qsTr("Chat here.")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
