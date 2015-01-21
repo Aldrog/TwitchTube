@@ -34,6 +34,8 @@ void IrcChat::join(const QString channel) {
 	sock->write(("NICK " + nick + "\n").toStdString().c_str());
 	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
 	room = channel;
+
+	sock->write("TWITCHCLIENT\n");
 }
 
 void IrcChat::sendMessage(const QString &msg) {
@@ -46,19 +48,51 @@ void IrcChat::receive() {
 	while (sock->canReadLine()) {
 		msg = sock->readLine();
 		msg = msg.remove('\n');
-		if(msg.startsWith("PING "))
-			sock->write(("PONG " + msg.remove("PING ")).toStdString().c_str());
-		else if(msg.contains("PRIVMSG")) {
-			// Structure of message: ' :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
-			// nick - from ':' to '!', message - from second ':'
-			QString nick = msg.left(msg.indexOf('!')).remove(0,1);
-			QString message = msg.remove(0, msg.indexOf(':', 2) + 1);
-			messageReceived(nick, message);
+		parseCommand(msg);
+	}
+}
+
+void IrcChat::parseCommand(QString cmd) {
+	if(cmd.startsWith("PING ")) {
+		sock->write(("PONG " + cmd.remove("PING ")).toStdString().c_str());
+		return;
+	}
+	if(cmd.contains("PRIVMSG")) {
+		if(cmd.startsWith(":jtv")) {
+			// Maintenence message
+			QString message = cmd.remove(0, cmd.indexOf(':', 1) + 1);
+			if(message.startsWith("USERCOLOR")) {
+				// Structure: USERCOLOR nick #C0DE
+				colorReceived(message.section(' ', 1, 1), message.section(' ', 2, 2));
+				return;
+			}
+			if(message.startsWith("SPECIALUSER")) {
+				// Structure: SPECIALUSER nick type
+				// types: subscriber, staff, admin, turbo
+				return;
+			}
+			if(message.startsWith("CLEARCHAT")) {
+				// Structure: CLEARCHAT nick
+				// Someone is banned... But we don't speak about sad
+				return;
+			}
+			if(message.startsWith("EMOTESET")) {
+				// Structure: EMOTESET nick [some digits]
+				// Don't know what to do here.
+				return;
+			}
 		}
 		else {
-			messageReceived("twitch", msg);
+			// Structure of message: ' :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
+			// nick - from ':' to '!', message - from second ':'
+			QString nick = cmd.left(cmd.indexOf('!')).remove(0,1);
+			QString message = cmd.remove(0, cmd.indexOf(':', 2) + 1);
+			messageReceived(nick, message);
+			return;
 		}
 	}
+	// If we don't know how to parse command
+	messageReceived("twitch", cmd);
 }
 
 void IrcChat::processError(QAbstractSocket::SocketError socketError) {

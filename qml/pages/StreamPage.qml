@@ -23,6 +23,7 @@ import QtMultimedia 5.0
 import org.nemomobile.configuration 1.0
 import harbour.twitchtube.ircchat 1.0
 import "scripts/httphelper.js" as HTTP
+import "scripts/chathelper.js" as CH
 
 Page {
 	id: page
@@ -98,7 +99,7 @@ Page {
 			EnterKey.enabled: text.length > 0
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				parseEmoticons(twitchChat.name, text)
+				CH.parseEmoticons(twitchChat.name, text)
 				text = ""
 			}
 		}
@@ -116,7 +117,7 @@ Page {
 				Label {
 					id: lbl
 					width: chat.width
-					text: nick + ": " + message
+					text: "<font color=" + nick_color + ">" + nick + "</font>: " + message
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
 				}
@@ -128,7 +129,10 @@ Page {
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
 					console.log("message: ", msg)
-					parseEmoticons(sndnick, msg)
+					CH.parseEmoticons(sndnick, msg)
+				}
+				onColorReceived: {
+					CH.setColor(nick, color)
 				}
 				onErrorOccured: console.log("Socket error: ", errorDescription)
 
@@ -145,18 +149,6 @@ Page {
 		}
 	}
 
-	function parseEmoticons(nick, str) {
-		var res = str
-		HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + nick + "/emoticons", function(data) {
-			var emoticons = JSON.parse(data).emoticons
-			for (var i in emoticons) {
-				res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
-			}
-			console.log(res)
-			messages.insert(0, {nick: nick, message: res})
-		})
-	}
-
 	function searchURL(s, q) {
 		for (var x in s) {
 			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
@@ -165,7 +157,7 @@ Page {
 	}
 
 	Component.onCompleted: {
-		messages.append({ nick: "aldrog", message: "Hello, early tester!"})
+		messages.append({ nick: "aldrog", nick_color: "blue", message: "Hello, early tester!"})
 		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
 			if (tokendata) {
 				var token = JSON.parse(tokendata)

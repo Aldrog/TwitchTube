@@ -34,7 +34,8 @@ OTHER_FILES += \
     harbour-twitchtube.png \
     rpm/harbour-twitchtube.changes.in \
     rpm/harbour-twitchtube.spec \
-    rpm/harbour-twitchtube.yaml
+    rpm/harbour-twitchtube.yaml \
+    qml/pages/scripts/chathelper.js
 
 # to disable building translations every time, comment out the
 # following CONFIG line

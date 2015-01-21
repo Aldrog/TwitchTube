@@ -41,6 +41,7 @@ public:
 	Q_INVOKABLE void join(const QString channel);
 signals:
 	void messageReceived(QString sndnick, QString msg);
+	void colorReceived(QString nick, QString color);
 	void errorOccured(QString errorDescription);
 public slots:
 	void sendMessage(const QString &msg);
@@ -50,6 +51,7 @@ private slots:
 private:
 	QTcpSocket *sock;
 	QString room;
+	void parseCommand(QString cmd);
 };
 
 #endif // IRCCHAT_H
