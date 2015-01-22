@@ -116,9 +116,12 @@ Page {
 				Label {
 					id: lbl
 					width: chat.width
-					text: "<font color=" + nick_color + ">" + nick + "</font>: " + message
+					text: badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) + "<font color=" + nick_color + ">" + nick + "</font>: " +
+						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize)
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
+
+					Component.onCompleted: console.log("height:", font.pixelSize, "\ntext:", text)
 				}
 			}
 
@@ -133,14 +136,15 @@ Page {
 				onColorReceived: {
 					CH.setColor(nick, color)
 				}
+				onSpecReceived: {
+					console.log("spec: ", type)
+					CH.addSpec(nick, type)
+				}
+
 				onErrorOccured: console.log("Socket error: ", errorDescription)
 
 				Component.onCompleted: {
-					HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-						var user = JSON.parse(data)
-						twitchChat.name = user.name
-						twitchChat.join(channel)
-					})
+					CH.init()
 				}
 			}
 
@@ -156,7 +160,7 @@ Page {
 	}
 
 	Component.onCompleted: {
-		messages.append({ nick: "aldrog", nick_color: "blue", message: "Hello, early tester!"})
+		messages.append({ badges: "", nick: "aldrog", nick_color: "blue", message: "Hello, early tester!"})
 		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
 			if (tokendata) {
 				var token = JSON.parse(tokendata)

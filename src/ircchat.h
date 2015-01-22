@@ -42,6 +42,7 @@ public:
 signals:
 	void messageReceived(QString sndnick, QString msg);
 	void colorReceived(QString nick, QString color);
+	void specReceived(QString nick, QString type);
 	void errorOccured(QString errorDescription);
 public slots:
 	void sendMessage(const QString &msg);

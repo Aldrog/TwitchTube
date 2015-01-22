@@ -17,7 +17,9 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var usercolors = []
+var user_specs = []
+var spec_icons
+var user_colors = []
 var default_colors = [
 			["Red", "#FF0000"],
 			["Blue", "#0000FF"],
@@ -37,8 +39,8 @@ var default_colors = [
 
 function getColor(name) {
 	var color;
-	if(usercolors[name]) { //Cached from USERCOLOR notices
-		color = usercolors[name];
+	if(user_colors[name]) { //Cached from USERCOLOR notices
+		color = user_colors[name];
 	} else {
 		var n = name.charCodeAt(0) + name.charCodeAt(name.length - 1);
 		color = default_colors[n % default_colors.length][1]
@@ -47,7 +49,7 @@ function getColor(name) {
 }
 
 function setColor(name, color) {
-	usercolors[name] = color
+	user_colors[name] = color
 }
 
 function parseEmoticons(nick, str) {
@@ -58,6 +60,38 @@ function parseEmoticons(nick, str) {
 			res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
 		}
 		console.log(res)
-		messages.insert(0, {nick: nick, nick_color: getColor(nick), message: res})
+		messages.insert(0, {badges: parseBadges(nick), nick: nick, nick_color: getColor(nick), message: res})
+	})
+}
+
+function addSpec(name, spec) {
+	if(!user_specs[name])
+		user_specs[name] = []
+	user_specs[name][spec] = 1
+}
+
+function parseBadges(name) {
+	var res = ""
+	for(var i in user_specs[name]) {
+		console.log(i)
+		console.log(i, ' ', spec_icons[i], ' ', spec_icons['subscriber'])
+		res += "<img src='" + spec_icons[i].image + "'/> "
+	}
+	return res
+}
+
+function init() {
+	HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+		var user = JSON.parse(data)
+		twitchChat.name = user.name
+		twitchChat.join(channel)
+	})
+	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + channel + "/badges", function(data) {
+		spec_icons = JSON.parse(data)
+		for(var x in spec_icons) {
+			console.log(x)
+			for(var i in spec_icons[x])
+				console.log(i, ' ', spec_icons[x][i])
+		}
 	})
 }

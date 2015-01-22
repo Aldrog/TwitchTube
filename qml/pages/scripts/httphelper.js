@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
+.pragma library
 
 function getRequest(url,callback) {
 	var request = new XMLHttpRequest()

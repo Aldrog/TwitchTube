@@ -30,12 +30,15 @@ IrcChat::~IrcChat() { sock->close(); }
 
 void IrcChat::join(const QString channel) {
 	sock->connectToHost(HOST, PORT);
+	// Tell server that we support twitch-specific commands
+	sock->write("TWITCHCLIENT 2\n");
+	// Login
 	sock->write(("PASS " + ircpass + "\n").toStdString().c_str());
 	sock->write(("NICK " + nick + "\n").toStdString().c_str());
+	// Join channel's chat room
 	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
+	// Save channel name for later use
 	room = channel;
-
-	sock->write("TWITCHCLIENT\n");
 }
 
 void IrcChat::sendMessage(const QString &msg) {
@@ -47,7 +50,8 @@ void IrcChat::receive() {
 	QString msg;
 	while (sock->canReadLine()) {
 		msg = sock->readLine();
-		msg = msg.remove('\n');
+		// I'm not shure if \n and \r may be in another order, so removing one by one
+		msg = msg.remove('\n').remove('\r');
 		parseCommand(msg);
 	}
 }
@@ -69,6 +73,7 @@ void IrcChat::parseCommand(QString cmd) {
 			if(message.startsWith("SPECIALUSER")) {
 				// Structure: SPECIALUSER nick type
 				// types: subscriber, staff, admin, turbo
+				specReceived(message.section(' ', 1, 1), message.section(' ', 2, 2));
 				return;
 			}
 			if(message.startsWith("CLEARCHAT")) {
