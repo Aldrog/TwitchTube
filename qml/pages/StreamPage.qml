@@ -120,8 +120,6 @@ Page {
 						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize)
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
-
-					Component.onCompleted: console.log("height:", font.pixelSize, "\ntext:", text)
 				}
 			}
 
@@ -139,6 +137,9 @@ Page {
 				onSpecReceived: {
 					console.log("spec: ", type)
 					CH.addSpec(nick, type)
+				}
+				onSpecRemoved: {
+					CH.rmSpec(nick, type)
 				}
 
 				onErrorOccured: console.log("Socket error: ", errorDescription)

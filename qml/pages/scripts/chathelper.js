@@ -70,6 +70,11 @@ function addSpec(name, spec) {
 	user_specs[name][spec] = 1
 }
 
+function rmSpec(name, spec) {
+	if(user_specs[name][spec])
+		delete user_specs[name][spec]
+}
+
 function parseBadges(name) {
 	var res = ""
 	for(var i in user_specs[name]) {

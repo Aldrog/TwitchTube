@@ -90,11 +90,37 @@ void IrcChat::parseCommand(QString cmd) {
 		else {
 			// Structure of message: ' :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
 			// nick - from ':' to '!', message - from second ':'
-			QString nick = cmd.left(cmd.indexOf('!')).remove(0,1);
+			QString nickname = cmd.left(cmd.indexOf('!')).remove(0,1);
 			QString message = cmd.remove(0, cmd.indexOf(':', 2) + 1);
-			messageReceived(nick, message);
+			messageReceived(nickname, message);
 			return;
 		}
+	}
+	if(cmd.startsWith(":jtv MODE")){
+		if(cmd.contains("+o")) {
+			specReceived(cmd.remove(":jtv MODE #" + room + " +o "), "mod");
+			return;
+		}
+		if(cmd.contains("-o")) {
+			specRemoved(cmd.remove(":jtv MODE #" + room + " -o "), "mod");
+			return;
+		}
+	}
+	if(cmd.startsWith(":" + nick + "!" + nick + "@" + nick + ".tmi.twitch.tv")) {
+		// It's our own action
+		return;
+	}
+	if(cmd.startsWith(":" + nick + ".tmi.twitch.tv")) {
+		// Here might be error messages, but I've only seen
+		// nick = #channel :nick
+		// and 'End of /NAMES list'
+		return;
+	}
+	if(cmd.startsWith("HISTORYEND")) {
+		return;
+	}
+	if(cmd.startsWith(":tmi.twitch.tv")) {
+		cmd = cmd.remove(0, cmd.indexOf(':', 2) + 1);
 	}
 	// If we don't know how to parse command
 	messageReceived("twitch", cmd);
