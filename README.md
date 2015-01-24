@@ -19,5 +19,4 @@ TODO
 - Improve settings page
 - Add broadcast titles (maybe optional, like in android version)
 - Rework pulley menu on stream page
-- Joins and parts processing
 - Move settings to QSettings usage
