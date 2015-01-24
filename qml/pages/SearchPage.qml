@@ -20,6 +20,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
+import "elements"
 import "scripts/httphelper.js" as HTTP
 
 Page {
@@ -40,25 +41,8 @@ Page {
 		id: gridResults
 		anchors.fill: parent
 
-		PullDownMenu {
-			MenuItem {
-				text: qsTr("Settings")
-				onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-			}
-
-			MenuItem {
-				text: qsTr("Following")
-			}
-
-			MenuItem {
-				text: qsTr("Channels")
-				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
-			}
-
-			MenuItem {
-				text: qsTr("Games")
-				onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
-			}
+		Categories {
+			search: false
 		}
 
 		header: SearchField {
