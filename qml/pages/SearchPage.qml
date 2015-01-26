@@ -37,12 +37,19 @@ Page {
 		defaultValue: "medium"
 	}
 
+	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
+	}
+
 	SilicaGridView {
 		id: gridResults
 		anchors.fill: parent
 
 		Categories {
 			search: false
+			following: authToken.value
 		}
 
 		header: SearchField {

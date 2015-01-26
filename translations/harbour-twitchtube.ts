@@ -32,12 +32,12 @@
 <context>
     <name>ChannelsPage</name>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="54"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="61"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="69"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="76"/>
         <source>Live Channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,12 +58,12 @@
 <context>
     <name>GamesPage</name>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="51"/>
+        <location filename="../qml/pages/GamesPage.qml" line="58"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="66"/>
+        <location filename="../qml/pages/GamesPage.qml" line="73"/>
         <source>Popular Games</source>
         <translation type="unfinished"></translation>
     </message>
@@ -79,7 +79,7 @@
 <context>
     <name>SearchPage</name>
     <message>
-        <location filename="../qml/pages/SearchPage.qml" line="51"/>
+        <location filename="../qml/pages/SearchPage.qml" line="58"/>
         <source>Search channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -143,37 +143,22 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="49"/>
-        <source>Source</source>
+        <location filename="../qml/pages/StreamPage.qml" line="51"/>
+        <source>Follow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="54"/>
-        <source>High</source>
+        <location filename="../qml/pages/StreamPage.qml" line="60"/>
+        <source>Unfollow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="59"/>
-        <source>Medium</source>
+        <location filename="../qml/pages/StreamPage.qml" line="115"/>
+        <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="64"/>
-        <source>Low</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/StreamPage.qml" line="69"/>
-        <source>Mobile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/StreamPage.qml" line="95"/>
-        <source>Chat here.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/StreamPage.qml" line="96"/>
+        <location filename="../qml/pages/StreamPage.qml" line="116"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>

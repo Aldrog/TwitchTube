@@ -86,11 +86,8 @@ function parseBadges(name) {
 }
 
 function init() {
-	HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-		var user = JSON.parse(data)
-		twitchChat.name = user.name
-		twitchChat.join(channel)
-	})
+	twitchChat.join(channel)
+
 	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + channel + "/badges", function(data) {
 		spec_icons = JSON.parse(data)
 		for(var x in spec_icons) {

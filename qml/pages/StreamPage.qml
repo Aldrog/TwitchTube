@@ -31,6 +31,8 @@ Page {
 
 	property var url
 	property string channel
+	property string username
+	property bool followed
 	property string quality: "medium"
 
 	ConfigurationValue {
@@ -46,29 +48,47 @@ Page {
 
 		PullDownMenu {
 			MenuItem {
-				text: qsTr("Source")
-				onClicked: quality = "source"
+				text: qsTr("Follow")
+				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+					if(data)
+						followed = true
+				})
+				visible: authToken.value && !followed
 			}
 
 			MenuItem {
-				text: qsTr("High")
-				onClicked: quality = "high"
+				text: qsTr("Unfollow")
+				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+					if(data === 204)
+						followed = false
+				})
+				visible: authToken.value && followed
 			}
 
-			MenuItem {
-				text: qsTr("Medium")
-				onClicked: quality = "medium"
-			}
+//			MenuItem {
+//				text: qsTr("Source")
+//				onClicked: quality = "source"
+//			}
 
-			MenuItem {
-				text: qsTr("Low")
-				onClicked: quality = "low"
-			}
+//			MenuItem {
+//				text: qsTr("High")
+//				onClicked: quality = "high"
+//			}
 
-			MenuItem {
-				text: qsTr("Mobile")
-				onClicked: quality = "mobile"
-			}
+//			MenuItem {
+//				text: qsTr("Medium")
+//				onClicked: quality = "medium"
+//			}
+
+//			MenuItem {
+//				text: qsTr("Low")
+//				onClicked: quality = "low"
+//			}
+
+//			MenuItem {
+//				text: qsTr("Mobile")
+//				onClicked: quality = "mobile"
+//			}
 		}
 
 		Video {
@@ -92,13 +112,13 @@ Page {
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: video.bottom
-			placeholderText: qsTr("Chat here.")
+			placeholderText: qsTr("Chat here")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-			EnterKey.enabled: text.length > 0
+			EnterKey.enabled: text.length > 0 && authToken.value !== ""
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				CH.parseEmoticons(twitchChat.name, text)
+				CH.parseEmoticons(username, text)
 				text = ""
 			}
 		}
@@ -116,7 +136,8 @@ Page {
 				Label {
 					id: lbl
 					width: chat.width
-					text: badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) + "<font color=" + nick_color + ">" + nick + "</font>: " +
+					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
+						  "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
 						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize)
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
@@ -129,7 +150,10 @@ Page {
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
 					console.log("message: ", msg)
-					CH.parseEmoticons(sndnick, msg)
+					if(sndnick)
+						CH.parseEmoticons(sndnick, msg)
+					else
+						messages.insert(0, {message: msg})
 				}
 				onColorReceived: {
 					CH.setColor(nick, color)
@@ -145,7 +169,8 @@ Page {
 				onErrorOccured: console.log("Socket error: ", errorDescription)
 
 				Component.onCompleted: {
-					CH.init()
+					if(authToken.value === "")
+						messages.insert(0, { message: "You need to login to be able to use chat." })
 				}
 			}
 
@@ -180,5 +205,20 @@ Page {
 			}
 		})
 
+		if(authToken.value !== "") {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+				var user = JSON.parse(data)
+				username = user.name
+				twitchChat.name = user.name
+				CH.init()
+
+				HTTP.getRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel, function(data) {
+					if(data)
+						followed = true
+					else
+						followed = false
+				})
+			})
+		}
 	}
 }

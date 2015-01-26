@@ -40,6 +40,12 @@ Page {
 		defaultValue: "large"
 	}
 
+	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
+	}
+
 	SilicaGridView {
 		id: gridChannels
 		anchors.fill: parent
@@ -47,6 +53,7 @@ Page {
 		Categories {
 			channels: bygame
 			games: !bygame
+			following: authToken.value !== ""
 		}
 
 		PushUpMenu {

@@ -28,7 +28,7 @@ Page {
 	allowedOrientations: Orientation.All
 
 	property int row: isPortrait ? 2 : 4
-	//in brackets should be row lengths for portrait and landscape orientations
+	// In brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*4)*2
 	property string nextlink
 
@@ -38,12 +38,19 @@ Page {
 		defaultValue: "medium"
 	}
 
+	ConfigurationValue {
+		id: authToken
+		key: "/apps/twitch/settings/oauthtoken"
+		defaultValue: ""
+	}
+
 	SilicaGridView {
 		id: gridGames
 		anchors.fill: parent
 
 		Categories {
 			games: false
+			following: authToken.value !== ""
 		}
 
 		PushUpMenu {

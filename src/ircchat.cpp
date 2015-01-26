@@ -123,7 +123,7 @@ void IrcChat::parseCommand(QString cmd) {
 		cmd = cmd.remove(0, cmd.indexOf(':', 2) + 1);
 	}
 	// If we don't know how to parse command
-	messageReceived("twitch", cmd);
+	messageReceived(NULL, cmd);
 }
 
 void IrcChat::processError(QAbstractSocket::SocketError socketError) {
