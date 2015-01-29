@@ -54,14 +54,23 @@ function setColor(name, color) {
 
 function parseEmoticons(nick, str) {
 	var res = str
-	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + nick + "/emoticons", function(data) {
-		var emoticons = JSON.parse(data).emoticons
-		for (var i in emoticons) {
-			res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
-		}
-		console.log(res)
-		messages.insert(0, {badges: parseBadges(nick), nick: nick, nick_color: getColor(nick), message: res})
-	})
+	if(nick) {
+		HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + nick + "/emoticons", function(data) {
+			if(data) {
+				var emoticons = JSON.parse(data).emoticons
+				for (var i in emoticons) {
+					res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
+				}
+				console.log(res)
+				messages.insert(0, {badges: parseBadges(nick), nick: nick, nick_color: getColor(nick), message: res})
+			}
+			else {
+				messages.insert(0, {badges: parseBadges(nick), nick: nick, nick_color: getColor(nick), message: res})
+			}
+		})
+	}
+	else
+		messages.insert(0, {badges: "", nick: nick, nick_color: "#000000", message: res})
 }
 
 function addSpec(name, spec) {
@@ -79,7 +88,6 @@ function parseBadges(name) {
 	var res = ""
 	for(var i in user_specs[name]) {
 		console.log(i)
-		console.log(i, ' ', spec_icons[i], ' ', spec_icons['subscriber'])
 		res += "<img src='" + spec_icons[i].image + "'/> "
 	}
 	return res
@@ -89,11 +97,13 @@ function init() {
 	twitchChat.join(channel)
 
 	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + channel + "/badges", function(data) {
-		spec_icons = JSON.parse(data)
-		for(var x in spec_icons) {
-			console.log(x)
-			for(var i in spec_icons[x])
-				console.log(i, ' ', spec_icons[x][i])
+		if(data) {
+			spec_icons = JSON.parse(data)
+			for(var x in spec_icons) {
+				console.log(x)
+				for(var i in spec_icons[x])
+					console.log(i, ' ', spec_icons[x][i])
+			}
 		}
 	})
 }

@@ -33,12 +33,17 @@ Page {
 	property string channel
 	property string username
 	property bool followed
-	property string quality: "medium"
 
 	ConfigurationValue {
 		id: authToken
 		key: "/apps/twitch/settings/oauthtoken"
 		defaultValue: ""
+	}
+
+	ConfigurationValue {
+		id: streamQuality
+		key: "/apps/twitch/settings/streamquality"
+		defaultValue: "medium"
 	}
 
 	SilicaFlickable {
@@ -63,6 +68,11 @@ Page {
 						followed = false
 				})
 				visible: authToken.value && followed
+			}
+
+			MenuItem {
+				text: qsTr("Quality")
+				onClicked: pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"))
 			}
 
 //			MenuItem {
@@ -96,7 +106,7 @@ Page {
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: isPortrait ? screen.width * 9/16 : screen.width
 			autoPlay: true
-			source: url[quality]
+			source: url[streamQuality.value]
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
@@ -141,27 +151,33 @@ Page {
 						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize)
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
+
+					Component.onCompleted: console.log("nick:", nick)
 				}
 			}
 
 			IrcChat {
 				id: twitchChat
 				pass: 'oauth:' + authToken.value
+
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
 					console.log("message: ", msg)
-					if(sndnick)
+					//if(sndnick)
 						CH.parseEmoticons(sndnick, msg)
-					else
-						messages.insert(0, {message: msg})
+					//else
+					//	messages.insert(0, {nick: '', badges: '', nick_color: undefined, message: msg})
 				}
+
 				onColorReceived: {
 					CH.setColor(nick, color)
 				}
+
 				onSpecReceived: {
 					console.log("spec: ", type)
 					CH.addSpec(nick, type)
 				}
+
 				onSpecRemoved: {
 					CH.rmSpec(nick, type)
 				}
@@ -186,7 +202,6 @@ Page {
 	}
 
 	Component.onCompleted: {
-		messages.append({ badges: "", nick: "aldrog", nick_color: "blue", message: "Hello, early tester!"})
 		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
 			if (tokendata) {
 				var token = JSON.parse(tokendata)
@@ -194,7 +209,7 @@ Page {
 					if (data) {
 						var video = data.split('\n')
 						url = {
-							source: searchURL(video, "chunked"),
+							chunked: searchURL(video, "chunked"),
 							high: searchURL(video, "high"),
 							medium: searchURL(video, "medium"),
 							low: searchURL(video, "low"),

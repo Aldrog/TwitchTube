@@ -36,7 +36,8 @@ OTHER_FILES += \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
     qml/pages/scripts/chathelper.js \
-    qml/pages/elements/Categories.qml
+    qml/pages/elements/Categories.qml \
+    qml/pages/QualityChooserPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

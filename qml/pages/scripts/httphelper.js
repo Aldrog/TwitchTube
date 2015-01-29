@@ -27,6 +27,7 @@ function getRequest(url, callback) {
 				//console.log("response", request.responseText)
 				callback(request.responseText)
 			} else {
+				console.log("Error accessing url", url)
 				console.log("HTTP:", request.status, request.statusText)
 				callback(false)
 			}
