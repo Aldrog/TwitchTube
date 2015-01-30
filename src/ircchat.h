@@ -53,6 +53,7 @@ private slots:
 private:
 	QTcpSocket *sock;
 	QString room;
+	bool motdended;
 	void parseCommand(QString cmd);
 };
 

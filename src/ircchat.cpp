@@ -24,6 +24,7 @@ IrcChat::IrcChat() {
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
 	room = "";
+	motdended = false;
 }
 
 IrcChat::~IrcChat() { sock->close(); }
@@ -117,10 +118,15 @@ void IrcChat::parseCommand(QString cmd) {
 		return;
 	}
 	if(cmd.startsWith("HISTORYEND")) {
+		motdended = true;
 		return;
 	}
 	if(cmd.startsWith(":tmi.twitch.tv")) {
-		cmd = cmd.remove(0, cmd.indexOf(':', 2) + 1);
+		if(motdended) {
+			QString message = cmd.remove(0, cmd.indexOf(':', 2) + 1);
+			messageReceived("tmi", message);
+		}
+		return;
 	}
 	// If we don't know how to parse command
 	messageReceived(NULL, cmd);
