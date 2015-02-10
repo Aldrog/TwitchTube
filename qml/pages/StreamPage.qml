@@ -135,11 +135,13 @@ Page {
 
 		SilicaListView {
 			id: chat
-			anchors.left: parent.left
-			anchors.right: parent.right;
-			anchors.top: chatMessage.bottom
-			anchors.bottom: parent.bottom
-			anchors.margins: Theme.paddingMedium
+			anchors {	left: parent.left
+						right: parent.right
+						top: chatMessage.bottom
+						bottom: parent.bottom
+						margins: Theme.paddingMedium
+					}
+			clip: true
 			model: ListModel { id: messages }
 			delegate: Item {
 				height: lbl.height
