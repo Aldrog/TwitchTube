@@ -7,6 +7,7 @@ Dialog {
 	allowedOrientations: Orientation.All
 
 	property var qualities: ["chunked", "high", "medium", "low", "mobile"]
+	property bool chatOnly
 
 	ConfigurationValue {
 		id: streamQuality
@@ -39,13 +40,13 @@ Dialog {
 
 		TextSwitch {
 			id: noVideo
-			checked: false
+			checked: chatOnly
 			text: "Chat only"
-			busy: true
 		}
 	}
 
 	onAccepted: {
 		streamQuality.value = qualities[qualityChooser.currentIndex]
+		chatOnly = noVideo.checked
 	}
 }

@@ -33,6 +33,7 @@ Page {
 	property string channel
 	property string username
 	property bool followed
+	property bool showStream: true
 
 	ConfigurationValue {
 		id: authToken
@@ -72,41 +73,21 @@ Page {
 
 			MenuItem {
 				text: qsTr("Quality")
-				onClicked: pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"))
+				onClicked: {
+					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream })
+					dialog.accepted.connect(function() {
+						showStream = !dialog.chatOnly
+					})
+				}
 			}
-
-//			MenuItem {
-//				text: qsTr("Source")
-//				onClicked: quality = "source"
-//			}
-
-//			MenuItem {
-//				text: qsTr("High")
-//				onClicked: quality = "high"
-//			}
-
-//			MenuItem {
-//				text: qsTr("Medium")
-//				onClicked: quality = "medium"
-//			}
-
-//			MenuItem {
-//				text: qsTr("Low")
-//				onClicked: quality = "low"
-//			}
-
-//			MenuItem {
-//				text: qsTr("Mobile")
-//				onClicked: quality = "mobile"
-//			}
 		}
 
 		Video {
 			id: video
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-			height: isPortrait ? screen.width * 9/16 : screen.width
+			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
 			autoPlay: true
-			source: url[streamQuality.value]
+			source: showStream ? url[streamQuality.value] : ""
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
