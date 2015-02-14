@@ -27,7 +27,7 @@ Dialog {
 	allowedOrientations: Orientation.All
 
 	property var imageSizes: ["large", "medium", "small"]
-	property string name: ""
+	property string name
 
 	ConfigurationValue {
 		id: authToken
@@ -60,18 +60,45 @@ Dialog {
 		BackgroundItem {
 			id: login
 			width: parent.width
+			height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
+
 			Label {
-				anchors.fill: parent
-				anchors.margins: Theme.paddingLarge
-				text: authToken.value === "" ? qsTr("Log in") : qsTr("Log out")
+				id: lblAcc1
+				anchors {	top: parent.top
+							left: parent.left
+							right: parent.right
+							margins: Theme.paddingLarge
+						}
+				text: authToken.value === "" ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
 				color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
+				font.pixelSize: Theme.fontSizeMedium
 			}
+
+			Label {
+				id: lblAcc2
+				anchors {	bottom: parent.bottom
+							left: parent.left
+							right: parent.right
+							margins: Theme.paddingLarge
+						}
+				text: authToken.value === "" ? qsTr("Log in") : qsTr("Log out")
+				color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
+				font.pixelSize: Theme.fontSizeSmall
+			}
+
 			onClicked: {
-				console.log("old token: ", authToken.value)
-				if(authToken.value === "")
-					pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-				else
+				console.log("old token:", authToken.value)
+				if(authToken.value === "") {
+					var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+					lpage.statusChanged.connect(function() {
+						if(authToken.value !== "")
+							getName()
+					})
+				}
+				else {
 					authToken.value = ""
+					tools.clearCookies()
+				}
 			}
 		}
 
@@ -100,11 +127,16 @@ Dialog {
 		//VerticalScrollDecorator { flickable: settings }
 	}
 
-	Component.onCompleted: {
+	function getName() {
 		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 			var user = JSON.parse(data)
 			name = user.display_name
 		})
+	}
+
+	Component.onCompleted: {
+		if(authToken.value !== "")
+			getName()
 	}
 
 	onAccepted: {

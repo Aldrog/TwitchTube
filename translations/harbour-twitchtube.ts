@@ -140,40 +140,50 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="66"/>
-        <source>Log in</source>
+        <location filename="../qml/pages/SettingsPage.qml" line="72"/>
+        <source>Logged in as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="66"/>
-        <source>Log out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="80"/>
-        <source>Game posters quality</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="82"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="93"/>
-        <source>High</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="83"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="94"/>
-        <source>Medium</source>
+        <location filename="../qml/pages/SettingsPage.qml" line="72"/>
+        <source>Not logged in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="84"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="95"/>
+        <source>Log in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="84"/>
+        <source>Log out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="107"/>
+        <source>Game posters quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="109"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="120"/>
+        <source>High</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="110"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="121"/>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="111"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="122"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="91"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="118"/>
         <source>Stream previews quality</source>
         <translation type="unfinished"></translation>
     </message>

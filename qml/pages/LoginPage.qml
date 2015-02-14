@@ -46,11 +46,14 @@ Page {
 		}
 		onNavigationRequested: {
 			console.log(request.url)
-			console.log(request.url.toString().split('#')[1])
-			if(request.url.toString().split('#')[0] === "http://localhost/") {
-				authToken.value = request.url.toString().split('=')[1].split('&')[0]
-				console.log(authToken.value)
-				navigateBack()
+			var url = request.url.toString()
+			if(url.indexOf("http://localhost") === 0) {
+				var params = url.substring(url.lastIndexOf('/') + 1)
+				if(params.indexOf("#access_token") >= 0) {
+					authToken.value = params.split('=')[1].split('&')[0]
+					console.log(authToken.value)
+				}
+				pageStack.pop()
 			}
 			else
 				request.action = SilicaWebView.AcceptRequest;

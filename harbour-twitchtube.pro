@@ -16,7 +16,8 @@ CONFIG += sailfishapp
 
 SOURCES += \
     src/harbour-twitchtube.cpp \
-    src/ircchat.cpp
+    src/ircchat.cpp \
+    src/tools.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -45,5 +46,6 @@ CONFIG += sailfishapp_i18n
 #TRANSLATIONS += translations/harbour-twitchtube-ru.ts
 
 HEADERS += \
-    src/ircchat.h
+    src/ircchat.h \
+    src/tools.h
 

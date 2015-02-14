@@ -22,10 +22,13 @@
 #endif
 
 #include <sailfishapp.h>
+
 #include <QtQml>
 #include <QGuiApplication>
 #include <QQuickView>
+
 #include "ircchat.h"
+#include "tools.h"
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +44,8 @@ int main(int argc, char *argv[])
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
+	Tools* t = new Tools();
+	view->rootContext()->setContextProperty("tools", t);
 	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
 	return app->exec();
