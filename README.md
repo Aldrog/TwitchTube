@@ -15,6 +15,7 @@ Video should work but I can't be sure as it doesn't work either on an emulator o
 
 TODO
 ----
+- Add some functionality to multitasking cover
 - Improve followings page
 - Improve settings page
 - Add broadcast titles (maybe optional, like in android version)
