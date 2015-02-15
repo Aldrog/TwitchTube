@@ -13,8 +13,8 @@ Name:       harbour-twitchtube
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Twitch.tv client for Sailfish
-Version:    0.2.1
-Release:    2
+Version:    0.2
+Release:    5
 Group:      Qt/Qt
 License:    GPLv3
 URL:        https://github.com/Aldrog/TwitchTube
@@ -22,6 +22,7 @@ Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-twitchtube.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   gstreamer0.10-ffmpeg
+Requires:   gst-plugins-bad
 Requires:   qt5-qtmultimedia-plugin-playlistformats-m3u
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
