@@ -24,7 +24,7 @@ import "scripts/httphelper.js" as HTTP
 
 Dialog {
 	id: page
-	allowedOrientations: Orientation.All
+	allowedOrientations: Orientation.Portrait
 
 	property var imageSizes: ["large", "medium", "small"]
 	property string name

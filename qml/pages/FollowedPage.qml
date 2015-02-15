@@ -25,6 +25,7 @@ import "scripts/httphelper.js" as HTTP
 
 Page {
 	id: page
+	allowedOrientations: Orientation.All
 
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations

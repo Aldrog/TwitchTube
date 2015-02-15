@@ -45,12 +45,12 @@
 <context>
     <name>FollowedPage</name>
     <message>
-        <location filename="../qml/pages/FollowedPage.qml" line="56"/>
+        <location filename="../qml/pages/FollowedPage.qml" line="57"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/FollowedPage.qml" line="71"/>
+        <location filename="../qml/pages/FollowedPage.qml" line="72"/>
         <source>Followed Streams</source>
         <translation type="unfinished"></translation>
     </message>
