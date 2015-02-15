@@ -103,6 +103,7 @@ Page {
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: video.bottom
+			anchors.margins: Theme.paddingSmall
 			placeholderText: qsTr("Chat here")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
@@ -131,7 +132,9 @@ Page {
 					width: chat.width
 					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
 						  "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
-						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize)
+						  (nick ? "" : ("<font color=" + Theme.highlightColor + ">")) +
+						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
+						  (nick ? "" : "</font>")
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
 
@@ -169,7 +172,7 @@ Page {
 
 				Component.onCompleted: {
 					if(authToken.value === "")
-						messages.insert(0, { message: "You need to login to be able to use chat." })
+						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
 
