@@ -1,18 +1,18 @@
 Name: harbour-twitchtube
 Summary: Twitch.tv client for Sailfish
-Version: 0.1
-Release: 1
+Version: 0.2
+Release: 2
 # The contents of the Group field should be one of the groups listed here:
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
 Group: Qt/Qt
-URL: http://example.org/
-License: LICENSE
+URL: https://github.com/Aldrog/TwitchTube
+License: GPLv3
 # This must be generated before uploading a package to a remote build service.
 # Usually this line does not need to be modified.
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |
-  Short description of my SailfishOS Application
+  Twitch.tv client for Sailfish OS
 Configure: none
 # The qtc5 builder inserts macros to allow QtCreator to have fine
 # control over qmake/make execution
@@ -25,6 +25,7 @@ PkgConfigBR:
   - Qt5Core
   - Qt5Qml
   - Qt5Quick
+  - Qt5Multimedia
 
 # Build dependencies without a pkgconfig setup can be listed here
 # PkgBR:
@@ -33,6 +34,8 @@ PkgConfigBR:
 # Runtime dependencies which are not automatically detected
 Requires:
   - sailfishsilica-qt5 >= 0.10.9 
+  - gstreamer0.10-ffmpeg
+  - qt5-qtmultimedia-plugin-playlistformats-m3u
 
 # All installed files
 Files:
