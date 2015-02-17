@@ -88,12 +88,29 @@ Page {
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
 			autoPlay: true
 			source: showStream ? url[streamQuality.value] : ""
+
+			onPaused: {
+				console.log("video has paused, resuming")
+				play()
+			}
+			onStopped: {
+				console.log("video has stopped, resuming")
+				play()
+			}
+
+			onErrorChanged: console.error("video error:", errorString)
+
+			onPlaybackStateChanged: console.log("video status changed to", playbackState)
+			onAvailabilityChanged: console.log("video availability changed to", availability)
+
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
-					console.log("video height: ", video.height)
-					console.log("starting")
-					video.play()
+					console.log("video height:", video.height)
+					console.log("video status:", video.playbackState)
+					console.log("video availability:", video.availability)
+					console.log("video buffer:", video.bufferProgress)
+					console.log("video error:", video.errorString)
 				}
 			}
 		}

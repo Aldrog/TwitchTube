@@ -206,12 +206,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="107"/>
+        <location filename="../qml/pages/StreamPage.qml" line="124"/>
         <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="108"/>
+        <location filename="../qml/pages/StreamPage.qml" line="125"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
