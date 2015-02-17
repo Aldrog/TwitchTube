@@ -33,12 +33,12 @@ OTHER_FILES += \
     qml/harbour-twitchtube.qml \
     harbour-twitchtube.desktop \
     harbour-twitchtube.png \
-    rpm/harbour-twitchtube.changes.in \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
     qml/pages/scripts/chathelper.js \
     qml/pages/elements/Categories.qml \
-    qml/pages/QualityChooserPage.qml
+    qml/pages/QualityChooserPage.qml \
+    rpm/harbour-twitchtube.changes
 
 # to disable building translations every time, comment out the
 # following CONFIG line
