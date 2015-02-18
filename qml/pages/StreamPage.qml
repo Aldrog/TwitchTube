@@ -155,7 +155,12 @@ Page {
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
 
-					Component.onCompleted: console.log("nick:", nick)
+					Component.onCompleted: {
+						if(messages.count >= 500) {
+							console.log("too many messages, deleting the oldest one")
+							messages.remove(messages.count - 1)
+						}
+					}
 				}
 			}
 
