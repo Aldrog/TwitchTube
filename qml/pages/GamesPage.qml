@@ -85,42 +85,17 @@ Page {
 
 			Image {
 				id: logo
+				anchors.fill: parent
+				anchors.margins: Theme.paddingSmall
 				fillMode: Image.PreserveAspectCrop
 				source: game.box[posterSize.value]
-				anchors {
-					fill: parent
-					leftMargin: Theme.paddingSmall
-					rightMargin: Theme.paddingSmall
-					topMargin: Theme.paddingSmall
-					bottomMargin: Theme.paddingSmall
-				}
-				visible: false
 			}
 
-			ShaderEffect {
-				anchors.fill: logo
-				property variant src: logo
-				property real h: 2 * name.height/height
-				vertexShader: "
-					uniform highp mat4 qt_Matrix;
-					attribute highp vec4 qt_Vertex;
-					attribute highp vec2 qt_MultiTexCoord0;
-					varying highp vec2 coord;
-					void main() {
-						coord = qt_MultiTexCoord0;
-						gl_Position = qt_Matrix * qt_Vertex;
-					}"
-				fragmentShader: "
-					varying highp vec2 coord;
-					uniform sampler2D src;
-					uniform lowp float h;
-					uniform lowp float qt_Opacity;
-					void main() {
-						lowp vec4 tex = texture2D(src, coord);
-						if(coord.y <= h)
-							tex = vec4((tex.rgb)*(coord.y/(h)), coord.y/(h));
-						gl_FragColor = tex * qt_Opacity;
-					}"
+			OpacityRampEffect {
+				sourceItem: logo
+				direction: OpacityRamp.BottomToTop
+				offset: 0.75
+				slope: 4.0
 			}
 
 			Label {
