@@ -32,12 +32,12 @@
 <context>
     <name>ChannelsPage</name>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="61"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="82"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/ChannelsPage.qml" line="76"/>
+        <location filename="../qml/pages/ChannelsPage.qml" line="90"/>
         <source>Live Channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -45,12 +45,12 @@
 <context>
     <name>FollowedPage</name>
     <message>
-        <location filename="../qml/pages/FollowedPage.qml" line="57"/>
+        <location filename="../qml/pages/FollowedPage.qml" line="74"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/FollowedPage.qml" line="72"/>
+        <location filename="../qml/pages/FollowedPage.qml" line="82"/>
         <source>Followed Streams</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,12 +58,12 @@
 <context>
     <name>GamesPage</name>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="58"/>
+        <location filename="../qml/pages/GamesPage.qml" line="75"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/GamesPage.qml" line="73"/>
+        <location filename="../qml/pages/GamesPage.qml" line="83"/>
         <source>Popular Games</source>
         <translation type="unfinished"></translation>
     </message>
@@ -117,7 +117,12 @@
 <context>
     <name>SearchPage</name>
     <message>
-        <location filename="../qml/pages/SearchPage.qml" line="58"/>
+        <location filename="../qml/pages/SearchPage.qml" line="75"/>
+        <source>Load more</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SearchPage.qml" line="85"/>
         <source>Search channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -206,12 +211,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="124"/>
+        <location filename="../qml/pages/StreamPage.qml" line="165"/>
         <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="125"/>
+        <location filename="../qml/pages/StreamPage.qml" line="166"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>

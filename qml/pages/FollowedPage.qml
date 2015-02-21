@@ -30,7 +30,8 @@ Page {
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*3)*3
-	property string nextlink
+	property int offset: 0
+	property int totalCount: 0
 
 	ConfigurationValue {
 		id: previewSize
@@ -44,6 +45,20 @@ Page {
 		defaultValue: ""
 	}
 
+	function loadChannels() {
+		var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
+		console.log(url)
+		HTTP.getRequest(url,function(data) {
+			if (data) {
+				offset += countOnPage
+				var result = JSON.parse(data)
+				totalCount = result._total
+				for (var i in result.streams)
+					streamList.append(result.streams[i])
+			}
+		})
+	}
+
 	SilicaGridView {
 		id: gridChannels
 		anchors.fill: parent
@@ -53,17 +68,12 @@ Page {
 		}
 
 		PushUpMenu {
+			visible: offset < totalCount
+
 			MenuItem {
 				text: qsTr("Load more")
 				onClicked: {
-					HTTP.getRequest(nextlink,function(data) {
-						if (data) {
-							var result = JSON.parse(data)
-							nextlink = result._links.next
-							for (var i in result.streams)
-								streamList.append(result.streams[i])
-						}
-					})
+					loadChannels()
 				}
 			}
 		}
@@ -114,15 +124,6 @@ Page {
 	}
 
 	Component.onCompleted: {
-		var url = "https://api.twitch.tv/kraken/streams/followed?oauth_token=" + authToken.value + "&limit=" + countOnPage
-		console.log(url)
-		HTTP.getRequest(url,function(data) {
-			if (data) {
-				var result = JSON.parse(data)
-				nextlink = result._links.next
-				for (var i in result.streams)
-					streamList.append(result.streams[i])
-			}
-		})
+		loadChannels()
 	}
 }

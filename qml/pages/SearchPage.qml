@@ -30,6 +30,8 @@ Page {
 	property int row: isPortrait ? 2 : 3
 	//in brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*3)*2
+	property int offset: 0
+	property int totalCount: 0
 
 	ConfigurationValue {
 		id: previewSize
@@ -43,6 +45,20 @@ Page {
 		defaultValue: ""
 	}
 
+	function loadChannels(querry) {
+		var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
+		console.log(url)
+		HTTP.getRequest(url,function(data) {
+			if (data) {
+				offset += countOnPage
+				var result = JSON.parse(data)
+				totalCount = result._total
+				for (var i in result.streams)
+					resultList.append(result.streams[i])
+			}
+		})
+	}
+
 	SilicaGridView {
 		id: gridResults
 		anchors.fill: parent
@@ -52,22 +68,25 @@ Page {
 			following: authToken.value
 		}
 
+		PushUpMenu {
+			visible: offset < totalCount
+
+			MenuItem {
+				text: qsTr("Load more")
+				onClicked: {
+					loadChannels(gridResults.headerItem.text)
+				}
+			}
+		}
+
 		header: SearchField {
 			id: searchQuerry
 			width: parent.width
 			placeholderText: qsTr("Search channels")
 			onTextChanged: {
 				resultList.clear()
-				var url = "https://api.twitch.tv/kraken/search/streams?q=" + encodeURI(text) + "&limit=" + countOnPage
-				console.log(url)
-				HTTP.getRequest(url,function(data) {
-					if (data) {
-						var result = JSON.parse(data)
-						//nextlink = result._links.next
-						for (var i in result.streams)
-							resultList.append(result.streams[i])
-					}
-				})
+				offset = 0
+				loadChannels(text)
 			}
 		}
 

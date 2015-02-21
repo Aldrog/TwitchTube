@@ -100,18 +100,59 @@ Page {
 
 			onErrorChanged: console.error("video error:", errorString)
 
-			onPlaybackStateChanged: console.log("video status changed to", playbackState)
-			onAvailabilityChanged: console.log("video availability changed to", availability)
+			onPlaybackStateChanged: {
+				logState()
+			}
+			onAvailabilityChanged: {
+				logAvailability()
+			}
 
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
 					console.log("video height:", video.height)
-					console.log("video status:", video.playbackState)
-					console.log("video availability:", video.availability)
+					parent.logState()
+					parent.logAvailability()
 					console.log("video buffer:", video.bufferProgress)
 					console.log("video error:", video.errorString)
 				}
+			}
+
+			function logAvailability() {
+				var av
+				switch (availability) {
+				case MediaPlayer.Available:
+					state = "available"
+					break
+				case MediaPlayer.Busy:
+					state = "busy"
+					break
+				case MediaPlayer.Unavailable:
+					state = "unavailable"
+					break
+				case MediaPlayer.ResourceMissing:
+					state = "missing resource"
+					break
+				}
+
+				console.log("video availability:", av)
+			}
+
+			function logState() {
+				var state
+				switch (playbackState) {
+				case MediaPlayer.PlayingState:
+					state = "playing"
+					break
+				case MediaPlayer.PausedState:
+					state = "paused"
+					break
+				case MediaPlayer.StoppedState:
+					state = "stopped"
+					break
+				}
+
+				console.log("video state:", state)
 			}
 		}
 

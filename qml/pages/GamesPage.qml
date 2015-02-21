@@ -30,7 +30,8 @@ Page {
 	property int row: isPortrait ? 2 : 4
 	// In brackets should be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*4)*2
-	property string nextlink
+	property int offset: 0
+	property int totalCount: 0
 
 	ConfigurationValue {
 		id: posterSize
@@ -44,6 +45,20 @@ Page {
 		defaultValue: ""
 	}
 
+	function loadGames() {
+		var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+		console.log(url)
+		HTTP.getRequest(url,function(data) {
+			if (data) {
+				offset += countOnPage
+				var result = JSON.parse(data)
+				totalCount = result._total
+				for (var i in result.top)
+					gameList.append(result.top[i])
+			}
+		})
+	}
+
 	SilicaGridView {
 		id: gridGames
 		anchors.fill: parent
@@ -54,17 +69,12 @@ Page {
 		}
 
 		PushUpMenu {
+			visible: offset < totalCount
+
 			MenuItem {
 				text: qsTr("Load more")
 				onClicked: {
-					HTTP.getRequest(nextlink,function(data) {
-						if (data) {
-							var result = JSON.parse(data)
-							nextlink = result._links.next
-							for (var i in result.top)
-								gameList.append(result.top[i])
-						}
-					})
+					loadGames()
 				}
 			}
 		}
@@ -116,14 +126,7 @@ Page {
     }
 
 	Component.onCompleted: {
-		HTTP.getRequest("https://api.twitch.tv/kraken/games/top?limit="+countOnPage, function (data) {
-			if (data) {
-				var result = JSON.parse(data)
-				nextlink = result._links.next
-				for (var i in result.top)
-					gameList.append(result.top[i])
-			}
-		})
+		loadGames()
 	}
 }
 
