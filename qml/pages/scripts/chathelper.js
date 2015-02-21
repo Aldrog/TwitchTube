@@ -86,6 +86,8 @@ function rmSpec(name, spec) {
 
 function parseBadges(name) {
 	var res = ""
+	if(name === channel)
+		res += "<img src='" + spec_icons.broadcaster.image + "'/> "
 	for(var i in user_specs[name]) {
 		console.log(i)
 		res += "<img src='" + spec_icons[i].image + "'/> "

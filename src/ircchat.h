@@ -31,26 +31,30 @@ class IrcChat : public QObject
 {
 	Q_OBJECT
 public:
-	QString nick, ircpass;
 	Q_PROPERTY(QString name MEMBER nick)
 	Q_PROPERTY(QString pass MEMBER ircpass)
+	Q_PROPERTY(bool available MEMBER connected NOTIFY stateChanged)
 
 	IrcChat();
 	~IrcChat();
 
 	Q_INVOKABLE void join(const QString channel);
+	Q_INVOKABLE void reopenSocket();
 signals:
 	void messageReceived(QString sndnick, QString msg);
 	void colorReceived(QString nick, QString color);
 	void specReceived(QString nick, QString type);
 	void specRemoved(QString nick, QString type);
 	void errorOccured(QString errorDescription);
+	void stateChanged();
 public slots:
 	void sendMessage(const QString &msg);
 private slots:
 	void receive();
 	void processError(QAbstractSocket::SocketError socketError);
 private:
+	QString nick, ircpass;
+	bool connected;
 	QTcpSocket *sock;
 	QString room;
 	bool motdended;

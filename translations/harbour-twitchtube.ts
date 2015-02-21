@@ -220,5 +220,10 @@
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="234"/>
+        <source>Chat error, reconnecting</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

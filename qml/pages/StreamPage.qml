@@ -165,7 +165,7 @@ Page {
 			placeholderText: qsTr("Chat here")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-			EnterKey.enabled: text.length > 0 && authToken.value !== ""
+			EnterKey.enabled: text.length > 0 && twitchChat.available
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
 				CH.parseEmoticons(username, text)
@@ -212,10 +212,8 @@ Page {
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
 					console.log("message: ", msg)
-					//if(sndnick)
-						CH.parseEmoticons(sndnick, msg)
-					//else
-					//	messages.insert(0, {nick: '', badges: '', nick_color: undefined, message: msg})
+
+					CH.parseEmoticons(sndnick, msg)
 				}
 
 				onColorReceived: {
@@ -231,13 +229,18 @@ Page {
 					CH.rmSpec(nick, type)
 				}
 
-				onErrorOccured: console.log("Socket error: ", errorDescription)
+				onErrorOccured: {
+					console.log("Socket error: ", errorDescription)
+					reconnect.execute(chat, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+				}
 
 				Component.onCompleted: {
 					if(authToken.value === "")
 						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
+
+			RemorseItem { id: reconnect }
 
 			VerticalScrollDecorator { flickable: chat }
 		}

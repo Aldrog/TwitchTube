@@ -20,17 +20,20 @@
 #include "ircchat.h"
 
 IrcChat::IrcChat() {
+	connected = false;
+
 	sock = new QTcpSocket(this);
+	if(sock) {
+		errorOccured("Error opening socket");
+	}
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
-	room = "";
-	motdended = false;
+	sock->connectToHost(HOST, PORT);
 }
 
 IrcChat::~IrcChat() { sock->close(); }
 
 void IrcChat::join(const QString channel) {
-	sock->connectToHost(HOST, PORT);
 	// Tell server that we support twitch-specific commands
 	sock->write("TWITCHCLIENT 2\n");
 	// Login
@@ -40,6 +43,18 @@ void IrcChat::join(const QString channel) {
 	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
 	// Save channel name for later use
 	room = channel;
+	motdended = false;
+}
+
+void IrcChat::reopenSocket() {
+	sock->close();
+	sock = new QTcpSocket(this);
+	if(sock) {
+		errorOccured("Error opening socket");
+	}
+	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
+	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
+	sock->connectToHost(HOST, PORT);
 }
 
 void IrcChat::sendMessage(const QString &msg) {
@@ -119,6 +134,9 @@ void IrcChat::parseCommand(QString cmd) {
 	}
 	if(cmd.startsWith("HISTORYEND")) {
 		motdended = true;
+		connected = true;
+		// You receive HISTORYEND only once after connecting so there's no checking before stateChanged
+		stateChanged();
 		return;
 	}
 	if(cmd.startsWith(":tmi.twitch.tv")) {
@@ -148,5 +166,9 @@ void IrcChat::processError(QAbstractSocket::SocketError socketError) {
 		err = "Unknown error.";
 	}
 
+	if(connected) {
+		connected = false;
+		stateChanged();
+	}
 	errorOccured(err);
 }
