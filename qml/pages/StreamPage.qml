@@ -21,6 +21,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import org.nemomobile.configuration 1.0
+import harbour.twitchtube.gstreamer 1.0
 import harbour.twitchtube.ircchat 1.0
 import "scripts/httphelper.js" as HTTP
 import "scripts/chathelper.js" as CH
@@ -77,84 +78,96 @@ Page {
 					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream })
 					dialog.accepted.connect(function() {
 						showStream = !dialog.chatOnly
+						if(!showStream)
+							player.stop()
 					})
 				}
 			}
 		}
 
-		Video {
-			id: video
-			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			autoPlay: true
-			source: showStream ? url[streamQuality.value] : ""
+        VideoOutput {
+            id: video
+            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+            height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+            source: GstPlayer {
+                id: player
+				source: url[streamQuality.value]
+            }
+        }
 
-			onPaused: {
-				console.log("video has paused, resuming")
-				play()
-			}
-			onStopped: {
-				console.log("video has stopped, resuming")
-				play()
-			}
+//		Video {
+//			id: video
+//			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+//			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+//			autoPlay: true
+//			source: showStream ? url[streamQuality.value] : ""
 
-			onErrorChanged: console.error("video error:", errorString)
+//			onPaused: {
+//				console.log("video has paused, resuming")
+//				play()
+//			}
+//			onStopped: {
+//				console.log("video has stopped, resuming")
+//				play()
+//			}
 
-			onPlaybackStateChanged: {
-				logState()
-			}
-			onAvailabilityChanged: {
-				logAvailability()
-			}
+//			onErrorChanged: console.error("video error:", errorString)
 
-			MouseArea {
-				anchors.fill: parent
-				onClicked: {
-					console.log("video height:", video.height)
-					parent.logState()
-					parent.logAvailability()
-					console.log("video buffer:", video.bufferProgress)
-					console.log("video error:", video.errorString)
-				}
-			}
+//			onPlaybackStateChanged: {
+//				logState()
+//			}
+//			onAvailabilityChanged: {
+//				logAvailability()
+//			}
 
-			function logAvailability() {
-				var av
-				switch (availability) {
-				case MediaPlayer.Available:
-					state = "available"
-					break
-				case MediaPlayer.Busy:
-					state = "busy"
-					break
-				case MediaPlayer.Unavailable:
-					state = "unavailable"
-					break
-				case MediaPlayer.ResourceMissing:
-					state = "missing resource"
-					break
-				}
+//			MouseArea {
+//				anchors.fill: parent
+//				onClicked: {
+//					console.log("video height:", video.height)
+//					parent.logState()
+//					parent.logAvailability()
+//					console.log("video buffer:", video.bufferProgress)
+//					console.log("video error:", video.errorString)
+//				}
+//			}
 
-				console.log("video availability:", av)
-			}
+//			function logAvailability() {
+//				var av
+//				switch (availability) {
+//				case MediaPlayer.Available:
+//					state = "available"
+//					break
+//				case MediaPlayer.Busy:
+//					state = "busy"
+//					break
+//				case MediaPlayer.Unavailable:
+//					state = "unavailable"
+//					break
+//				case MediaPlayer.ResourceMissing:
+//					state = "missing resource"
+//					break
+//				}
 
-			function logState() {
-				var state
-				switch (playbackState) {
-				case MediaPlayer.PlayingState:
-					state = "playing"
-					break
-				case MediaPlayer.PausedState:
-					state = "paused"
-					break
-				case MediaPlayer.StoppedState:
-					state = "stopped"
-					break
-				}
+//				console.log("video availability:", av)
+//			}
 
-				console.log("video state:", state)
-			}
-		}
+//			function logState() {
+//				var state
+//				switch (playbackState) {
+//				case MediaPlayer.PlayingState:
+//					state = "playing"
+//					break
+//				case MediaPlayer.PausedState:
+//					state = "paused"
+//					break
+//				case MediaPlayer.StoppedState:
+//					state = "stopped"
+//					break
+//				}
+
+//				console.log("video state:", state)
+//			}
+//		}
 
 		TextField {
 			id: chatMessage
@@ -248,8 +261,10 @@ Page {
 
 	function searchURL(s, q) {
 		for (var x in s) {
-			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
+			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0) {
+				console.log("Detected video url", s[x])
 				return s[x]
+			}
 		}
 	}
 
@@ -259,14 +274,15 @@ Page {
 				var token = JSON.parse(tokendata)
 				HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
 					if (data) {
-						var video = data.split('\n')
+                        var videourls = data.split('\n')
 						url = {
-							chunked: searchURL(video, "chunked"),
-							high: searchURL(video, "high"),
-							medium: searchURL(video, "medium"),
-							low: searchURL(video, "low"),
-							mobile: searchURL(video, "mobile")
+                            chunked: searchURL(videourls, "chunked"),
+                            high: searchURL(videourls, "high"),
+                            medium: searchURL(videourls, "medium"),
+                            low: searchURL(videourls, "low"),
+                            mobile: searchURL(videourls, "mobile")
 						}
+                        player.play()
 					}
 				})
 			}

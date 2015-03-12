@@ -17,7 +17,8 @@ CONFIG += sailfishapp
 SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
-    src/tools.cpp
+    src/tools.cpp \
+    src/gstplayer.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -47,5 +48,8 @@ CONFIG += sailfishapp_i18n
 
 HEADERS += \
     src/ircchat.h \
-    src/tools.h
+    src/tools.h \
+    src/gstplayer.h
 
+
+unix: PKGCONFIG += gstreamer-1.0

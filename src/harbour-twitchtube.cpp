@@ -26,12 +26,16 @@
 #include <QtQml>
 #include <QGuiApplication>
 #include <QQuickView>
+#include <gst/gst.h>
 
 #include "ircchat.h"
+#include "gstplayer.h"
 #include "tools.h"
 
 int main(int argc, char *argv[])
 {
+    gst_init(&argc, &argv);
+
     // SailfishApp::main() will display "qml/template.qml", if you need more
     // control over initialization, you can use:
     //
@@ -43,12 +47,11 @@ int main(int argc, char *argv[])
 
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
+    qmlRegisterType<GstPlayer>("harbour.twitchtube.gstreamer", 1, 0, "GstPlayer");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
 	Tools* t = new Tools();
 	view->rootContext()->setContextProperty("tools", t);
 	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
-	return app->exec();
-
-//	return SailfishApp::main(argc, argv);
+    return app->exec();
 }
