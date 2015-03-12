@@ -196,32 +196,32 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="57"/>
+        <location filename="../qml/pages/StreamPage.qml" line="58"/>
         <source>Follow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="66"/>
+        <location filename="../qml/pages/StreamPage.qml" line="67"/>
         <source>Unfollow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="75"/>
+        <location filename="../qml/pages/StreamPage.qml" line="76"/>
         <source>Quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="165"/>
+        <location filename="../qml/pages/StreamPage.qml" line="176"/>
         <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="166"/>
+        <location filename="../qml/pages/StreamPage.qml" line="177"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="234"/>
+        <location filename="../qml/pages/StreamPage.qml" line="245"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

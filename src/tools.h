@@ -10,7 +10,7 @@ class Tools : public QObject
 {
 	Q_OBJECT
 public:
-	Tools();
+	explicit Tools(QObject *parent = 0);
 	~Tools();
 
 	Q_INVOKABLE int clearCookies();

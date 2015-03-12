@@ -2,7 +2,7 @@
 
 /* Return codes:
  * 0 - success
- * 1 - cache doesn't exists
+ * 1 - cache doesn't exist
  * -1 - cannot delete cache
  * -2 - failed to find cache directory
  */
@@ -22,5 +22,5 @@ int Tools::clearCookies() {
 	return -2;
 }
 
-Tools::Tools() { }
+Tools::Tools(QObject *parent) :	QObject(parent) { }
 Tools::~Tools() { }

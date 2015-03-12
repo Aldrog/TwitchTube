@@ -35,7 +35,7 @@ public:
 	Q_PROPERTY(QString pass MEMBER ircpass)
 	Q_PROPERTY(bool available MEMBER connected NOTIFY stateChanged)
 
-	IrcChat();
+	explicit IrcChat(QObject *parent = 0);
 	~IrcChat();
 
 	Q_INVOKABLE void join(const QString channel);

@@ -19,7 +19,8 @@
 
 #include "ircchat.h"
 
-IrcChat::IrcChat() {
+IrcChat::IrcChat(QObject *parent) :
+	QObject(parent) {
 	connected = false;
 
 	sock = new QTcpSocket(this);
@@ -28,12 +29,12 @@ IrcChat::IrcChat() {
 	}
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
-	sock->connectToHost(HOST, PORT);
 }
 
 IrcChat::~IrcChat() { sock->close(); }
 
 void IrcChat::join(const QString channel) {
+	sock->connectToHost(HOST, PORT);
 	// Tell server that we support twitch-specific commands
 	sock->write("TWITCHCLIENT 2\n");
 	// Login
