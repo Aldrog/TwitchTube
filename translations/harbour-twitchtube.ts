@@ -43,6 +43,14 @@
     </message>
 </context>
 <context>
+    <name>CoverPage</name>
+    <message>
+        <location filename="../qml/cover/CoverPage.qml" line="26"/>
+        <source>TwitchTube</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FollowedPage</name>
     <message>
         <location filename="../qml/pages/FollowedPage.qml" line="74"/>
