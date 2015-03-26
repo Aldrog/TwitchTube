@@ -86,7 +86,6 @@ Page {
 			id: video
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			autoPlay: true
 			source: showStream ? url[streamQuality.value] : ""
 
 			onPaused: {
@@ -259,14 +258,15 @@ Page {
 				var token = JSON.parse(tokendata)
 				HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
 					if (data) {
-						var video = data.split('\n')
+						var videourls = data.split('\n')
 						url = {
-							chunked: searchURL(video, "chunked"),
-							high: searchURL(video, "high"),
-							medium: searchURL(video, "medium"),
-							low: searchURL(video, "low"),
-							mobile: searchURL(video, "mobile")
+							chunked: searchURL(videourls, "chunked"),
+							high: searchURL(videourls, "high"),
+							medium: searchURL(videourls, "medium"),
+							low: searchURL(videourls, "low"),
+							mobile: searchURL(videourls, "mobile")
 						}
+						video.play()
 					}
 				})
 			}
