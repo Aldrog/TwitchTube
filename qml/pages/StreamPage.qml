@@ -47,12 +47,33 @@ Page {
 		defaultValue: "medium"
 	}
 
+	states: State {
+		name: "fullscreen"
+		PropertyChanges {
+			target: main
+			contentHeight: page.height
+		}
+
+		PropertyChanges {
+			target: streamMenu
+			visible: false
+			active: false
+		}
+
+		PropertyChanges {
+			target: page
+			showNavigationIndicator: false; backNavigation: false
+			allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
+		}
+	}
+
 	SilicaFlickable {
 		id: main
 		anchors.fill: parent
 		contentHeight: isPortrait ? height : height + Screen.width
 
 		PullDownMenu {
+			id: streamMenu
 			MenuItem {
 				text: qsTr("Follow")
 				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
@@ -109,6 +130,11 @@ Page {
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
+					if(page.state == "")
+						page.state = "fullscreen"
+					else
+						page.state = ""
+
 					console.log("video height:", video.height)
 					parent.logState()
 					parent.logAvailability()
