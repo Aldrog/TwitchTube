@@ -1,7 +1,7 @@
 Name: harbour-twitchtube
 Summary: Twitch.tv client for Sailfish
-Version: 0.2.1
-Release: 3
+Version: 0.2.99
+Release: 1
 # The contents of the Group field should be one of the groups listed here:
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
 Group: Applications/Multimedia
@@ -27,6 +27,10 @@ PkgConfigBR:
   - Qt5Quick
   - Qt5Multimedia
   - gstreamer-1.0
+  - gstreamer-video-1.0
+  - gstreamer-plugins-base-1.0
+  - nemo-gstreamer-interfaces-1.0
+  - nemo-gstreamer-meta-1.0
 
 # Build dependencies without a pkgconfig setup can be listed here
 # PkgBR:
@@ -36,6 +40,12 @@ PkgConfigBR:
 Requires:
   - sailfishsilica-qt5 >= 0.10.9
   - gstreamer1.0
+  # For souphttpsrc
+  - gst1.0-plugins-good
+  # For hls and h264 decoders
+  - gst1.0-plugins-bad
+  # For mpeg decoder
+  - gst1.0-av
 
 # All installed files
 Files:

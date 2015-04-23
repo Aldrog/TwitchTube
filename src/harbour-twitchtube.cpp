@@ -29,7 +29,7 @@
 #include <gst/gst.h>
 
 #include "ircchat.h"
-#include "gstplayer.h"
+#include "videoplayer.h"
 #include "tools.h"
 
 int main(int argc, char *argv[])
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
-    qmlRegisterType<GstPlayer>("harbour.twitchtube.gstreamer", 1, 0, "GstPlayer");
+	qmlRegisterType<VideoPlayer>("harbour.twitchtube.gstreamer", 1, 0, "VideoPlayer");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
 	Tools* t = new Tools();
 	view->rootContext()->setContextProperty("tools", t);

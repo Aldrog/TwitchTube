@@ -85,89 +85,12 @@ Page {
 			}
 		}
 
-        VideoOutput {
-            id: video
-            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-            height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-            source: GstPlayer {
-                id: player
-				source: url[streamQuality.value]
-            }
-        }
-
-//		Video {
-//			id: video
-//			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-//			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-//			autoPlay: true
-//			source: showStream ? url[streamQuality.value] : ""
-
-//			onPaused: {
-//				console.log("video has paused, resuming")
-//				play()
-//			}
-//			onStopped: {
-//				console.log("video has stopped, resuming")
-//				play()
-//			}
-
-//			onErrorChanged: console.error("video error:", errorString)
-
-//			onPlaybackStateChanged: {
-//				logState()
-//			}
-//			onAvailabilityChanged: {
-//				logAvailability()
-//			}
-
-//			MouseArea {
-//				anchors.fill: parent
-//				onClicked: {
-//					console.log("video height:", video.height)
-//					parent.logState()
-//					parent.logAvailability()
-//					console.log("video buffer:", video.bufferProgress)
-//					console.log("video error:", video.errorString)
-//				}
-//			}
-
-//			function logAvailability() {
-//				var av
-//				switch (availability) {
-//				case MediaPlayer.Available:
-//					state = "available"
-//					break
-//				case MediaPlayer.Busy:
-//					state = "busy"
-//					break
-//				case MediaPlayer.Unavailable:
-//					state = "unavailable"
-//					break
-//				case MediaPlayer.ResourceMissing:
-//					state = "missing resource"
-//					break
-//				}
-
-//				console.log("video availability:", av)
-//			}
-
-//			function logState() {
-//				var state
-//				switch (playbackState) {
-//				case MediaPlayer.PlayingState:
-//					state = "playing"
-//					break
-//				case MediaPlayer.PausedState:
-//					state = "paused"
-//					break
-//				case MediaPlayer.StoppedState:
-//					state = "stopped"
-//					break
-//				}
-
-//				console.log("video state:", state)
-//			}
-//		}
+		VideoPlayer {
+			id: video
+			source: url[streamQuality.value]
+			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+		}
 
 		TextField {
 			id: chatMessage
@@ -262,7 +185,7 @@ Page {
 	function searchURL(s, q) {
 		for (var x in s) {
 			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0) {
-				console.log("Detected video url", s[x])
+				console.log("Detected video url of", q, "quality:", s[x])
 				return s[x]
 			}
 		}
@@ -282,7 +205,7 @@ Page {
                             low: searchURL(videourls, "low"),
                             mobile: searchURL(videourls, "mobile")
 						}
-                        player.play()
+						video.play()
 					}
 				})
 			}

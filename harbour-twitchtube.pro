@@ -18,7 +18,8 @@ SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
     src/tools.cpp \
-    src/gstplayer.cpp
+    src/videoplayer.cpp \
+    src/qtviewfinderrenderer.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -50,7 +51,10 @@ CONFIG += sailfishapp_i18n
 HEADERS += \
     src/ircchat.h \
     src/tools.h \
-    src/gstplayer.h
+    src/videoplayer.h \
+    src/qtviewfinderrenderer.h
 
 
-unix: PKGCONFIG += gstreamer-1.0
+PKGCONFIG += gstreamer-1.0 gstreamer-video-1.0 nemo-gstreamer-interfaces-1.0 nemo-gstreamer-meta-1.0
+
+LIBS += -lEGL

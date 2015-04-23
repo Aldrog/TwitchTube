@@ -219,17 +219,116 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="178"/>
+        <location filename="../qml/pages/StreamPage.qml" line="101"/>
         <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="179"/>
+        <location filename="../qml/pages/StreamPage.qml" line="102"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="247"/>
+        <location filename="../qml/pages/StreamPage.qml" line="170"/>
+        <source>Chat error, reconnecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StreamPage_BASE_6512</name>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="78"/>
+        <source>Follow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="87"/>
+        <source>Unfollow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="96"/>
+        <source>Quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="190"/>
+        <source>Chat here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="191"/>
+        <source>Message to send</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_BASE_6512.qml" line="259"/>
+        <source>Chat error, reconnecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StreamPage_LOCAL_6512</name>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="58"/>
+        <source>Follow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="67"/>
+        <source>Unfollow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="76"/>
+        <source>Quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="178"/>
+        <source>Chat here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="179"/>
+        <source>Message to send</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_LOCAL_6512.qml" line="247"/>
+        <source>Chat error, reconnecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StreamPage_REMOTE_6512</name>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="78"/>
+        <source>Follow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="87"/>
+        <source>Unfollow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="96"/>
+        <source>Quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="190"/>
+        <source>Chat here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="191"/>
+        <source>Message to send</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage_REMOTE_6512.qml" line="259"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>
