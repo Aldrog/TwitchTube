@@ -4,27 +4,27 @@
 <context>
     <name>Categories</name>
     <message>
-        <location filename="../qml/pages/elements/Categories.qml" line="11"/>
+        <location filename="../qml/pages/elements/Categories.qml" line="30"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/Categories.qml" line="16"/>
+        <location filename="../qml/pages/elements/Categories.qml" line="35"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/Categories.qml" line="22"/>
+        <location filename="../qml/pages/elements/Categories.qml" line="41"/>
         <source>Following</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/Categories.qml" line="28"/>
+        <location filename="../qml/pages/elements/Categories.qml" line="47"/>
         <source>Channels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/Categories.qml" line="34"/>
+        <location filename="../qml/pages/elements/Categories.qml" line="53"/>
         <source>Games</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32,7 +32,7 @@
 <context>
     <name>ChannelsGrid</name>
     <message>
-        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="26"/>
+        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="46"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
@@ -54,6 +54,14 @@
     </message>
 </context>
 <context>
+    <name>FollowedGamesPage</name>
+    <message>
+        <location filename="../qml/pages/FollowedGamesPage.qml" line="62"/>
+        <source>Followed Games</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FollowedPage</name>
     <message>
         <location filename="../qml/pages/FollowedPage.qml" line="58"/>
@@ -64,7 +72,7 @@
 <context>
     <name>GamesGrid</name>
     <message>
-        <location filename="../qml/pages/elements/GamesGrid.qml" line="26"/>
+        <location filename="../qml/pages/elements/GamesGrid.qml" line="46"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>

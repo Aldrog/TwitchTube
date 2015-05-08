@@ -1,3 +1,22 @@
+/*
+ * Copyright © 2015 Andrew Penkrat
+ *
+ * This file is part of TwitchTube.
+ *
+ * TwitchTube is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TwitchTube is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
@@ -11,6 +30,7 @@ SilicaGridView {
 	property int offset: 0
 	property int totalCount: 0
 	property bool autoLoad: true
+	property var parameters: ({})
 
 	ConfigurationValue {
 		id: posterSize
@@ -39,14 +59,18 @@ SilicaGridView {
 		id: delegate
 		width: root.cellWidth
 		height: root.cellHeight
-		onClicked: pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"),{ game: game.name })
+		onClicked: {
+			var properties = parameters
+			properties.game = name
+			pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
+		}
 
 		Image {
 			id: logo
 			anchors.fill: parent
 			anchors.margins: Theme.paddingSmall
 			fillMode: Image.PreserveAspectCrop
-			source: game.box[posterSize.value]
+			source: box[posterSize.value]
 		}
 
 		OpacityRampEffect {
@@ -57,13 +81,13 @@ SilicaGridView {
 		}
 
 		Label {
-			id: name
+			id: gameName
 			anchors {
 				left: parent.left; leftMargin: Theme.paddingLarge
 				right: parent.right; rightMargin: Theme.paddingLarge
 				topMargin: Theme.paddingMedium
 			}
-			text: game.name
+			text: name
 			truncationMode: TruncationMode.Fade
 			color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
 			font.pixelSize: Theme.fontSizeSmall

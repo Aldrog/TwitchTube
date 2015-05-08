@@ -27,6 +27,8 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
+	property string username
+
 	ConfigurationValue {
 		id: authToken
 		key: "/apps/twitch/settings/oauthtoken"
@@ -35,30 +37,39 @@ Page {
 
 	GamesGrid {
 		id: gridGames
+		autoLoad: false
+		parameters: { "fromFollowings": true }
 
 		function loadGames() {
-			var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+			var url = "https://api.twitch.tv/api/users/" + username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
 			console.log(url)
 			HTTP.getRequest(url,function(data) {
 				if (data) {
 					offset += countOnPage
 					var result = JSON.parse(data)
 					totalCount = result._total
-					for (var i in result.top)
-						model.append(result.top[i].game)
+					for (var i in result.follows)
+						model.append(result.follows[i])
 				}
 			})
 		}
 
 		Categories {
-			games: false
-			following: authToken.value !== ""
+			following: false
 		}
 
 		header: PageHeader {
-			title: qsTr("Popular Games")
+			title: qsTr("Followed Games")
+		}
+	}
+
+	Component.onCompleted: {
+		if(authToken.value !== "") {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+				var user = JSON.parse(data)
+				username = user.name
+				gridGames.loadGames()
+			})
 		}
 	}
 }
-
-

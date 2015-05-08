@@ -45,7 +45,8 @@ OTHER_FILES += \
     qml/images/icon.png \
     qml/pages/elements/GamesGrid.qml \
     qml/pages/elements/ChannelsGrid.qml \
-    qml/pages/GameChannelsPage.qml
+    qml/pages/GameChannelsPage.qml \
+    qml/pages/FollowedGamesPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

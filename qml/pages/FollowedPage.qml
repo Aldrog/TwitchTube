@@ -58,4 +58,9 @@ Page {
 			title: qsTr("Followed Streams")
 		}
 	}
+
+	onStatusChanged: {
+		if(status === PageStatus.Active)
+			pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
+	}
 }
