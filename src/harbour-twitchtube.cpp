@@ -28,6 +28,7 @@
 #include <QQuickView>
 
 #include "ircchat.h"
+#include "qmlsettings.h"
 #include "tools.h"
 
 int main(int argc, char *argv[])
@@ -41,14 +42,15 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
+	QCoreApplication::setOrganizationName("Aldrog");
+	QCoreApplication::setApplicationName("TwitchTube");
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
+	qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Settings");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
 	Tools* t = new Tools();
 	view->rootContext()->setContextProperty("tools", t);
 	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
 	return app->exec();
-
-//	return SailfishApp::main(argc, argv);
 }

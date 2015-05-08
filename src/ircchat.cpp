@@ -63,7 +63,6 @@ void IrcChat::sendMessage(const QString &msg) {
 }
 
 void IrcChat::receive() {
-	//errorOccured("Connection from server, not error.");
 	QString msg;
 	while (sock->canReadLine()) {
 		msg = sock->readLine();
@@ -80,7 +79,7 @@ void IrcChat::parseCommand(QString cmd) {
 	}
 	if(cmd.contains("PRIVMSG")) {
 		if(cmd.startsWith(":jtv")) {
-			// Maintenence message
+			// Maintenance message
 			QString message = cmd.remove(0, cmd.indexOf(':', 1) + 1);
 			if(message.startsWith("USERCOLOR")) {
 				// Structure: USERCOLOR nick #C0DE

@@ -22,7 +22,7 @@ import Sailfish.Silica 1.0
 
 CoverBackground {
 	CoverPlaceholder {
-		icon.source: "icon.png"
+		icon.source: "../images/icon.png"
 		text: qsTr("TwitchTube")
 	}
 }

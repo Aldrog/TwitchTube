@@ -20,6 +20,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
+import harbour.twitchtube.settings 1.0
 import "scripts/httphelper.js" as HTTP
 
 Dialog {
@@ -52,7 +53,7 @@ Dialog {
 		anchors.fill: parent
 
 		DialogHeader {
-			title: qsTr("Twitch Settings")
+			title: qsTr("TwitchTube Settings")
 			acceptText: qsTr("Apply")
 			cancelText: qsTr("Cancel")
 		}

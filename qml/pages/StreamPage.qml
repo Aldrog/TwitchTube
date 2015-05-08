@@ -256,7 +256,7 @@ Page {
 
 				onErrorOccured: {
 					console.log("Socket error: ", errorDescription)
-					reconnect.execute(chat, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+					reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
 				}
 
 				Component.onCompleted: {
@@ -265,9 +265,16 @@ Page {
 				}
 			}
 
-			RemorseItem { id: reconnect }
+			Rectangle {
+				id: remorseContainer
+				anchors.top: parent.top
+				width: parent.width
+				height: Theme.itemSizeMedium
+				color: "transparent"
+				RemorseItem { id: reconnect }
+			}
 
-			VerticalScrollDecorator { flickable: chat }
+			VerticalScrollDecorator { flickable: chat; height: 100 }
 		}
 	}
 

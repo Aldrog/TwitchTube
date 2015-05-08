@@ -27,106 +27,37 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	property int row: isPortrait ? 2 : 4
-	// In brackets should be row lengths for portrait and landscape orientations
-	property int countOnPage: (2*4)*2
-	property int offset: 0
-	property int totalCount: 0
-
-	ConfigurationValue {
-		id: posterSize
-		key: "/apps/twitch/settings/gameimgsize"
-		defaultValue: "medium"
-	}
-
 	ConfigurationValue {
 		id: authToken
 		key: "/apps/twitch/settings/oauthtoken"
 		defaultValue: ""
 	}
 
-	function loadGames() {
-		var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
-		console.log(url)
-		HTTP.getRequest(url,function(data) {
-			if (data) {
-				offset += countOnPage
-				var result = JSON.parse(data)
-				totalCount = result._total
-				for (var i in result.top)
-					gameList.append(result.top[i])
-			}
-		})
-	}
-
-	SilicaGridView {
+	GamesGrid {
 		id: gridGames
-		anchors.fill: parent
+
+		function loadGames() {
+			var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+			console.log(url)
+			HTTP.getRequest(url,function(data) {
+				if (data) {
+					offset += countOnPage
+					var result = JSON.parse(data)
+					totalCount = result._total
+					for (var i in result.top)
+						model.append(result.top[i])
+				}
+			})
+		}
 
 		Categories {
 			games: false
 			following: authToken.value !== ""
 		}
 
-		PushUpMenu {
-			visible: offset < totalCount
-
-			MenuItem {
-				text: qsTr("Load more")
-				onClicked: {
-					loadGames()
-				}
-			}
-		}
-
 		header: PageHeader {
 			title: qsTr("Popular Games")
 		}
-
-		model: ListModel { id: gameList }
-		cellWidth: width/row
-		cellHeight: cellWidth*18/13
-
-		delegate: BackgroundItem {
-			id: delegate
-			width: gridGames.cellWidth
-			height: gridGames.cellHeight
-			onClicked: pageStack.push (Qt.resolvedUrl("ChannelsPage.qml"),{ bygame: true, game: game.name })
-
-			Image {
-				id: logo
-				anchors.fill: parent
-				anchors.margins: Theme.paddingSmall
-				fillMode: Image.PreserveAspectCrop
-				source: game.box[posterSize.value]
-			}
-
-			OpacityRampEffect {
-				sourceItem: logo
-				direction: OpacityRamp.BottomToTop
-				offset: 0.75
-				slope: 4.0
-			}
-
-			Label {
-				id: name
-				anchors {
-					left: parent.left; leftMargin: Theme.paddingLarge
-					right: parent.right; rightMargin: Theme.paddingLarge
-					topMargin: Theme.paddingMedium
-				}
-				text: game.name
-				truncationMode: TruncationMode.Fade
-				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-				font.pixelSize: Theme.fontSizeSmall
-			}
-        }
-
-		VerticalScrollDecorator { flickable: gridGames }
-    }
-
-	Component.onCompleted: {
-		loadGames()
 	}
 }
 

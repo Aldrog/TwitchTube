@@ -17,7 +17,8 @@ CONFIG += sailfishapp
 SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
-    src/tools.cpp
+    src/tools.cpp \
+    src/qmlsettings.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -39,7 +40,12 @@ OTHER_FILES += \
     qml/pages/elements/Categories.qml \
     qml/pages/QualityChooserPage.qml \
     rpm/harbour-twitchtube.changes \
-    qml/cover/icon.png
+    qml/images/cross.png \
+    qml/images/heart.png \
+    qml/images/icon.png \
+    qml/pages/elements/GamesGrid.qml \
+    qml/pages/elements/ChannelsGrid.qml \
+    qml/pages/GameChannelsPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -48,5 +54,6 @@ CONFIG += sailfishapp_i18n
 
 HEADERS += \
     src/ircchat.h \
-    src/tools.h
+    src/tools.h \
+    src/qmlsettings.h
 

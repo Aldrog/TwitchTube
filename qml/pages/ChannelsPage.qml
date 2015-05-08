@@ -27,112 +27,37 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	property bool bygame: false
-	property string game
-	property int row: isPortrait ? 2 : 3
-	//in brackets should be row lengths for portrait and landscape orientations
-	property int countOnPage: (2*3)*3
-	property int offset: 0
-	property int totalCount: 0
-
-	ConfigurationValue {
-		id: previewSize
-		key: "/apps/twitch/settings/previewimgsize"
-		defaultValue: "large"
-	}
-
 	ConfigurationValue {
 		id: authToken
 		key: "/apps/twitch/settings/oauthtoken"
 		defaultValue: ""
 	}
 
-	function loadChannels() {
-		var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
-		if (bygame)
-			url += encodeURI("&game=" + game)
-		console.log(url)
-		HTTP.getRequest(url,function(data) {
-			if (data) {
-				offset += countOnPage
-				var result = JSON.parse(data)
-				totalCount = result._total
-				for (var i in result.streams)
-					streamList.append(result.streams[i])
-			}
-		})
-	}
-
-	SilicaGridView {
+	ChannelsGrid {
 		id: gridChannels
-		anchors.fill: parent
+
+		function loadChannels() {
+			var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
+			HTTP.getRequest(url,function(data) {
+				if (data) {
+					offset += countOnPage
+					var result = JSON.parse(data)
+					totalCount = result._total
+					for (var i in result.streams)
+						model.append(result.streams[i])
+				}
+			})
+		}
 
 		Categories {
-			channels: bygame
-			games: !bygame
+			channels: false
 			following: authToken.value !== ""
 		}
 
-		PushUpMenu {
-			visible: offset < totalCount
-
-			MenuItem {
-				// Visible property doesn't work when there's only one MenuItem
-				//visible: offset < totalCount
-				text: qsTr("Load more")
-				onClicked: {
-					loadChannels()
-				}
-			}
-		}
-
 		header: PageHeader {
-			title: bygame ? game : qsTr("Live Channels")
+			id: header
+			title: qsTr("Live Channels")
 		}
-
-		model: ListModel { id: streamList }
-		cellWidth: width/row
-		cellHeight: cellWidth*5/8
-
-		delegate: BackgroundItem {
-			id: delegate
-			width: gridChannels.cellWidth
-			height: gridChannels.cellHeight
-			onClicked: pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: channel.name })
-
-			Image {
-				id: previewImage
-				source: preview[previewSize.value]
-				anchors.fill: parent
-				anchors.margins: Theme.paddingSmall
-			}
-
-			OpacityRampEffect {
-				sourceItem: previewImage
-				direction: OpacityRamp.BottomToTop
-				offset: 0.75
-				slope: 4.0
-			}
-
-			Label {
-				id: name
-				anchors {
-					left: parent.left; leftMargin: Theme.paddingLarge
-					right: parent.right; rightMargin: Theme.paddingLarge
-					topMargin: Theme.paddingMedium
-				}
-				text: channel.display_name
-				truncationMode: TruncationMode.Fade
-				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-				font.pixelSize: Theme.fontSizeSmall
-			}
-		}
-
-		VerticalScrollDecorator { flickable: gridChannels }
-	}
-
-	Component.onCompleted: {
-		loadChannels()
 	}
 }
 
