@@ -26,6 +26,7 @@ import "scripts/httphelper.js" as HTTP
 
 Page {
 	id: page
+	allowedOrientations: Orientation.All
 
 	property string game
 	property string username
@@ -61,15 +62,15 @@ Page {
 
 		header: PageHeader {
 			id: header
-			title: ((authToken.value !== "") ? "\t\t" : "") + game
+			title: ((authToken.value !== "") ? "\t\t " : "") + game
 			BackgroundItem {
 				id: follow
 				parent: header.extraContent
 				visible: authToken.value !== ""
 				anchors.verticalCenter: parent.verticalCenter
 				anchors.left: parent.left
-				anchors.leftMargin: Theme.paddingLarge
-				height: Theme.itemSizeSmall
+				anchors.leftMargin: 50
+				height: Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)
 				width: height
 
 				Image {
@@ -100,6 +101,7 @@ Page {
 					id: cross
 					anchors.fill: parent
 					source: "../images/cross.png"
+					z: 1
 					visible: false
 				}
 				ColorOverlay {
@@ -108,7 +110,6 @@ Page {
 					source: cross
 					visible: false
 					color: follow.highlighted ? Theme.highlightColor : Theme.primaryColor
-					z: 1
 				}
 				DropShadow {
 					id: crossEffect2

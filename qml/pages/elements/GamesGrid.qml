@@ -76,8 +76,8 @@ SilicaGridView {
 		OpacityRampEffect {
 			sourceItem: logo
 			direction: OpacityRamp.BottomToTop
-			offset: 0.75
-			slope: 4.0
+			offset: 1 - 1.25 * (gameName.height / logo.height)
+			slope: logo.height / gameName.height
 		}
 
 		Label {
