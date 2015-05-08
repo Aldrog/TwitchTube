@@ -8,9 +8,9 @@ Video playback has serious issues because Sailfish currently uses deprecated GSt
 What works
 ----------
 - Navigating by game
-- Top channels
+- Viewing top channels
+- Browse followed channels and games
 - Search channels
-- Browse followed channels
 - Chat
 
 TODO
