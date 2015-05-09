@@ -15,7 +15,6 @@ What works
 
 TODO
 ----
-- Move settings to QSettings usage
 - Add broadcast titles (maybe optional, like in Twitch for Android)
 - Improve settings page
 - Add some functionality to multitasking cover
