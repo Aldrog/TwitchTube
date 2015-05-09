@@ -1,6 +1,6 @@
 Name: harbour-twitchtube
 Summary: Twitch.tv client for Sailfish
-Version: 0.2.1
+Version: 0.2.99
 Release: 3
 # The contents of the Group field should be one of the groups listed here:
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
@@ -34,7 +34,8 @@ PkgConfigBR:
 # Runtime dependencies which are not automatically detected
 Requires:
   - sailfishsilica-qt5 >= 0.10.9
-  - qt5-qtmultimedia-plugin-playlistformats-m3u
+  - qt5-qtdeclarative-import-multimedia
+  - qt5-qtgraphicaleffects
 
 # All installed files
 Files:
