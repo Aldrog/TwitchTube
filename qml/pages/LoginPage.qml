@@ -19,21 +19,15 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 
 Page {
 	id: page
 	allowedOrientations: Orientation.All
-
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
+	property bool needExit: false
 
 	PageHeader {
 		id: head
-		title: qsTr("Log into your Twitch account")
+		title: qsTr("Log into Twitch account")
 	}
 
 	SilicaWebView {
@@ -50,14 +44,18 @@ Page {
 			if(url.indexOf("http://localhost") === 0) {
 				var params = url.substring(url.lastIndexOf('/') + 1)
 				if(params.indexOf("#access_token") >= 0) {
-					authToken.value = params.split('=')[1].split('&')[0]
-					console.log(authToken.value)
+					qmlSettings.setValue("User/OAuth2Token", params.split('=')[1].split('&')[0])
 				}
-				pageStack.pop()
+				if(status === PageStatus.Activating)
+					needExit = true
+				else
+					pageStack.pop()
 			}
 			else
 				request.action = SilicaWebView.AcceptRequest;
 		}
 		url: encodeURI("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=n57dx0ypqy48ogn1ac08buvoe13bnsu&redirect_uri=http://localhost&scope=user_read user_follows_edit chat_login")
 	}
+
+	onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
 }

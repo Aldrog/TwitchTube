@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 
 Dialog {
 	id: page
@@ -9,11 +8,7 @@ Dialog {
 	property var qualities: ["chunked", "high", "medium", "low", "mobile"]
 	property bool chatOnly
 
-	ConfigurationValue {
-		id: streamQuality
-		key: "/apps/twitch/settings/streamquality"
-		defaultValue: "medium"
-	}
+	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
 
 	Column {
 		anchors.fill: parent
@@ -27,7 +22,7 @@ Dialog {
 			id: qualityChooser
 			width: parent.width
 			label: qsTr("Stream quality")
-			currentIndex: qualities.indexOf(streamQuality.value)
+			currentIndex: qualities.indexOf(streamQuality)
 
 			menu: ContextMenu {
 				MenuItem { text: qsTr("Source") }
@@ -46,7 +41,7 @@ Dialog {
 	}
 
 	onAccepted: {
-		streamQuality.value = qualities[qualityChooser.currentIndex]
+		qmlSettings.setValue("Video/StreamQuality", qualities[qualityChooser.currentIndex])
 		chatOnly = noVideo.checked
 	}
 }

@@ -20,7 +20,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtGraphicalEffects 1.0
-import org.nemomobile.configuration 1.0
 import "elements"
 import "scripts/httphelper.js" as HTTP
 
@@ -33,11 +32,7 @@ Page {
 	property bool followed
 	property bool fromFollowings: false
 
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
+	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 
 	ChannelsGrid {
 		id: gridChannels
@@ -57,16 +52,16 @@ Page {
 
 		Categories {
 			games: fromFollowings
-			following: !fromFollowings && authToken.value !== ""
+			following: !fromFollowings && authToken !== ""
 		}
 
 		header: PageHeader {
 			id: header
-			title: ((authToken.value !== "") ? "\t\t " : "") + game
+			title: ((authToken !== "") ? "\t\t " : "") + game
 			BackgroundItem {
 				id: follow
 				parent: header.extraContent
-				visible: authToken.value !== ""
+				visible: authToken !== ""
 				anchors.verticalCenter: parent.verticalCenter
 				anchors.left: parent.left
 				anchors.leftMargin: 50
@@ -125,12 +120,12 @@ Page {
 
 				onClicked: {
 					if(!followed)
-						HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+						HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken, function(data) {
 							if(data)
 								followed = true
 						})
 					else
-						HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+						HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken, function(data) {
 							if(data === 204)
 								followed = false
 						})
@@ -140,8 +135,8 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken.value !== "") {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+		if(authToken !== "") {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				HTTP.getRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game, function(data) {

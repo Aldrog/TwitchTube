@@ -19,7 +19,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 
 SilicaGridView {
 	id: root
@@ -32,11 +31,7 @@ SilicaGridView {
 	property bool autoLoad: true
 	property var parameters: ({})
 
-	ConfigurationValue {
-		id: previewSize
-		key: "/apps/twitch/settings/previewimgsize"
-		defaultValue: "medium"
-	}
+	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
 
 	PushUpMenu {
 		enabled: offset < totalCount
@@ -67,7 +62,7 @@ SilicaGridView {
 
 		Image {
 			id: previewImage
-			source: preview[previewSize.value]
+			source: preview[channelImageSize]
 			anchors.fill: parent
 			anchors.margins: Theme.paddingSmall
 		}

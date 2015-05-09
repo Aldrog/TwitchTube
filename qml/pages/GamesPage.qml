@@ -19,19 +19,12 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 import "elements"
 import "scripts/httphelper.js" as HTTP
 
 Page {
 	id: page
 	allowedOrientations: Orientation.All
-
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
 
 	GamesGrid {
 		id: gridGames
@@ -52,7 +45,6 @@ Page {
 
 		Categories {
 			games: false
-			following: authToken.value !== ""
 		}
 
 		header: PageHeader {

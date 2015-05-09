@@ -20,7 +20,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
-import org.nemomobile.configuration 1.0
 import harbour.twitchtube.ircchat 1.0
 import "scripts/httphelper.js" as HTTP
 import "scripts/chathelper.js" as CH
@@ -35,17 +34,8 @@ Page {
 	property bool followed
 	property bool showStream: true
 
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
-
-	ConfigurationValue {
-		id: streamQuality
-		key: "/apps/twitch/settings/streamquality"
-		defaultValue: "medium"
-	}
+	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
+	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
 
 	states: State {
 		name: "fullscreen"
@@ -76,20 +66,20 @@ Page {
 			id: streamMenu
 			MenuItem {
 				text: qsTr("Follow")
-				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken, function(data) {
 					if(data)
 						followed = true
 				})
-				visible: authToken.value && !followed
+				visible: authToken && !followed
 			}
 
 			MenuItem {
 				text: qsTr("Unfollow")
-				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken, function(data) {
 					if(data === 204)
 						followed = false
 				})
-				visible: authToken.value && followed
+				visible: authToken && followed
 			}
 
 			MenuItem {
@@ -107,7 +97,7 @@ Page {
 			id: video
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			source: showStream ? url[streamQuality.value] : ""
+			source: showStream ? url[streamQuality] : ""
 
 			onPaused: {
 				console.log("video has paused, resuming")
@@ -232,7 +222,7 @@ Page {
 
 			IrcChat {
 				id: twitchChat
-				pass: 'oauth:' + authToken.value
+				pass: 'oauth:' + authToken
 
 				onMessageReceived: {
 					console.log("message from: ", sndnick)
@@ -260,7 +250,7 @@ Page {
 				}
 
 				Component.onCompleted: {
-					if(authToken.value === "")
+					if(authToken === "")
 						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
@@ -305,8 +295,8 @@ Page {
 			}
 		})
 
-		if(authToken.value !== "") {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+		if(authToken !== "") {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				twitchChat.name = user.name

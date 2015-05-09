@@ -19,7 +19,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 import "elements"
 import "scripts/httphelper.js" as HTTP
 
@@ -27,17 +26,13 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
+	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 
 	ChannelsGrid {
 		id: gridChannels
 
 		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
+			var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken
 			console.log(url)
 			HTTP.getRequest(url,function(data) {
 				if (data) {

@@ -42,14 +42,16 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
+	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 	QCoreApplication::setOrganizationName("Aldrog");
 	QCoreApplication::setApplicationName("TwitchTube");
-	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
-	qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Settings");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
-	Tools* t = new Tools();
-	view->rootContext()->setContextProperty("tools", t);
+	QMLSettings *settings = new QMLSettings();
+	view->rootContext()->setContextProperty("qmlSettings", settings);
+	Tools *tools = new Tools();
+	view->rootContext()->setContextProperty("cpptools", tools);
 	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
 	return app->exec();

@@ -19,7 +19,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 import "elements"
 import "scripts/httphelper.js" as HTTP
 
@@ -29,11 +28,7 @@ Page {
 
 	property string username
 
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
+	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 
 	GamesGrid {
 		id: gridGames
@@ -64,8 +59,8 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken.value !== "") {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+		if(authToken !== "") {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				gridGames.loadGames()

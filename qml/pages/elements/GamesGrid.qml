@@ -19,7 +19,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
 
 SilicaGridView {
 	id: root
@@ -32,11 +31,7 @@ SilicaGridView {
 	property bool autoLoad: true
 	property var parameters: ({})
 
-	ConfigurationValue {
-		id: posterSize
-		key: "/apps/twitch/settings/gameimgsize"
-		defaultValue: "large"
-	}
+	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
 
 	PushUpMenu {
 		enabled: offset < totalCount
@@ -70,7 +65,7 @@ SilicaGridView {
 			anchors.fill: parent
 			anchors.margins: Theme.paddingSmall
 			fillMode: Image.PreserveAspectCrop
-			source: box[posterSize.value]
+			source: box[gameImageSize]
 		}
 
 		OpacityRampEffect {

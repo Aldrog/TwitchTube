@@ -27,8 +27,16 @@ class QMLSettings : public QSettings
 	Q_OBJECT
 public:
 	explicit QMLSettings(QObject *parent = 0);
+	Q_INVOKABLE inline void setValue(const QString &key, const QVariant &value) { QSettings::setValue(key, value); emit changeChanged(); }
+	Q_INVOKABLE inline QVariant value(const QString &key, const QVariant &defaultValue = QVariant(), bool nothing = true) const { return QSettings::value(key, defaultValue); }
+
+	// Fake property
+	Q_PROPERTY(bool change READ change NOTIFY changeChanged)
+	bool change();
+	//TODO: Rework this class in order to get rid of fake property hack
 
 signals:
+	void changeChanged();
 
 public slots:
 

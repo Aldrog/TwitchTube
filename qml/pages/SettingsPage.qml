@@ -19,8 +19,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import org.nemomobile.configuration 1.0
-import harbour.twitchtube.settings 1.0
 import "scripts/httphelper.js" as HTTP
 
 Dialog {
@@ -30,118 +28,111 @@ Dialog {
 	property var imageSizes: ["large", "medium", "small"]
 	property string name
 
-	ConfigurationValue {
-		id: authToken
-		key: "/apps/twitch/settings/oauthtoken"
-		defaultValue: ""
-	}
+	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
+	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
+	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
 
-	ConfigurationValue {
-		id: gameImageSize
-		key: "/apps/twitch/settings/gameimgsize"
-		defaultValue: "large"
-	}
-
-	ConfigurationValue {
-		id: previewImageSize
-		key: "/apps/twitch/settings/previewimgsize"
-		defaultValue: "medium"
-	}
-
-	Column {
-		id: settings
+	SilicaFlickable {
 		anchors.fill: parent
+		Column {
+			anchors.fill: parent
+			anchors.margins: Theme.paddingMedium
 
-		DialogHeader {
-			title: qsTr("TwitchTube Settings")
-			acceptText: qsTr("Apply")
-			cancelText: qsTr("Cancel")
-		}
-
-		BackgroundItem {
-			id: login
-			width: parent.width
-			height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
-
-			Label {
-				id: lblAcc1
-				anchors {	top: parent.top
-							left: parent.left
-							right: parent.right
-							margins: Theme.paddingLarge
-						}
-				text: authToken.value === "" ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
-				color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
-				font.pixelSize: Theme.fontSizeMedium
+			DialogHeader {
+				title: qsTr("TwitchTube Settings")
+				acceptText: qsTr("Apply")
+				cancelText: qsTr("Cancel")
 			}
 
-			Label {
-				id: lblAcc2
-				anchors {	bottom: parent.bottom
-							left: parent.left
-							right: parent.right
-							margins: Theme.paddingLarge
-						}
-				text: authToken.value === "" ? qsTr("Log in") : qsTr("Log out")
-				color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
-				font.pixelSize: Theme.fontSizeSmall
-			}
+			BackgroundItem {
+				id: login
+				width: parent.width
+				height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
 
-			onClicked: {
-				console.log("old token:", authToken.value)
-				if(authToken.value === "") {
-					var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-					lpage.statusChanged.connect(function() {
-						if(authToken.value !== "")
-							getName()
-					})
+				Label {
+					id: lblAcc1
+					anchors {	top: parent.top
+								left: parent.left
+								right: parent.right
+								margins: Theme.paddingLarge
+							}
+					text: authToken === "" ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
+					color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
+					font.pixelSize: Theme.fontSizeMedium
 				}
-				else {
-					authToken.value = ""
-					tools.clearCookies()
+
+				Label {
+					id: lblAcc2
+					anchors {	bottom: parent.bottom
+								left: parent.left
+								right: parent.right
+								margins: Theme.paddingLarge
+							}
+					text: authToken === "" ? qsTr("Log in") : qsTr("Log out")
+					color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
+					font.pixelSize: Theme.fontSizeSmall
+				}
+
+				onClicked: {
+					console.log("old token:", authToken)
+					if(authToken === "") {
+						var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+						lpage.statusChanged.connect(function() {
+							if(lpage.status === PageStatus.Deactivating) {
+								//authToken = qmlSettings.change ? qmlSettings.value("User/OAuth2Token", "") : ""
+								console.log(authToken)
+								getName()
+							}
+						})
+					}
+					else {
+						qmlSettings.setValue("User/OAuth2Token", "")
+						authToken = ""
+						console.log(cpptools.clearCookies())
+					}
 				}
 			}
+
+			ComboBox {
+				id: gameQ
+				label: qsTr("Game posters quality")
+				menu: ContextMenu {
+					MenuItem { text: qsTr("High") }
+					MenuItem { text: qsTr("Medium") }
+					MenuItem { text: qsTr("Low") }
+				}
+				currentIndex: imageSizes.indexOf(gameImageSize)
+			}
+
+			ComboBox {
+				id: previewQ
+				label: qsTr("Stream previews quality")
+				menu: ContextMenu {
+					MenuItem { text: qsTr("High") }
+					MenuItem { text: qsTr("Medium") }
+					MenuItem { text: qsTr("Low") }
+				}
+				currentIndex: imageSizes.indexOf(channelImageSize)
+			}
 		}
 
-		ComboBox {
-			id: gameQ
-			label: qsTr("Game posters quality")
-			menu: ContextMenu {
-				MenuItem { text: qsTr("High") }
-				MenuItem { text: qsTr("Medium") }
-				MenuItem { text: qsTr("Low") }
-			}
-			currentIndex: imageSizes.indexOf(gameImageSize.value)
-		}
-
-		ComboBox {
-			id: previewQ
-			label: qsTr("Stream previews quality")
-			menu: ContextMenu {
-				MenuItem { text: qsTr("High") }
-				MenuItem { text: qsTr("Medium") }
-				MenuItem { text: qsTr("Low") }
-			}
-			currentIndex: imageSizes.indexOf(previewImageSize.value)
-		}
-		//Uncomment this when there will be more settings
-		//VerticalScrollDecorator { flickable: settings }
+		VerticalScrollDecorator { flickable: parent }
 	}
 
 	function getName() {
-		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 			var user = JSON.parse(data)
 			name = user.display_name
 		})
 	}
 
 	Component.onCompleted: {
-		if(authToken.value !== "")
+		if(authToken !== "")
 			getName()
 	}
 
 	onAccepted: {
-		gameImageSize.value = imageSizes[gameQ.currentIndex]
-		previewImageSize.value = imageSizes[previewQ.currentIndex]
+		qmlSettings.setValue("Interface/GameImageSize", imageSizes[gameQ.currentIndex])
+		qmlSettings.setValue("Interface/ChannelImageSize", imageSizes[previewQ.currentIndex])
 	}
 }

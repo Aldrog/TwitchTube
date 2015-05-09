@@ -18,8 +18,10 @@
  */
 
 #include "qmlsettings.h"
+#include <QCoreApplication>
 
-QMLSettings::QMLSettings(QObject *parent) :
-	QSettings(parent)
-{
+QMLSettings::QMLSettings(QObject *parent) : QSettings(QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName(), parent){}
+
+bool QMLSettings::change() {
+	return true;
 }
