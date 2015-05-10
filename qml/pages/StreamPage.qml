@@ -36,6 +36,7 @@ Page {
 
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
+	property bool chatFlowTtB: parseInt(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
 
 	states: State {
 		name: "fullscreen"
@@ -173,10 +174,12 @@ Page {
 
 		TextField {
 			id: chatMessage
-			anchors.left: parent.left
-			anchors.right: parent.right
-			anchors.top: video.bottom
-			anchors.margins: Theme.paddingSmall
+			anchors {	left: parent.left
+						right: parent.right
+						top: chatFlowTtB ? null : video.bottom
+						bottom: chatFlowTtB ? parent.bottom : null
+						margins: Theme.paddingSmall
+					}
 			placeholderText: qsTr("Chat here")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
@@ -192,11 +195,12 @@ Page {
 			id: chat
 			anchors {	left: parent.left
 						right: parent.right
-						top: chatMessage.bottom
-						bottom: parent.bottom
+						top: chatFlowTtB ? video.bottom : chatMessage.bottom
+						bottom: chatFlowTtB ? chatMessage.top : parent.bottom
 						margins: Theme.paddingMedium
 					}
 			clip: true
+			verticalLayoutDirection: chatFlowTtB ? ListView.BottomToTop : ListView.TopToBottom
 			model: ListModel { id: messages }
 			delegate: Item {
 				height: lbl.height
@@ -213,7 +217,6 @@ Page {
 
 					Component.onCompleted: {
 						if(messages.count >= 500) {
-							console.log("too many messages, deleting the oldest one")
 							messages.remove(messages.count - 1)
 						}
 					}
@@ -225,9 +228,6 @@ Page {
 				pass: 'oauth:' + authToken
 
 				onMessageReceived: {
-					console.log("message from: ", sndnick)
-					console.log("message: ", msg)
-
 					CH.parseEmoticons(sndnick, msg)
 				}
 

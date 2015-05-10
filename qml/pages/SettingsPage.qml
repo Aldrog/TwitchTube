@@ -31,6 +31,7 @@ Dialog {
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
 	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
+	property bool chatFlowTtB: parseInt(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
 
 	SilicaFlickable {
 		anchors.fill: parent
@@ -79,7 +80,6 @@ Dialog {
 						var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
 						lpage.statusChanged.connect(function() {
 							if(lpage.status === PageStatus.Deactivating) {
-								//authToken = qmlSettings.change ? qmlSettings.value("User/OAuth2Token", "") : ""
 								console.log(authToken)
 								getName()
 							}
@@ -114,6 +114,12 @@ Dialog {
 				}
 				currentIndex: imageSizes.indexOf(channelImageSize)
 			}
+
+			TextSwitch {
+				id: chatTtB
+				text: qsTr("Chat flows from top to bottom")
+				checked: chatFlowTtB
+			}
 		}
 
 		VerticalScrollDecorator { flickable: parent }
@@ -127,6 +133,7 @@ Dialog {
 	}
 
 	Component.onCompleted: {
+		console.log(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
 		if(authToken !== "")
 			getName()
 	}
@@ -134,5 +141,6 @@ Dialog {
 	onAccepted: {
 		qmlSettings.setValue("Interface/GameImageSize", imageSizes[gameQ.currentIndex])
 		qmlSettings.setValue("Interface/ChannelImageSize", imageSizes[previewQ.currentIndex])
+		qmlSettings.setValue("Interface/ChatFlowTopToBottom", ~~chatTtB.checked)
 	}
 }
