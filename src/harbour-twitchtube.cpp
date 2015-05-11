@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
     // To display the view, call "show()" (will show fullscreen on device).
 
 	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-	QCoreApplication::setOrganizationName("Aldrog");
-	QCoreApplication::setApplicationName("TwitchTube");
+	QCoreApplication::setOrganizationName("harbour-twitchtube");
+	QCoreApplication::setApplicationName("harbour-twitchtube");
 
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
 	QScopedPointer<QQuickView> view(SailfishApp::createView());
