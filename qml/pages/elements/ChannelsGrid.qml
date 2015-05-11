@@ -32,6 +32,7 @@ SilicaGridView {
 	property var parameters: ({})
 
 	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
+	property bool showBroadcastTitles: parseInt(qmlSettings.value("Interface/ShowBroadcastTitles", 1, qmlSettings.change))
 
 	PushUpMenu {
 		enabled: offset < totalCount
@@ -68,22 +69,37 @@ SilicaGridView {
 		}
 
 		OpacityRampEffect {
+			property real effHeight: (showBroadcastTitles && title.text) ? (title.height + title.y) : name.height
 			sourceItem: previewImage
 			direction: OpacityRamp.BottomToTop
-			offset: 1 - 1.25 * (name.height / previewImage.height)
-			slope: previewImage.height / name.height
+			offset: 1 - 1.25 * (effHeight / previewImage.height)
+			slope: previewImage.height / effHeight
 		}
 
 		Label {
 			id: name
 			anchors {
-				left: parent.left; leftMargin: Theme.paddingLarge
-				right: parent.right; rightMargin: Theme.paddingLarge
-				topMargin: Theme.paddingMedium
+				left: previewImage.left; leftMargin: Theme.paddingMedium
+				right: previewImage.right; rightMargin: Theme.paddingSmall
+				topMargin: Theme.paddingSmall
 			}
 			text: channel.display_name
 			truncationMode: TruncationMode.Fade
 			color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+			font.pixelSize: Theme.fontSizeSmall
+		}
+
+		Label {
+			id: title
+			visible: showBroadcastTitles
+			anchors {
+				left: previewImage.left; leftMargin: Theme.paddingMedium
+				right: previewImage.right; rightMargin: Theme.paddingSmall
+				top: name.bottom; topMargin: -Theme.paddingSmall
+			}
+			text: channel.status
+			truncationMode: TruncationMode.Fade
+			color: delegate.highlighted ? Theme.highlightColor : Theme.secondaryColor
 			font.pixelSize: Theme.fontSizeSmall
 		}
 	}

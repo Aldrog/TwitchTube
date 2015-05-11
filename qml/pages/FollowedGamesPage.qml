@@ -59,7 +59,7 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken !== "") {
+		if(authToken) {
 			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 				var user = JSON.parse(data)
 				username = user.name

@@ -31,6 +31,7 @@ Dialog {
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
 	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
+	property bool showBroadcastTitles: parseInt(qmlSettings.value("Interface/ShowBroadcastTitles", 1, qmlSettings.change))
 	property bool chatFlowTtB: parseInt(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
 
 	SilicaFlickable {
@@ -57,7 +58,7 @@ Dialog {
 								right: parent.right
 								margins: Theme.paddingLarge
 							}
-					text: authToken === "" ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
+					text: !authToken ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
 					color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
 					font.pixelSize: Theme.fontSizeMedium
 				}
@@ -69,14 +70,14 @@ Dialog {
 								right: parent.right
 								margins: Theme.paddingLarge
 							}
-					text: authToken === "" ? qsTr("Log in") : qsTr("Log out")
+					text: !authToken ? qsTr("Log in") : qsTr("Log out")
 					color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
 					font.pixelSize: Theme.fontSizeSmall
 				}
 
 				onClicked: {
 					console.log("old token:", authToken)
-					if(authToken === "") {
+					if(!authToken) {
 						var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
 						lpage.statusChanged.connect(function() {
 							if(lpage.status === PageStatus.Deactivating) {
@@ -87,8 +88,7 @@ Dialog {
 					}
 					else {
 						qmlSettings.setValue("User/OAuth2Token", "")
-						authToken = ""
-						console.log(cpptools.clearCookies())
+						console.log("Cookie cleaning script result code:", cpptools.clearCookies())
 					}
 				}
 			}
@@ -116,6 +116,12 @@ Dialog {
 			}
 
 			TextSwitch {
+				id: streamTitles
+				text: qsTr("Show broadcast titles")
+				checked: showBroadcastTitles
+			}
+
+			TextSwitch {
 				id: chatTtB
 				text: qsTr("Chat flows from top to bottom")
 				checked: chatFlowTtB
@@ -133,14 +139,14 @@ Dialog {
 	}
 
 	Component.onCompleted: {
-		console.log(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
-		if(authToken !== "")
+		if(authToken)
 			getName()
 	}
 
 	onAccepted: {
 		qmlSettings.setValue("Interface/GameImageSize", imageSizes[gameQ.currentIndex])
 		qmlSettings.setValue("Interface/ChannelImageSize", imageSizes[previewQ.currentIndex])
+		qmlSettings.setValue("Interface/ShowBroadcastTitles", ~~streamTitles.checked)
 		qmlSettings.setValue("Interface/ChatFlowTopToBottom", ~~chatTtB.checked)
 	}
 }

@@ -101,11 +101,6 @@ function init() {
 	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + channel + "/badges", function(data) {
 		if(data) {
 			spec_icons = JSON.parse(data)
-			for(var x in spec_icons) {
-				console.log(x)
-				for(var i in spec_icons[x])
-					console.log(i, ' ', spec_icons[x][i])
-			}
 		}
 	})
 }

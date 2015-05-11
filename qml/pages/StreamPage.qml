@@ -135,7 +135,7 @@ Page {
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
-					if(page.state == "")
+					if(page.state === "")
 						page.state = "fullscreen"
 					else
 						page.state = ""
@@ -263,7 +263,7 @@ Page {
 				}
 
 				Component.onCompleted: {
-					if(authToken === "")
+					if(!authToken)
 						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
@@ -308,7 +308,7 @@ Page {
 			}
 		})
 
-		if(authToken !== "") {
+		if(authToken) {
 			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
 				var user = JSON.parse(data)
 				username = user.name

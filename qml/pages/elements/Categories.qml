@@ -40,7 +40,7 @@ PullDownMenu {
 	MenuItem {
 		text: qsTr("Following")
 		onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../FollowedPage.qml"))
-		visible: following && qmlSettings.value("User/OAuth2Token", "", qmlSettings.change) !== ""
+		visible: following && qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	}
 
 	MenuItem {

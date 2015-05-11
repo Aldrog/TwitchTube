@@ -32,7 +32,7 @@
 <context>
     <name>ChannelsGrid</name>
     <message>
-        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="41"/>
+        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="42"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
@@ -142,37 +142,37 @@
 <context>
     <name>SettingsPage</name>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="43"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="44"/>
         <source>TwitchTube Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="44"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="45"/>
         <source>Apply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="45"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="46"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="60"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="61"/>
         <source>Logged in as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="60"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="61"/>
         <source>Not logged in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="72"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="73"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="72"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="73"/>
         <source>Log out</source>
         <translation type="unfinished"></translation>
     </message>
@@ -206,6 +206,11 @@
     </message>
     <message>
         <location filename="../qml/pages/SettingsPage.qml" line="120"/>
+        <source>Show broadcast titles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="126"/>
         <source>Chat flows from top to bottom</source>
         <translation type="unfinished"></translation>
     </message>
