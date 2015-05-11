@@ -32,13 +32,15 @@ class IrcChat : public QObject
 	Q_OBJECT
 public:
 	Q_PROPERTY(QString name MEMBER nick)
-	Q_PROPERTY(QString pass MEMBER ircpass)
-	Q_PROPERTY(bool available MEMBER connected NOTIFY stateChanged)
+	Q_PROPERTY(QString password MEMBER ircpass)
+	Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
 
 	explicit IrcChat(QObject *parent = 0);
 	~IrcChat();
 
+	bool connected();
 	Q_INVOKABLE void join(const QString channel);
+	Q_INVOKABLE void disconnect();
 	Q_INVOKABLE void reopenSocket();
 signals:
 	void messageReceived(QString sndnick, QString msg);
@@ -46,7 +48,7 @@ signals:
 	void specReceived(QString nick, QString type);
 	void specRemoved(QString nick, QString type);
 	void errorOccured(QString errorDescription);
-	void stateChanged();
+	void connectedChanged();
 public slots:
 	void sendMessage(const QString &msg);
 private slots:
@@ -54,7 +56,6 @@ private slots:
 	void processError(QAbstractSocket::SocketError socketError);
 private:
 	QString nick, ircpass;
-	bool connected;
 	QTcpSocket *sock;
 	QString room;
 	bool motdended;

@@ -33,6 +33,7 @@ Page {
 	property string username
 	property bool followed
 	property bool showStream: true
+	property bool active: Qt.application.active
 
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
@@ -55,6 +56,24 @@ Page {
 			target: page
 			showNavigationIndicator: false; backNavigation: false
 			allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
+		}
+	}
+
+	onActiveChanged: {
+		if(page.status === PageStatus.Active) {
+			console.log("app activeness changed")
+			if(active) {
+				video.play()
+				if(!twitchChat.connected) {
+					twitchChat.reopenSocket()
+					twitchChat.join(channel)
+				}
+			}
+			else {
+				video.pause()
+				if(twitchChat.connected)
+					twitchChat.disconnect()
+			}
 		}
 	}
 
@@ -89,6 +108,10 @@ Page {
 					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream })
 					dialog.accepted.connect(function() {
 						showStream = !dialog.chatOnly
+						if(showStream && video.playbackState !== MediaPlayer.PlayingState)
+							video.play()
+						if(!showStream && video.playbackState !== MediaPlayer.StoppedState)
+							video.stop()
 					})
 				}
 			}
@@ -98,16 +121,7 @@ Page {
 			id: video
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			source: showStream ? url[streamQuality] : ""
-
-			onPaused: {
-				console.log("video has paused, resuming")
-				play()
-			}
-			onStopped: {
-				console.log("video has stopped, resuming")
-				play()
-			}
+			source: url[streamQuality]
 
 			onErrorChanged: console.error("video error:", errorString)
 
@@ -176,8 +190,8 @@ Page {
 			id: chatMessage
 			anchors {	left: parent.left
 						right: parent.right
-						top: chatFlowTtB ? null : video.bottom
-						bottom: chatFlowTtB ? parent.bottom : null
+						top: chatFlowTtB ? undefined : video.bottom
+						bottom: chatFlowTtB ? parent.bottom : undefined
 						margins: Theme.paddingSmall
 					}
 			placeholderText: qsTr("Chat here")
@@ -225,7 +239,7 @@ Page {
 
 			IrcChat {
 				id: twitchChat
-				pass: 'oauth:' + authToken
+				password: 'oauth:' + authToken
 
 				onMessageReceived: {
 					CH.parseEmoticons(sndnick, msg)
@@ -236,7 +250,6 @@ Page {
 				}
 
 				onSpecReceived: {
-					console.log("spec: ", type)
 					CH.addSpec(nick, type)
 				}
 

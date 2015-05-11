@@ -21,8 +21,6 @@
 
 IrcChat::IrcChat(QObject *parent) :
 	QObject(parent) {
-	connected = false;
-
 	sock = new QTcpSocket(this);
 	if(sock) {
 		errorOccured("Error opening socket");
@@ -35,6 +33,7 @@ IrcChat::~IrcChat() { sock->close(); }
 
 void IrcChat::join(const QString channel) {
 	sock->connectToHost(HOST, PORT);
+	emit connectedChanged();
 	// Tell server that we support twitch-specific commands
 	sock->write("TWITCHCLIENT 2\n");
 	// Login
@@ -47,15 +46,20 @@ void IrcChat::join(const QString channel) {
 	motdended = false;
 }
 
-void IrcChat::reopenSocket() {
+void IrcChat::disconnect() {
 	sock->close();
-	sock = new QTcpSocket(this);
-	if(sock) {
+	emit connectedChanged();
+}
+
+void IrcChat::reopenSocket() {
+	if(sock->isOpen())
+		sock->close();
+	sock->open(QIODevice::ReadWrite);
+	if(!sock->isOpen()) {
 		errorOccured("Error opening socket");
 	}
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
-	sock->connectToHost(HOST, PORT);
 }
 
 void IrcChat::sendMessage(const QString &msg) {
@@ -134,9 +138,8 @@ void IrcChat::parseCommand(QString cmd) {
 	}
 	if(cmd.startsWith("HISTORYEND")) {
 		motdended = true;
-		connected = true;
 		// You receive HISTORYEND only once after connecting so there's no checking before stateChanged
-		stateChanged();
+		//stateChanged();
 		return;
 	}
 	if(cmd.startsWith(":tmi.twitch.tv")) {
@@ -166,9 +169,12 @@ void IrcChat::processError(QAbstractSocket::SocketError socketError) {
 		err = "Unknown error.";
 	}
 
-	if(connected) {
-		connected = false;
-		stateChanged();
+	if(!connected()) {
+		emit connectedChanged();
 	}
 	errorOccured(err);
+}
+
+bool IrcChat::connected() {
+	return sock->isWritable();
 }
