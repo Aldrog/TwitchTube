@@ -21,8 +21,8 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import harbour.twitchtube.ircchat 1.0
-import "scripts/httphelper.js" as HTTP
-import "scripts/chathelper.js" as CH
+import "../js/httphelper.js" as HTTP
+import "../js/chathelper.js" as CH
 
 Page {
 	id: page
@@ -105,7 +105,7 @@ Page {
 			MenuItem {
 				text: qsTr("Quality")
 				onClicked: {
-					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream })
+					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream, channel: channel })
 					dialog.accepted.connect(function() {
 						showStream = !dialog.chatOnly
 						if(showStream && video.playbackState !== MediaPlayer.PlayingState)
@@ -323,5 +323,12 @@ Page {
 				})
 			})
 		}
+	}
+
+	onStatusChanged: {
+		if(status === PageStatus.Activating)
+			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+		if(status === PageStatus.Deactivating && _navigation === PageNavigation.Back)
+			mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
 	}
 }

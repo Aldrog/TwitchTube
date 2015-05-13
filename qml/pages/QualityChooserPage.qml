@@ -7,36 +7,43 @@ Dialog {
 
 	property var qualities: ["chunked", "high", "medium", "low", "mobile"]
 	property bool chatOnly
+	// For StreamCover
+	property string channel
 
 	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
 
-	Column {
+	SilicaFlickable {
 		anchors.fill: parent
+		// Should look into a proper solution later
+		contentHeight: head.height + qualityChooser.height + noVideo.height
 
-		DialogHeader {
-			id: head
-			title: qsTr("Set up stream quality")
-		}
-
-		ComboBox {
-			id: qualityChooser
-			width: parent.width
-			label: qsTr("Stream quality")
-			currentIndex: qualities.indexOf(streamQuality)
-
-			menu: ContextMenu {
-				MenuItem { text: qsTr("Source") }
-				MenuItem { text: qsTr("High") }
-				MenuItem { text: qsTr("Medium") }
-				MenuItem { text: qsTr("Low") }
-				MenuItem { text: qsTr("Mobile") }
+		Column {
+			anchors.fill: parent
+			DialogHeader {
+				id: head
+				title: qsTr("Set up stream quality")
 			}
-		}
 
-		TextSwitch {
-			id: noVideo
-			checked: chatOnly
-			text: "Chat only"
+			ComboBox {
+				id: qualityChooser
+				width: parent.width
+				label: qsTr("Stream quality")
+				currentIndex: qualities.indexOf(streamQuality)
+
+				menu: ContextMenu {
+					MenuItem { text: qsTr("Source") }
+					MenuItem { text: qsTr("High") }
+					MenuItem { text: qsTr("Medium") }
+					MenuItem { text: qsTr("Low") }
+					MenuItem { text: qsTr("Mobile") }
+				}
+			}
+
+			TextSwitch {
+				id: noVideo
+				checked: chatOnly
+				text: "Chat only"
+			}
 		}
 	}
 

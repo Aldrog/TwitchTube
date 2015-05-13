@@ -19,14 +19,16 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "scripts/httphelper.js" as HTTP
+import "../js/httphelper.js" as HTTP
 
 Dialog {
 	id: page
-	allowedOrientations: Orientation.Portrait
+	allowedOrientations: Orientation.All
 
 	property var imageSizes: ["large", "medium", "small"]
 	property string name
+	// Status for NavigationCover
+	property string navStatus: qsTr("Settings")
 
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
@@ -36,11 +38,17 @@ Dialog {
 
 	SilicaFlickable {
 		anchors.fill: parent
+		// Should look into a proper solution later
+		contentHeight: header.height + login.height + gameQ.height + previewQ.height + streamTitles.height + chatTtB.height
+
 		Column {
+			id: settingsContainer
 			anchors.fill: parent
-			anchors.margins: Theme.paddingMedium
 
 			DialogHeader {
+				id: header
+				dialog: page
+
 				title: qsTr("TwitchTube Settings")
 				acceptText: qsTr("Apply")
 				cancelText: qsTr("Cancel")

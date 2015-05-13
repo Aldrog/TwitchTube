@@ -23,8 +23,9 @@ import "pages"
 
 ApplicationWindow
 {
+	id: mainWindow
 	initialPage: Component { GamesPage { } }
-    cover: Qt.resolvedUrl("cover/CoverPage.qml")
+	cover: Qt.resolvedUrl("cover/NavigationCover.qml")
 }
 
 

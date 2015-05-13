@@ -21,12 +21,11 @@ SOURCES += \
     src/qmlsettings.cpp
 
 OTHER_FILES += \
-    qml/cover/CoverPage.qml \
     translations/*.ts \
     qml/pages/GamesPage.qml \
     qml/pages/ChannelsPage.qml \
     qml/pages/StreamPage.qml \
-    qml/pages/scripts/httphelper.js \
+    qml/js/httphelper.js \
     qml/pages/SettingsPage.qml \
     qml/pages/SearchPage.qml \
     qml/pages/LoginPage.qml \
@@ -36,7 +35,7 @@ OTHER_FILES += \
     harbour-twitchtube.png \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
-    qml/pages/scripts/chathelper.js \
+    qml/js/chathelper.js \
     qml/pages/elements/Categories.qml \
     qml/pages/QualityChooserPage.qml \
     rpm/harbour-twitchtube.changes \
@@ -46,7 +45,9 @@ OTHER_FILES += \
     qml/pages/elements/GamesGrid.qml \
     qml/pages/elements/ChannelsGrid.qml \
     qml/pages/GameChannelsPage.qml \
-    qml/pages/FollowedGamesPage.qml
+    qml/pages/FollowedGamesPage.qml \
+    qml/cover/NavigationCover.qml \
+    qml/cover/StreamCover.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

@@ -20,13 +20,15 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "elements"
-import "scripts/httphelper.js" as HTTP
+import "../js/httphelper.js" as HTTP
 
 Page {
 	id: page
 	allowedOrientations: Orientation.All
 
 	property string username
+	// Status for NavigationCover
+	property string navStatus: qsTr("Following")
 
 	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
 

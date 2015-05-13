@@ -23,7 +23,10 @@ import Sailfish.Silica 1.0
 Page {
 	id: page
 	allowedOrientations: Orientation.All
+
 	property bool needExit: false
+	// Status for NavigationCover
+	property string navStatus: qsTr("Settings")
 
 	PageHeader {
 		id: head
