@@ -14,8 +14,14 @@ Features
 - Search channels
 - Chat
 
-TODO for 1.0
+State of development
+--------------------
+1.0 roadmap has been completed and now the app only requires some polishing (adjusting opacity levels of items on multitasking cover as an example).
+The app will be updated (and most likely published in Jolla Store) as soon as GStreamer 1.0 based multimedia stack is available in Sailfish.
+
+Future plans
 ------------
-- Pausing video when app is not active
-- Show broadcast titles (maybe optional, like in Twitch for Android)
-- Show information about broadcast on multitasking cover
+Version 1.0 doesn't mean the development of the app is over. After release I will start adding new features like:
+- Tablet interface
+- Viewing channel's biography
+- Watching past broadcasts
