@@ -45,6 +45,11 @@ SilicaGridView {
 		}
 	}
 
+	ViewPlaceholder {
+		enabled: model.count <= 0
+		text: qsTr("No games to show")
+	}
+
 	model: ListModel { id: gameList }
 	cellWidth: width/row
 	// 18:13 is the actual aspect ratio of previews

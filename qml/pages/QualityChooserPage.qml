@@ -7,8 +7,6 @@ Dialog {
 
 	property var qualities: ["chunked", "high", "medium", "low", "mobile"]
 	property bool chatOnly
-	// For StreamCover
-	property string channel
 
 	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
 

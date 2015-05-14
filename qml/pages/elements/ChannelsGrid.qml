@@ -46,6 +46,11 @@ SilicaGridView {
 		}
 	}
 
+	ViewPlaceholder {
+		enabled: model.count <= 0
+		text: qsTr("No channels to show")
+	}
+
 	model: ListModel { id: channelsList }
 	cellWidth: width/row
 	// 5:8 is the actual aspect ratio of previews

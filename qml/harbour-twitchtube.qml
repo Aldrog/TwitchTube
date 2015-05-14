@@ -23,6 +23,7 @@ import "pages"
 
 ApplicationWindow
 {
+	property string currentChannel: ""
 	id: mainWindow
 	initialPage: Component { GamesPage { } }
 	cover: Qt.resolvedUrl("cover/NavigationCover.qml")

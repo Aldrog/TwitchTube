@@ -36,6 +36,11 @@
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="51"/>
+        <source>No channels to show</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ChannelsPage</name>
@@ -83,6 +88,11 @@
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qml/pages/elements/GamesGrid.qml" line="50"/>
+        <source>No games to show</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GamesPage</name>
@@ -113,37 +123,37 @@
 <context>
     <name>QualityChooserPage</name>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="24"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="22"/>
         <source>Set up stream quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="30"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="28"/>
         <source>Stream quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="34"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="32"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="35"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="33"/>
         <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="36"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="34"/>
         <source>Medium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="37"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="35"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="38"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="36"/>
         <source>Mobile</source>
         <translation type="unfinished"></translation>
     </message>

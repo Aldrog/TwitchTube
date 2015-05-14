@@ -326,8 +326,10 @@ Page {
 	}
 
 	onStatusChanged: {
-		if(status === PageStatus.Activating)
+		if(status === PageStatus.Activating) {
+			mainWindow.currentChannel = channel
 			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+		}
 		if(status === PageStatus.Deactivating && _navigation === PageNavigation.Back)
 			mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
 	}
