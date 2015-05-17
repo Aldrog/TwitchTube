@@ -23,5 +23,6 @@ Future plans
 ------------
 Version 1.0 doesn't mean the development of the app is over. After release I will start adding new features like:
 - Tablet interface
+- Ability to enable sound playback in minimized app (aka "radio mode")
 - Viewing channel's biography
 - Watching past broadcasts
