@@ -14,6 +14,8 @@ TARGET = harbour-twitchtube
 
 CONFIG += sailfishapp
 
+QT += dbus
+
 SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \

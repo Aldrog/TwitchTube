@@ -18,6 +18,7 @@
  */
 
 #include "tools.h"
+#include <QtDBus>
 
 /* Return codes:
  * 0 - success
@@ -39,6 +40,24 @@ int Tools::clearCookies() {
 			return 1;
 	}
 	return -2;
+}
+
+// true - screen blanks (default)
+// false - no blanking
+void Tools::setBlankingMode(bool state)
+{
+	QDBusConnection system = QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system");
+
+	QDBusInterface interface("com.nokia.mce",
+							 "/com/nokia/mce/request",
+							 "com.nokia.mce.request",
+							 system);
+
+	if (state) {
+		interface.call(QLatin1String("req_display_cancel_blanking_pause"));
+	} else {
+		interface.call(QLatin1String("req_display_blanking_pause"));
+	}
 }
 
 Tools::Tools(QObject *parent) :	QObject(parent) { }

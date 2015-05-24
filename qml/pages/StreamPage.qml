@@ -135,10 +135,8 @@ Page {
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
-					if(page.state === "")
-						page.state = "fullscreen"
-					else
-						page.state = ""
+					page.state = !page.state ? "fullscreen" : ""
+					console.log(page.state)
 
 					console.log("video height:", video.height)
 					parent.logState()
@@ -329,8 +327,13 @@ Page {
 		if(status === PageStatus.Activating) {
 			mainWindow.currentChannel = channel
 			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+			cpptools.setBlankingMode(false)
 		}
-		if(status === PageStatus.Deactivating && _navigation === PageNavigation.Back)
-			mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+		if(status === PageStatus.Deactivating) {
+			if (_navigation === PageNavigation.Back) {
+				mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+			}
+			cpptools.setBlankingMode(true)
+		}
 	}
 }

@@ -33,6 +33,7 @@ public:
 	~Tools();
 
 	Q_INVOKABLE int clearCookies();
+	Q_INVOKABLE void setBlankingMode(bool state);
 };
 
 #endif // TOOLS_H
