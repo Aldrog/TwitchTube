@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 Dialog {

@@ -17,7 +17,7 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 SilicaGridView {
@@ -31,7 +31,7 @@ SilicaGridView {
 	property bool autoLoad: true
 	property var parameters: ({})
 
-	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "medium", qmlSettings.change)
+	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "large", qmlSettings.change)
 	property bool showBroadcastTitles: parseInt(qmlSettings.value("Interface/ShowBroadcastTitles", 1, qmlSettings.change))
 
 	PushUpMenu {

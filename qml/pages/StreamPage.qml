@@ -17,7 +17,7 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.1
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import harbour.twitchtube.ircchat 1.0
@@ -61,7 +61,6 @@ Page {
 
 	onActiveChanged: {
 		if(page.status === PageStatus.Active) {
-			console.log("app activeness changed")
 			if(active) {
 				video.play()
 				if(!twitchChat.connected) {
@@ -116,6 +115,22 @@ Page {
 				}
 			}
 		}
+
+		Timer {
+			id: fullscreenTimer
+			interval: 2000
+			onTriggered: page.state = "fullscreen"
+			running: page.orientation === isLandscape
+		}
+
+		onMovementEnded: {
+			if(visibleArea.yPosition === 0 && isLandscape) {
+				fullscreenTimer.start()
+			} else {
+				fullscreenTimer.stop()
+			}
+		}
+		onMovementStarted: fullscreenTimer.stop()
 
 		Video {
 			id: video
