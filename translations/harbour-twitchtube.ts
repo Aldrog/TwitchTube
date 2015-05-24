@@ -270,17 +270,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="210"/>
+        <location filename="../qml/pages/StreamPage.qml" line="216"/>
         <source>Chat here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="211"/>
+        <location filename="../qml/pages/StreamPage.qml" line="217"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="275"/>
+        <location filename="../qml/pages/StreamPage.qml" line="281"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

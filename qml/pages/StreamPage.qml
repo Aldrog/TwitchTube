@@ -138,6 +138,12 @@ Page {
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
 			source: url[streamQuality]
 
+			BusyIndicator {
+				anchors.centerIn: parent
+				running: video.playbackState !== MediaPlayer.PlayingState
+				size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
+			}
+
 			onErrorChanged: console.error("video error:", errorString)
 
 			onPlaybackStateChanged: {
