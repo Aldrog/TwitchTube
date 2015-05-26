@@ -216,10 +216,10 @@ Page {
 			placeholderText: qsTr("Chat here")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-			EnterKey.enabled: text.length > 0 && twitchChat.available
+			EnterKey.enabled: text.length > 0 && twitchChat.connected
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				CH.parseEmoticons(username, text)
+				CH.parseMessage(username, text)
 				text = ""
 			}
 		}
@@ -261,7 +261,7 @@ Page {
 				password: 'oauth:' + authToken
 
 				onMessageReceived: {
-					CH.parseEmoticons(sndnick, msg)
+					CH.parseMessage(sndnick, msg)
 				}
 
 				onColorReceived: {

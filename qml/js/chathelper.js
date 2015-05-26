@@ -52,15 +52,16 @@ function setColor(name, color) {
 	user_colors[name] = color
 }
 
-function parseEmoticons(nick, str) {
-	var res = str
+function parseMessage(nick, str) {
+	var res = str.replace(/\s/g, "  ")
 	if(nick) {
 		HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + nick + "/emoticons", function(data) {
 			if(data) {
 				var emoticons = JSON.parse(data).emoticons
 				for (var i in emoticons) {
-					res = res.replace(new RegExp(emoticons[i].regex, 'g'), "<img src='" + emoticons[i].url + "'/>")
+					res = res.replace(new RegExp("(^" + emoticons[i].regex + "(?!\\S))|(\\s" + emoticons[i].regex + "(?!\\S))", 'g'), "<img src='" + emoticons[i].url + "'/>")
 				}
+				res = res.replace(/\s\s/g, " ")
 				console.log(res)
 				messages.insert(0, {badges: parseBadges(nick), nick: nick, nick_color: getColor(nick), message: res})
 			}
