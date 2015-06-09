@@ -35,10 +35,6 @@ Page {
 	property bool showStream: true
 	property bool active: Qt.application.active
 
-	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
-	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
-	property bool chatFlowTtB: parseInt(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
-
 	states: State {
 		name: "fullscreen"
 		PropertyChanges {
@@ -85,20 +81,20 @@ Page {
 			id: streamMenu
 			MenuItem {
 				text: qsTr("Follow")
-				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken, function(data) {
+				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
 					if(data)
 						followed = true
 				})
-				visible: authToken && !followed
+				visible: authToken.value && !followed
 			}
 
 			MenuItem {
 				text: qsTr("Unfollow")
-				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken, function(data) {
+				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
 					if(data === 204)
 						followed = false
 				})
-				visible: authToken && followed
+				visible: authToken.value && followed
 			}
 
 			MenuItem {
@@ -132,88 +128,94 @@ Page {
 		}
 		onMovementStarted: fullscreenTimer.stop()
 
-		Video {
-			id: video
+		Rectangle {
+			id: videoBackground
+			color: "black"
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			source: url[streamQuality]
 
-			BusyIndicator {
-				anchors.centerIn: parent
-				running: video.playbackState !== MediaPlayer.PlayingState
-				size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
-			}
-
-			onErrorChanged: console.error("video error:", errorString)
-
-			onPlaybackStateChanged: {
-				logState()
-			}
-			onAvailabilityChanged: {
-				logAvailability()
-			}
-
-			MouseArea {
+			Video {
+				id: video
 				anchors.fill: parent
-				onClicked: {
-					page.state = !page.state ? "fullscreen" : ""
-					console.log(page.state)
+				source: url[streamQuality.value]
 
-					console.log("video height:", video.height)
-					parent.logState()
-					parent.logAvailability()
-					console.log("video buffer:", video.bufferProgress)
-					console.log("video error:", video.errorString)
-				}
-			}
-
-			function logAvailability() {
-				var av
-				switch (availability) {
-				case MediaPlayer.Available:
-					state = "available"
-					break
-				case MediaPlayer.Busy:
-					state = "busy"
-					break
-				case MediaPlayer.Unavailable:
-					state = "unavailable"
-					break
-				case MediaPlayer.ResourceMissing:
-					state = "missing resource"
-					break
+				BusyIndicator {
+					anchors.centerIn: parent
+					running: video.playbackState !== MediaPlayer.PlayingState
+					size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
 				}
 
-				console.log("video availability:", av)
-			}
+				onErrorChanged: console.error("video error:", errorString)
 
-			function logState() {
-				var state
-				switch (playbackState) {
-				case MediaPlayer.PlayingState:
-					state = "playing"
-					break
-				case MediaPlayer.PausedState:
-					state = "paused"
-					break
-				case MediaPlayer.StoppedState:
-					state = "stopped"
-					break
+				onPlaybackStateChanged: {
+					logState()
+				}
+				onAvailabilityChanged: {
+					logAvailability()
 				}
 
-				console.log("video state:", state)
+				MouseArea {
+					anchors.fill: parent
+					onClicked: {
+						page.state = !page.state ? "fullscreen" : ""
+						console.log(page.state)
+
+						console.log("video height:", video.height)
+						parent.logState()
+						parent.logAvailability()
+						console.log("video buffer:", video.bufferProgress)
+						console.log("video error:", video.errorString)
+					}
+				}
+
+				function logAvailability() {
+					var av
+					switch (availability) {
+					case MediaPlayer.Available:
+						state = "available"
+						break
+					case MediaPlayer.Busy:
+						state = "busy"
+						break
+					case MediaPlayer.Unavailable:
+						state = "unavailable"
+						break
+					case MediaPlayer.ResourceMissing:
+						state = "missing resource"
+						break
+					}
+
+					console.log("video availability:", av)
+				}
+
+				function logState() {
+					var state
+					switch (playbackState) {
+					case MediaPlayer.PlayingState:
+						state = "playing"
+						break
+					case MediaPlayer.PausedState:
+						state = "paused"
+						break
+					case MediaPlayer.StoppedState:
+						state = "stopped"
+						break
+					}
+
+					console.log("video state:", state)
+				}
 			}
 		}
 
 		TextField {
 			id: chatMessage
 			anchors {	left: parent.left
-						right: parent.right
-						top: chatFlowTtB ? undefined : video.bottom
-						bottom: chatFlowTtB ? parent.bottom : undefined
-						margins: Theme.paddingSmall
-					}
-			placeholderText: qsTr("Chat here")
+				right: parent.right
+				top: chatFlowBtT.value ? videoBackground.bottom : undefined
+				bottom: chatFlowBtT.value ? undefined : parent.bottom
+				margins: Theme.paddingSmall
+			}
+			placeholderText: twitchChat.connected ? qsTr("Type your message here") : qsTr("Chat is not available")
 			label: qsTr("Message to send")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
 			EnterKey.enabled: text.length > 0 && twitchChat.connected
@@ -227,13 +229,13 @@ Page {
 		SilicaListView {
 			id: chat
 			anchors {	left: parent.left
-						right: parent.right
-						top: chatFlowTtB ? video.bottom : chatMessage.bottom
-						bottom: chatFlowTtB ? chatMessage.top : parent.bottom
-						margins: Theme.paddingMedium
-					}
+				right: parent.right
+				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
+				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
+				margins: Theme.paddingMedium
+			}
 			clip: true
-			verticalLayoutDirection: chatFlowTtB ? ListView.BottomToTop : ListView.TopToBottom
+			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
 			model: ListModel { id: messages }
 			delegate: Item {
 				height: lbl.height
@@ -241,7 +243,7 @@ Page {
 					id: lbl
 					width: chat.width
 					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-						  "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
+								   "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
 						  (nick ? "" : ("<font color=" + Theme.highlightColor + ">")) +
 						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
 						  (nick ? "" : "</font>")
@@ -258,7 +260,7 @@ Page {
 
 			IrcChat {
 				id: twitchChat
-				password: 'oauth:' + authToken
+				password: 'oauth:' + authToken.value
 
 				onMessageReceived: {
 					CH.parseMessage(sndnick, msg)
@@ -282,7 +284,7 @@ Page {
 				}
 
 				Component.onCompleted: {
-					if(!authToken)
+					if(!authToken.value)
 						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
@@ -327,8 +329,8 @@ Page {
 			}
 		})
 
-		if(authToken) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
+		if(authToken.value) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				twitchChat.name = user.name

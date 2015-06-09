@@ -32,12 +32,12 @@
 <context>
     <name>ChannelsGrid</name>
     <message>
-        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="42"/>
+        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="39"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="51"/>
+        <location filename="../qml/pages/elements/ChannelsGrid.qml" line="48"/>
         <source>No channels to show</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,7 +58,7 @@
 <context>
     <name>FollowedGamesPage</name>
     <message>
-        <location filename="../qml/pages/FollowedGamesPage.qml" line="59"/>
+        <location filename="../qml/pages/FollowedGamesPage.qml" line="57"/>
         <source>Followed Games</source>
         <translation type="unfinished"></translation>
     </message>
@@ -71,7 +71,7 @@
 <context>
     <name>FollowedPage</name>
     <message>
-        <location filename="../qml/pages/FollowedPage.qml" line="56"/>
+        <location filename="../qml/pages/FollowedPage.qml" line="54"/>
         <source>Followed Streams</source>
         <translation type="unfinished"></translation>
     </message>
@@ -84,12 +84,12 @@
 <context>
     <name>GamesGrid</name>
     <message>
-        <location filename="../qml/pages/elements/GamesGrid.qml" line="41"/>
+        <location filename="../qml/pages/elements/GamesGrid.qml" line="39"/>
         <source>Load more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/elements/GamesGrid.qml" line="50"/>
+        <location filename="../qml/pages/elements/GamesGrid.qml" line="48"/>
         <source>No games to show</source>
         <translation type="unfinished"></translation>
     </message>
@@ -123,37 +123,37 @@
 <context>
     <name>QualityChooserPage</name>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="22"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="20"/>
         <source>Set up stream quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="28"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="26"/>
         <source>Stream quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="32"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="30"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="33"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="31"/>
         <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="34"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="32"/>
         <source>Medium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="35"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="33"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/QualityChooserPage.qml" line="36"/>
+        <location filename="../qml/pages/QualityChooserPage.qml" line="34"/>
         <source>Mobile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,76 +174,76 @@
 <context>
     <name>SettingsPage</name>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="52"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="46"/>
         <source>TwitchTube Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="53"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="47"/>
         <source>Apply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="54"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="48"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="69"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="63"/>
         <source>Logged in as </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="69"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="63"/>
         <source>Not logged in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="81"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="75"/>
         <source>Log in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="81"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="75"/>
         <source>Log out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="106"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="105"/>
+        <source>Chat flows from bottom to top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SettingsPage.qml" line="111"/>
         <source>Game posters quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="108"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="119"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="113"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="124"/>
         <source>High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="109"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="120"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="114"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="125"/>
         <source>Medium</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="110"/>
-        <location filename="../qml/pages/SettingsPage.qml" line="121"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="115"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="126"/>
         <source>Low</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="117"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="122"/>
         <source>Stream previews quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="128"/>
+        <location filename="../qml/pages/SettingsPage.qml" line="99"/>
         <source>Show broadcast titles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/SettingsPage.qml" line="134"/>
-        <source>Chat flows from top to bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -255,32 +255,37 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="87"/>
+        <location filename="../qml/pages/StreamPage.qml" line="83"/>
         <source>Follow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="96"/>
+        <location filename="../qml/pages/StreamPage.qml" line="92"/>
         <source>Unfollow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="105"/>
+        <location filename="../qml/pages/StreamPage.qml" line="101"/>
         <source>Quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="216"/>
-        <source>Chat here</source>
+        <location filename="../qml/pages/StreamPage.qml" line="218"/>
+        <source>Type your message here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="217"/>
+        <location filename="../qml/pages/StreamPage.qml" line="218"/>
+        <source>Chat is not available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="219"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="281"/>
+        <location filename="../qml/pages/StreamPage.qml" line="283"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

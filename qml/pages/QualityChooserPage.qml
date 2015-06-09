@@ -8,8 +8,6 @@ Dialog {
 	property var qualities: ["chunked", "high", "medium", "low", "mobile"]
 	property bool chatOnly
 
-	property string streamQuality: qmlSettings.value("Video/StreamQuality", "medium", qmlSettings.change)
-
 	SilicaFlickable {
 		anchors.fill: parent
 		// Should look into a proper solution later
@@ -26,7 +24,7 @@ Dialog {
 				id: qualityChooser
 				width: parent.width
 				label: qsTr("Stream quality")
-				currentIndex: qualities.indexOf(streamQuality)
+				currentIndex: qualities.indexOf(streamQuality.value)
 
 				menu: ContextMenu {
 					MenuItem { text: qsTr("Source") }
@@ -46,7 +44,7 @@ Dialog {
 	}
 
 	onAccepted: {
-		qmlSettings.setValue("Video/StreamQuality", qualities[qualityChooser.currentIndex])
+		streamQuality.value = qualities[qualityChooser.currentIndex]
 		chatOnly = noVideo.checked
 	}
 }

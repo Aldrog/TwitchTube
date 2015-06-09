@@ -30,12 +30,6 @@ Dialog {
 	// Status for NavigationCover
 	property string navStatus: qsTr("Settings")
 
-	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
-	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
-	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "large", qmlSettings.change)
-	property bool showBroadcastTitles: parseInt(qmlSettings.value("Interface/ShowBroadcastTitles", 1, qmlSettings.change))
-	property bool chatFlowTtB: parseInt(qmlSettings.value("Interface/ChatFlowTopToBottom", 0, qmlSettings.change))
-
 	SilicaFlickable {
 		anchors.fill: parent
 		// Should look into a proper solution later
@@ -66,7 +60,7 @@ Dialog {
 								right: parent.right
 								margins: Theme.paddingLarge
 							}
-					text: !authToken ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
+					text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
 					color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
 					font.pixelSize: Theme.fontSizeMedium
 				}
@@ -78,27 +72,38 @@ Dialog {
 								right: parent.right
 								margins: Theme.paddingLarge
 							}
-					text: !authToken ? qsTr("Log in") : qsTr("Log out")
+					text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
 					color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
 					font.pixelSize: Theme.fontSizeSmall
 				}
 
 				onClicked: {
-					console.log("old token:", authToken)
-					if(!authToken) {
+					console.log("old token:", authToken.value)
+					if(!authToken.value) {
 						var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
 						lpage.statusChanged.connect(function() {
 							if(lpage.status === PageStatus.Deactivating) {
-								console.log(authToken)
 								getName()
 							}
 						})
 					}
 					else {
-						qmlSettings.setValue("User/OAuth2Token", "")
+						authToken.value = ""
 						console.log("Cookie cleaning script result code:", cpptools.clearCookies())
 					}
 				}
+			}
+
+			TextSwitch {
+				id: streamTitles
+				text: qsTr("Show broadcast titles")
+				checked: showBroadcastTitles.value
+			}
+
+			TextSwitch {
+				id: chatTtB
+				text: qsTr("Chat flows from bottom to top")
+				checked: chatFlowBtT.value
 			}
 
 			ComboBox {
@@ -109,7 +114,7 @@ Dialog {
 					MenuItem { text: qsTr("Medium") }
 					MenuItem { text: qsTr("Low") }
 				}
-				currentIndex: imageSizes.indexOf(gameImageSize)
+				currentIndex: imageSizes.indexOf(gameImageSize.value)
 			}
 
 			ComboBox {
@@ -120,19 +125,7 @@ Dialog {
 					MenuItem { text: qsTr("Medium") }
 					MenuItem { text: qsTr("Low") }
 				}
-				currentIndex: imageSizes.indexOf(channelImageSize)
-			}
-
-			TextSwitch {
-				id: streamTitles
-				text: qsTr("Show broadcast titles")
-				checked: showBroadcastTitles
-			}
-
-			TextSwitch {
-				id: chatTtB
-				text: qsTr("Chat flows from top to bottom")
-				checked: chatFlowTtB
+				currentIndex: imageSizes.indexOf(channelImageSize.value)
 			}
 		}
 
@@ -140,21 +133,21 @@ Dialog {
 	}
 
 	function getName() {
-		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
+		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 			var user = JSON.parse(data)
 			name = user.display_name
 		})
 	}
 
 	Component.onCompleted: {
-		if(authToken)
+		if(authToken.value)
 			getName()
 	}
 
 	onAccepted: {
-		qmlSettings.setValue("Interface/GameImageSize", imageSizes[gameQ.currentIndex])
-		qmlSettings.setValue("Interface/ChannelImageSize", imageSizes[previewQ.currentIndex])
-		qmlSettings.setValue("Interface/ShowBroadcastTitles", ~~streamTitles.checked)
-		qmlSettings.setValue("Interface/ChatFlowTopToBottom", ~~chatTtB.checked)
+		gameImageSize.value = imageSizes[gameQ.currentIndex]
+		channelImageSize.value = imageSizes[previewQ.currentIndex]
+		showBroadcastTitles.value = streamTitles.checked
+		chatFlowBtT.value = chatTtB.checked
 	}
 }

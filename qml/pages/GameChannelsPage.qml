@@ -34,8 +34,6 @@ Page {
 	// Status for NavigationCover
 	property string navStatus: game
 
-	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
-
 	ChannelsGrid {
 		id: gridChannels
 
@@ -54,16 +52,16 @@ Page {
 
 		Categories {
 			games: fromFollowings
-			following: !fromFollowings && authToken
+			following: !fromFollowings && authToken.value
 		}
 
 		header: PageHeader {
 			id: header
-			title: (authToken ? "\t\t " : "") + game
+			title: (authToken.value ? "\t\t " : "") + game
 			BackgroundItem {
 				id: follow
 				parent: header.extraContent
-				visible: authToken
+				visible: authToken.value
 				anchors.verticalCenter: parent.verticalCenter
 				anchors.left: parent.left
 				anchors.leftMargin: 50
@@ -122,12 +120,12 @@ Page {
 
 				onClicked: {
 					if(!followed)
-						HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken, function(data) {
+						HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
 							if(data)
 								followed = true
 						})
 					else
-						HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken, function(data) {
+						HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
 							if(data === 204)
 								followed = false
 						})
@@ -137,8 +135,8 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
+		if(authToken.value) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				HTTP.getRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game, function(data) {

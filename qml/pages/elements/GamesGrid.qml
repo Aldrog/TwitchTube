@@ -31,8 +31,6 @@ SilicaGridView {
 	property bool autoLoad: true
 	property var parameters: ({})
 
-	property string gameImageSize: qmlSettings.value("Interface/GameImageSize", "large", qmlSettings.change)
-
 	PushUpMenu {
 		enabled: offset < totalCount
 		visible: offset < totalCount
@@ -70,7 +68,7 @@ SilicaGridView {
 			anchors.fill: parent
 			anchors.margins: Theme.paddingSmall
 			fillMode: Image.PreserveAspectCrop
-			source: box[gameImageSize]
+			source: box[gameImageSize.value]
 		}
 
 		OpacityRampEffect {

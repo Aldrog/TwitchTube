@@ -26,20 +26,27 @@ class QMLSettings : public QSettings
 {
 	Q_OBJECT
 public:
-	explicit QMLSettings(QObject *parent = 0);
-	Q_INVOKABLE inline void setValue(const QString &key, const QVariant &value) { QSettings::setValue(key, value); emit changeChanged(); }
-	Q_INVOKABLE inline QVariant value(const QString &key, const QVariant &defaultValue = QVariant(), bool nothing = true) const { return QSettings::value(key, defaultValue); }
+	Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged)
+	Q_PROPERTY(QVariant defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
+	Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
-	// Fake property
-	Q_PROPERTY(bool change READ change NOTIFY changeChanged)
-	bool change();
-	//TODO: Rework this class in order to get rid of fake property hack
+	explicit QMLSettings(QObject *parent = 0);
+
+	inline QString key() { return _key; }
+	void setKey(QString key);
+	inline QVariant defaultValue() { return _default; }
+	void setDefaultValue(QVariant defaultValue);
+	QVariant value();
+	void setValue(QVariant value);
 
 signals:
-	void changeChanged();
+	void keyChanged();
+	void defaultValueChanged();
+	void valueChanged();
 
-public slots:
-
+private:
+	QString _key;
+	QVariant _default;
 };
 
 #endif // QMLSETTINGS_H

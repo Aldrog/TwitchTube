@@ -19,9 +19,38 @@
 
 #include "qmlsettings.h"
 #include <QCoreApplication>
+#include <QDebug>
 
 QMLSettings::QMLSettings(QObject *parent) : QSettings(QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName(), parent){}
 
-bool QMLSettings::change() {
-	return true;
+void QMLSettings::setKey(QString key) {
+	if(key != _key) {
+		_key = key;
+		emit keyChanged();
+	}
+}
+
+void QMLSettings::setDefaultValue(QVariant defaultValue) {
+	if(defaultValue != _default) {
+		_default = defaultValue;
+		emit defaultValueChanged();
+	}
+}
+
+QVariant QMLSettings::value() {
+	QVariant val = QSettings::value(_key, _default);
+	qDebug() << _key << val << _default.type();
+	if(val.convert(_default.type())) {
+		qDebug() << "passed" << val;
+		return val;
+	}
+	else return QSettings::value(_key, _default);
+}
+
+void QMLSettings::setValue(QVariant value) {
+	qDebug() << value;
+	if(value != this->value()) {
+		QSettings::setValue(_key, value);
+		emit valueChanged();
+	}
 }

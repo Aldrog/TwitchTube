@@ -31,9 +31,6 @@ SilicaGridView {
 	property bool autoLoad: true
 	property var parameters: ({})
 
-	property string channelImageSize: qmlSettings.value("Interface/ChannelImageSize", "large", qmlSettings.change)
-	property bool showBroadcastTitles: parseInt(qmlSettings.value("Interface/ShowBroadcastTitles", 1, qmlSettings.change))
-
 	PushUpMenu {
 		enabled: offset < totalCount
 		visible: offset < totalCount
@@ -68,13 +65,13 @@ SilicaGridView {
 
 		Image {
 			id: previewImage
-			source: preview[channelImageSize]
+			source: preview[channelImageSize.value]
 			anchors.fill: parent
 			anchors.margins: Theme.paddingSmall
 		}
 
 		OpacityRampEffect {
-			property real effHeight: (showBroadcastTitles && title.text) ? (title.height + title.y) : name.height
+			property real effHeight: (showBroadcastTitles.value && title.text) ? (title.height + title.y) : name.height
 			sourceItem: previewImage
 			direction: OpacityRamp.BottomToTop
 			offset: 1 - 1.25 * (effHeight / previewImage.height)
@@ -96,7 +93,7 @@ SilicaGridView {
 
 		Label {
 			id: title
-			visible: showBroadcastTitles
+			visible: showBroadcastTitles.value
 			anchors {
 				left: previewImage.left; leftMargin: Theme.paddingMedium
 				right: previewImage.right; rightMargin: Theme.paddingSmall

@@ -31,6 +31,39 @@
 #include "qmlsettings.h"
 #include "tools.h"
 
+//All app settings are declared here so it's easy to change default value or setting's key
+void registerSettings(QQuickView *view) {
+	QMLSettings *authToken = new QMLSettings();
+	authToken->setKey("User/TwitchOAuth2Token");
+	authToken->setDefaultValue("");
+	view->rootContext()->setContextProperty("authToken", authToken);
+
+	QMLSettings *gameImageSize = new QMLSettings();
+	gameImageSize->setKey("Interface/GameImageSize");
+	gameImageSize->setDefaultValue("large");
+	view->rootContext()->setContextProperty("gameImageSize", gameImageSize);
+
+	QMLSettings *channelImageSize = new QMLSettings();
+	channelImageSize->setKey("Interface/ChannelImageSize");
+	channelImageSize->setDefaultValue("large");
+	view->rootContext()->setContextProperty("channelImageSize", channelImageSize);
+
+	QMLSettings *showBroadcastTitles = new QMLSettings();
+	showBroadcastTitles->setKey("Interface/ShowBroadcastTitles");
+	showBroadcastTitles->setDefaultValue(true);
+	view->rootContext()->setContextProperty("showBroadcastTitles", showBroadcastTitles);
+
+	QMLSettings *chatFlowBtT = new QMLSettings();
+	chatFlowBtT->setKey("Interface/ChatFlowBottomToTop");
+	chatFlowBtT->setDefaultValue(false);
+	view->rootContext()->setContextProperty("chatFlowBtT", chatFlowBtT);
+
+	QMLSettings *streamQuality = new QMLSettings();
+	streamQuality->setKey("Video/StreamQuality");
+	streamQuality->setDefaultValue("medium");
+	view->rootContext()->setContextProperty("streamQuality", streamQuality);
+}
+
 int main(int argc, char *argv[])
 {
     // SailfishApp::main() will display "qml/template.qml", if you need more
@@ -42,16 +75,19 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-	QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+	QGuiApplication *app(SailfishApp::application(argc, argv));
 	QCoreApplication::setOrganizationName("harbour-twitchtube");
 	QCoreApplication::setApplicationName("harbour-twitchtube");
 
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
-	QScopedPointer<QQuickView> view(SailfishApp::createView());
-	QMLSettings *settings = new QMLSettings();
-	view->rootContext()->setContextProperty("qmlSettings", settings);
+	qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
+
+	QQuickView *view(SailfishApp::createView());
+
+	registerSettings(view);
 	Tools *tools = new Tools();
 	view->rootContext()->setContextProperty("cpptools", tools);
+
 	view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
 	view->show();
 	return app->exec();

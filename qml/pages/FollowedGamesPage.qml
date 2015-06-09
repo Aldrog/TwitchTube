@@ -30,8 +30,6 @@ Page {
 	// Status for NavigationCover
 	property string navStatus: qsTr("Following")
 
-	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
-
 	GamesGrid {
 		id: gridGames
 		autoLoad: false
@@ -61,8 +59,8 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken, function(data) {
+		if(authToken.value) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
 				gridGames.loadGames()

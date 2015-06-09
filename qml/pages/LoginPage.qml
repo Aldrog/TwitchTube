@@ -47,7 +47,7 @@ Page {
 			if(url.indexOf("http://localhost") === 0) {
 				var params = url.substring(url.lastIndexOf('/') + 1)
 				if(params.indexOf("#access_token") >= 0) {
-					qmlSettings.setValue("User/OAuth2Token", params.split('=')[1].split('&')[0])
+					authToken.value = params.split('=')[1].split('&')[0]
 				}
 				if(status === PageStatus.Activating)
 					needExit = true

@@ -29,13 +29,11 @@ Page {
 	// Status for NavigationCover
 	property string navStatus: qsTr("Following")
 
-	property string authToken: qmlSettings.value("User/OAuth2Token", "", qmlSettings.change)
-
 	ChannelsGrid {
 		id: gridChannels
 
 		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken
+			var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
 			console.log(url)
 			HTTP.getRequest(url,function(data) {
 				if (data) {
