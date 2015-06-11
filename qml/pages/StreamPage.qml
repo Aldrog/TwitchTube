@@ -43,6 +43,16 @@ Page {
 		}
 
 		PropertyChanges {
+			target: chatMessage
+			visible: false
+		}
+
+		PropertyChanges {
+			target: chat
+			visible: false
+		}
+
+		PropertyChanges {
 			target: streamMenu
 			visible: false
 			active: false
@@ -133,6 +143,7 @@ Page {
 			color: "black"
 			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
 			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+			visible: showStream
 
 			Video {
 				id: video
@@ -216,7 +227,7 @@ Page {
 				margins: Theme.paddingSmall
 			}
 			placeholderText: twitchChat.connected ? qsTr("Type your message here") : qsTr("Chat is not available")
-			label: qsTr("Message to send")
+			label: twitchChat.connected ? qsTr("Message to send") : qsTr("Chat is not available")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
 			EnterKey.enabled: text.length > 0 && twitchChat.connected
 			EnterKey.onClicked: {
@@ -232,7 +243,10 @@ Page {
 				right: parent.right
 				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-				margins: Theme.paddingMedium
+				topMargin: chatFlowBtT.value ? Theme.paddingSmall : Theme.paddingMedium
+				bottomMargin: chatFlowBtT.value ? Theme.paddingMedium : Theme.paddingSmall
+				leftMargin: Theme.paddingLarge
+				rightMargin: Theme.paddingLarge
 			}
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
@@ -298,8 +312,9 @@ Page {
 				RemorseItem { id: reconnect }
 			}
 
-			VerticalScrollDecorator { flickable: chat; height: 100 }
+			VerticalScrollDecorator { flickable: chat }
 		}
+		VerticalScrollDecorator { flickable: main }
 	}
 
 	function searchURL(s, q) {

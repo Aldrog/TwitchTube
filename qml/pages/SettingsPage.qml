@@ -32,21 +32,21 @@ Dialog {
 
 	SilicaFlickable {
 		anchors.fill: parent
-		// Should look into a proper solution later
-		contentHeight: header.height + login.height + gameQ.height + previewQ.height + streamTitles.height + chatTtB.height
+		contentHeight: header.height + settingsContainer.height
+
+		DialogHeader {
+			id: header
+			dialog: page
+
+			title: qsTr("TwitchTube Settings")
+			acceptText: qsTr("Apply")
+			cancelText: qsTr("Cancel")
+		}
 
 		Column {
 			id: settingsContainer
-			anchors.fill: parent
-
-			DialogHeader {
-				id: header
-				dialog: page
-
-				title: qsTr("TwitchTube Settings")
-				acceptText: qsTr("Apply")
-				cancelText: qsTr("Cancel")
-			}
+			anchors.top: header.bottom
+			width: page.width
 
 			BackgroundItem {
 				id: login

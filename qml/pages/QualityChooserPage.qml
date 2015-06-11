@@ -10,15 +10,17 @@ Dialog {
 
 	SilicaFlickable {
 		anchors.fill: parent
-		// Should look into a proper solution later
-		contentHeight: head.height + qualityChooser.height + noVideo.height
+		contentHeight: head.height + optionsContainer.height
+
+		DialogHeader {
+			id: head
+			title: qsTr("Set up stream quality")
+		}
 
 		Column {
-			anchors.fill: parent
-			DialogHeader {
-				id: head
-				title: qsTr("Set up stream quality")
-			}
+			id: optionsContainer
+			anchors.top: head.bottom
+			width: page.width
 
 			ComboBox {
 				id: qualityChooser
