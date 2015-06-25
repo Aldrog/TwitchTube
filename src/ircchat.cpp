@@ -27,6 +27,8 @@ IrcChat::IrcChat(QObject *parent) :
 	}
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
+	connect(sock, SIGNAL(connected()), this, SLOT(onSockStateChanged()));
+	connect(sock, SIGNAL(disconnected()), this, SLOT(onSockStateChanged()));
 }
 
 IrcChat::~IrcChat() { sock->close(); }
@@ -48,7 +50,6 @@ void IrcChat::join(const QString channel) {
 
 void IrcChat::disconnect() {
 	sock->close();
-	emit connectedChanged();
 }
 
 void IrcChat::reopenSocket() {
@@ -58,8 +59,8 @@ void IrcChat::reopenSocket() {
 	if(!sock->isOpen()) {
 		errorOccured("Error opening socket");
 	}
-	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
-	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
+	//connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
+	//connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
 }
 
 void IrcChat::sendMessage(const QString &msg) {
@@ -70,7 +71,7 @@ void IrcChat::receive() {
 	QString msg;
 	while (sock->canReadLine()) {
 		msg = sock->readLine();
-		// I'm not shure if \n and \r may be in another order, so removing one by one
+		// I'm not sure if \n and \r may be in different order, so removing one by one
 		msg = msg.remove('\n').remove('\r');
 		parseCommand(msg);
 	}
@@ -169,12 +170,15 @@ void IrcChat::processError(QAbstractSocket::SocketError socketError) {
 		err = "Unknown error.";
 	}
 
-	if(!connected()) {
-		emit connectedChanged();
-	}
 	errorOccured(err);
 }
 
+void IrcChat::onSockStateChanged() {
+	qDebug() << sock->state();
+	// We don't check if connected property actually changed because this slot should only be awaken when it did
+	emit connectedChanged();
+}
+
 bool IrcChat::connected() {
-	return sock->isWritable();
+	return sock->state() == QTcpSocket::ConnectedState;
 }

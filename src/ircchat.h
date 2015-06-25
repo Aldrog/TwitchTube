@@ -51,6 +51,7 @@ signals:
 	void connectedChanged();
 public slots:
 	void sendMessage(const QString &msg);
+	void onSockStateChanged();
 private slots:
 	void receive();
 	void processError(QAbstractSocket::SocketError socketError);

@@ -39,16 +39,13 @@ void QMLSettings::setDefaultValue(QVariant defaultValue) {
 
 QVariant QMLSettings::value() {
 	QVariant val = QSettings::value(_key, _default);
-	qDebug() << _key << val << _default.type();
 	if(val.convert(_default.type())) {
-		qDebug() << "passed" << val;
 		return val;
 	}
 	else return QSettings::value(_key, _default);
 }
 
 void QMLSettings::setValue(QVariant value) {
-	qDebug() << value;
 	if(value != this->value()) {
 		QSettings::setValue(_key, value);
 		emit valueChanged();
