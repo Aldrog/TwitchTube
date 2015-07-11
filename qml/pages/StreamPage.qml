@@ -232,7 +232,7 @@ Page {
 			EnterKey.enabled: text.length > 0 && twitchChat.connected
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				CH.parseMessage(username, text)
+				//CH.parseMessage(username, text)
 				text = ""
 			}
 		}
@@ -248,58 +248,62 @@ Page {
 				leftMargin: Theme.paddingLarge
 				rightMargin: Theme.paddingLarge
 			}
+
+			ViewPlaceholder {
+				text: authToken.value ? qsTr("Welcome to the chat") : qsTr("You need to login to be able to use chat")
+				enabled: model.count <= 0
+			}
+
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
-			model: ListModel { id: messages }
+			model: twitchChat.chatList
 			delegate: Item {
 				height: lbl.height
 				Label {
 					id: lbl
 					width: chat.width
-					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-								   "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
-						  (nick ? "" : ("<font color=" + Theme.highlightColor + ">")) +
-						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-						  (nick ? "" : "</font>")
+					text: modelData
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
-
-					Component.onCompleted: {
-						if(messages.count >= 500) {
-							messages.remove(messages.count - 1)
-						}
-					}
 				}
 			}
+
+//			model: ListModel { id: messages }
+//			delegate: Item {
+//				height: lbl.height
+//				Label {
+//					id: lbl
+//					width: chat.width
+//					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
+//								   "<font color=" + nick_color + ">" + (display_name ? display_name : nick) + "</font>") : "") +
+//						  "<font color=" + (nick ? Theme.primaryColor : Theme.highlightColor) + ">: " +
+//						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) + "</font>"
+//					textFormat: Text.RichText
+//					wrapMode: Text.WordWrap
+
+//					Component.onCompleted: {
+//						if(messages.count >= 500) {
+//							messages.remove(messages.count - 1)
+//						}
+//					}
+//				}
+//			}
 
 			IrcChat {
 				id: twitchChat
 				password: 'oauth:' + authToken.value
-
-				onMessageReceived: {
-					CH.parseMessage(sndnick, msg)
-				}
-
-				onColorReceived: {
-					CH.setColor(nick, color)
-				}
-
-				onSpecReceived: {
-					CH.addSpec(nick, type)
-				}
-
-				onSpecRemoved: {
-					CH.rmSpec(nick, type)
-				}
+				emoteSize: 1
 
 				onErrorOccured: {
-					console.log("Socket error: ", errorDescription)
-					reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+					console.log("Chat error: ", errorDescription)
 				}
 
-				Component.onCompleted: {
-					if(!authToken.value)
-						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
+				onConnectedChanged: {
+					console.log(connected)
+					if(!twitchChat.connected)
+						reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+					else
+						reconnect.cancel()
 				}
 			}
 
@@ -309,7 +313,7 @@ Page {
 				width: parent.width
 				height: Theme.itemSizeMedium
 				color: "transparent"
-				RemorseItem { id: reconnect }
+				RemorseItem { id: reconnect; onTriggered: console.log(twitchChat.connected) }
 			}
 
 			VerticalScrollDecorator { flickable: chat }

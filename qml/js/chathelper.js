@@ -44,6 +44,7 @@ function getColor(name) {
 	} else {
 		var n = name.charCodeAt(0) + name.charCodeAt(name.length - 1);
 		color = default_colors[n % default_colors.length][1]
+		console.log(color)
 	}
 	return color;
 }
@@ -101,7 +102,10 @@ function init() {
 
 	HTTP.getRequest("https://api.twitch.tv/kraken/chat/" + channel + "/badges", function(data) {
 		if(data) {
-			spec_icons = JSON.parse(data)
+			var badges = JSON.parse(data);
+			for(var n in badges) {
+				twitchChat.setBadge(n, badges[n].image)
+			}
 		}
 	})
 }

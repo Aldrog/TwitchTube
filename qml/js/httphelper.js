@@ -18,6 +18,8 @@
  */
 .pragma library
 
+//TODO: Consider specifying application/vnd.twitchtv.v3+json MIME type
+
 function getRequest(url, callback) {
 	var request = new XMLHttpRequest()
 	request.open('GET', url)
