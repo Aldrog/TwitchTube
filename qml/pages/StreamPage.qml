@@ -248,6 +248,14 @@ Page {
 				leftMargin: Theme.paddingLarge
 				rightMargin: Theme.paddingLarge
 			}
+
+			ViewPlaceholder {
+				id: chatPlaceholder
+				text: authToken.value ? (twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")) : qsTr("You must login to use chat")
+				enabled: chat.model.count <= 0
+				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
+			}
+
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
 			model: ListModel { id: messages }
@@ -295,11 +303,6 @@ Page {
 				onErrorOccured: {
 					console.log("Socket error: ", errorDescription)
 					reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
-				}
-
-				Component.onCompleted: {
-					if(!authToken.value)
-						messages.insert(0, { badges: "", nick: "", nick_color: "", message: "You need to login to be able to use chat." })
 				}
 			}
 

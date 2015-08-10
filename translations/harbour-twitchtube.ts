@@ -286,7 +286,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="297"/>
+        <location filename="../qml/pages/StreamPage.qml" line="254"/>
+        <source>Welcome to the chat room</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="254"/>
+        <source>Connecting to chat...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="254"/>
+        <source>You must login to use chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/StreamPage.qml" line="305"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>
