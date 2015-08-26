@@ -239,7 +239,8 @@ Page {
 
 		SilicaListView {
 			id: chat
-			anchors {	left: parent.left
+			anchors {
+				left: parent.left
 				right: parent.right
 				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
@@ -249,9 +250,13 @@ Page {
 				rightMargin: Theme.paddingLarge
 			}
 
+			Component.onCompleted: console.log(chat.height)
+
 			ViewPlaceholder {
-				text: authToken.value ? qsTr("Welcome to the chat") : qsTr("You need to login to be able to use chat")
-				enabled: model.count <= 0
+				id: chatPlaceholder
+				text: authToken.value ? (twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")) : qsTr("You must login to use chat")
+				enabled: chat.model.length <= 0
+				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
 			clip: true
@@ -268,31 +273,16 @@ Page {
 				}
 			}
 
-//			model: ListModel { id: messages }
-//			delegate: Item {
-//				height: lbl.height
-//				Label {
-//					id: lbl
-//					width: chat.width
-//					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-//								   "<font color=" + nick_color + ">" + (display_name ? display_name : nick) + "</font>") : "") +
-//						  "<font color=" + (nick ? Theme.primaryColor : Theme.highlightColor) + ">: " +
-//						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) + "</font>"
-//					textFormat: Text.RichText
-//					wrapMode: Text.WordWrap
-
-//					Component.onCompleted: {
-//						if(messages.count >= 500) {
-//							messages.remove(messages.count - 1)
-//						}
-//					}
-//				}
-//			}
-
 			IrcChat {
 				id: twitchChat
+				name: mainWindow.username
 				password: 'oauth:' + authToken.value
-				emoteSize: 1
+
+				Component.onCompleted: {
+					if(authToken.value) {
+						twitchChat.join(channel)
+					}
+				}
 
 				onErrorOccured: {
 					console.log("Chat error: ", errorDescription)
@@ -348,19 +338,12 @@ Page {
 			}
 		})
 
-		if(authToken.value) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				var user = JSON.parse(data)
-				username = user.name
-				twitchChat.name = user.name
-				CH.init()
-
-				HTTP.getRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel, function(data) {
-					if(data)
-						followed = true
-					else
-						followed = false
-				})
+		if(mainWindow.username) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
+				if(data)
+					followed = true
+				else
+					followed = false
 			})
 		}
 	}

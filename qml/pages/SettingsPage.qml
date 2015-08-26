@@ -90,6 +90,8 @@ Dialog {
 					else {
 						authToken.value = ""
 						console.log("Cookie cleaning script result code:", cpptools.clearCookies())
+						name = ""
+						mainWindow.username = ""
 					}
 				}
 			}
@@ -136,6 +138,7 @@ Dialog {
 		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 			var user = JSON.parse(data)
 			name = user.display_name
+			mainWindow.username = user.name
 		})
 	}
 
