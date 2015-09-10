@@ -19,7 +19,7 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import QtMultimedia 5.0
+import QtMultimedia 5.5
 import harbour.twitchtube.ircchat 1.0
 import "../js/httphelper.js" as HTTP
 import "../js/chathelper.js" as CH
