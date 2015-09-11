@@ -18,7 +18,9 @@
  */
 
 #include "tools.h"
-#include <QtDBus>
+#include <QDebug>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 /* Return codes:
  * 0 - success
@@ -46,16 +48,18 @@ int Tools::clearCookies() {
 // false - no blanking
 void Tools::setBlankingMode(bool state)
 {
-	QDBusConnection system = QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system");
+    QDBusConnection system = QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system");
 
-	QDBusInterface interface("com.nokia.mce",
+    QDBusInterface interface("com.nokia.mce",
 							 "/com/nokia/mce/request",
 							 "com.nokia.mce.request",
 							 system);
 
 	if (state) {
+        qDebug() << "Screen blanking turned on";
 		interface.call(QLatin1String("req_display_cancel_blanking_pause"));
 	} else {
+        qDebug() << "Screen blanking turned off";
 		interface.call(QLatin1String("req_display_blanking_pause"));
 	}
 }
