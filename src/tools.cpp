@@ -18,9 +18,11 @@
  */
 
 #include "tools.h"
+#include <QStringList>
+#include <QDir>
+#include <QStandardPaths>
 #include <QDebug>
-#include <QDBusConnection>
-#include <QDBusInterface>
+#include <QDBusReply>
 
 /* Return codes:
  * 0 - success
@@ -48,21 +50,32 @@ int Tools::clearCookies() {
 // false - no blanking
 void Tools::setBlankingMode(bool state)
 {
-    QDBusConnection system = QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system");
-
-    QDBusInterface interface("com.nokia.mce",
-							 "/com/nokia/mce/request",
-							 "com.nokia.mce.request",
-							 system);
-
 	if (state) {
-        qDebug() << "Screen blanking turned on";
-		interface.call(QLatin1String("req_display_cancel_blanking_pause"));
+		qDebug() << "Screen blanking paused";
+		mceReqInterface.call(QLatin1String("req_display_cancel_blanking_pause"));
+		pauseRefresher->stop();
 	} else {
-        qDebug() << "Screen blanking turned off";
-		interface.call(QLatin1String("req_display_blanking_pause"));
+		qDebug() << "Screen blanking enabled";
+		mceReqInterface.call(QLatin1String("req_display_blanking_pause"));
+		pauseRefresher->start(PAUSE_PERIOD);
 	}
 }
 
-Tools::Tools(QObject *parent) :	QObject(parent) { }
+void Tools::refreshPause() {
+	QDBusReply<QString> pauseValue = mceReqInterface.call(QLatin1String("get_display_blanking_pause"));
+	if(pauseValue.isValid())
+		qDebug() << "Blanking pause is" << pauseValue.value() << ", refreshing pause period";
+
+	mceReqInterface.call(QLatin1String("req_display_blanking_pause"));
+}
+
+Tools::Tools(QObject *parent) :
+	QObject(parent),
+	mceReqInterface("com.nokia.mce",
+					"/com/nokia/mce/request",
+					"com.nokia.mce.request",
+					QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system")) {
+	pauseRefresher = new QTimer();
+	connect(pauseRefresher, SIGNAL(timeout()), this, SLOT(refreshPause()));
+}
 Tools::~Tools() { }
