@@ -38,7 +38,6 @@ OTHER_FILES += \
     harbour-twitchtube.png \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
-    qml/js/chathelper.js \
     qml/pages/elements/Categories.qml \
     qml/pages/QualityChooserPage.qml \
     rpm/harbour-twitchtube.changes \
