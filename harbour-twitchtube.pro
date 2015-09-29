@@ -12,7 +12,7 @@
 # The name of your application
 TARGET = harbour-twitchtube
 
-CONFIG += sailfishapp
+CONFIG += sailfishapp c++11
 
 QT += dbus
 
@@ -20,7 +20,8 @@ SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
     src/tools.cpp \
-    src/qmlsettings.cpp
+    src/qmlsettings.cpp \
+    src/message.cpp
 
 OTHER_FILES += \
     translations/*.ts \
@@ -59,5 +60,6 @@ CONFIG += sailfishapp_i18n
 HEADERS += \
     src/ircchat.h \
     src/tools.h \
-    src/qmlsettings.h
+    src/qmlsettings.h \
+    src/message.h
 

@@ -220,7 +220,8 @@ Page {
 
 		TextField {
 			id: chatMessage
-			anchors {	left: parent.left
+			anchors {
+				left: parent.left
 				right: parent.right
 				top: chatFlowBtT.value ? videoBackground.bottom : undefined
 				bottom: chatFlowBtT.value ? undefined : parent.bottom
@@ -232,7 +233,6 @@ Page {
 			EnterKey.enabled: text.length > 0 && twitchChat.connected
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				//CH.parseMessage(username, text)
 				text = ""
 			}
 		}
@@ -259,24 +259,27 @@ Page {
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
+			currentIndex: count - 1
 			clip: true
-			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
-			model: twitchChat.chatList
+			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
+			model: twitchChat.messages
 			delegate: Item {
 				height: lbl.height
 				Label {
 					id: lbl
 					width: chat.width
-					text: modelData
+					text: richText
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
 				}
+				Component.onCompleted: console.log(richText)
 			}
 
 			IrcChat {
 				id: twitchChat
 				name: mainWindow.username
 				password: 'oauth:' + authToken.value
+				textSize: Theme.fontSizeMedium
 
 				Component.onCompleted: {
 					if(authToken.value) {

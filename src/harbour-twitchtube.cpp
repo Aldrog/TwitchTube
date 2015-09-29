@@ -28,6 +28,7 @@
 #include <QQuickView>
 
 #include "ircchat.h"
+#include "message.h"
 #include "qmlsettings.h"
 #include "tools.h"
 
@@ -79,6 +80,8 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("harbour-twitchtube");
 	QCoreApplication::setApplicationName("harbour-twitchtube");
 
+	qmlRegisterType<Message>("harbour.twitchtube.ircchat", 1, 0, "Message");
+	//qmlRegisterType<MessageList>("harbour.twitchtube.ircchat", 1, 0, "MessageList");
 	qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
 	qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
 

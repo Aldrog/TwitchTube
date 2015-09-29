@@ -17,33 +17,30 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
-import Sailfish.Silica 1.0
-import "pages"
-import "js/httphelper.js" as HTTP
+#include "message.h"
 
-ApplicationWindow
+Message::Message(QObject *parent) :
+	QObject(parent)
 {
-	id: mainWindow
-
-	property string currentChannel
-	property string username
-
-	initialPage: Component { GamesPage { } }
-	cover: Qt.resolvedUrl("cover/NavigationCover.qml")
-
-	Component.onCompleted: {
-		if(authToken.value) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				if(data) {
-					var user = JSON.parse(data)
-					console.log(user)
-					username = user.name
-					console.log(username)
-				}
-			})
-		}
-	}
 }
 
+Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
+	userSpecificators = specs;
+	userColor = uColor;
+	displayName = d_name;
+	username = uname;
+	messageText = text;
+}
 
+Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage) {
+	Message(specs, uColor, d_name, uname, text);
+	RT = RTMessage;
+	emit richTextChanged();
+}
+
+void Message::setRichText(QString RTMessage) {
+	if(RTMessage != RT) {
+		RT = RTMessage;
+		emit richTextChanged();
+	}
+}

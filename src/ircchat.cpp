@@ -20,10 +20,12 @@
 #include "ircchat.h"
 
 IrcChat::IrcChat(QObject *parent) :
-	QObject(parent) {
+	QObject(parent),
+	_emoteSize(2) {
+	// Open socket
 	sock = new QTcpSocket(this);
 	if(sock) {
-		errorOccured("Error opening socket");
+		emit errorOccured("Error opening socket");
 	}
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
@@ -31,7 +33,7 @@ IrcChat::IrcChat(QObject *parent) :
 	connect(sock, SIGNAL(disconnected()), this, SLOT(onSockStateChanged()));
 }
 
-IrcChat::~IrcChat() { sock->close(); }
+IrcChat::~IrcChat() { disconnect(); }
 
 void IrcChat::join(const QString channel) {
 	sock->connectToHost(HOST, PORT);
@@ -40,12 +42,26 @@ void IrcChat::join(const QString channel) {
 	sock->write("CAP REQ :twitch.tv/commands\n");
 	sock->write("CAP REQ :twitch.tv/tags\n");
 	// Login
-	sock->write(("PASS " + ircpass + "\n").toStdString().c_str());
-	sock->write(("NICK " + nick + "\n").toStdString().c_str());
+	sock->write(("PASS " + userpass + "\n").toStdString().c_str());
+	sock->write(("NICK " + username + "\n").toStdString().c_str());
 	// Join channel's chat room
 	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
 	// Save channel name for later use
 	room = channel;
+}
+
+void IrcChat::setTextSize(int textSize) {
+    if(textSize != _textSize) {
+        qDebug() << textSize;
+		if(textSize < 30)
+            _emoteSize = 1;
+		else if(textSize < 50)
+            _emoteSize = 2;
+        else
+            _emoteSize = 3;
+        _textSize = textSize;
+        emit textSizeChanged();
+    }
 }
 
 void IrcChat::setBadge(QString name, QString imageURL) {
@@ -71,7 +87,7 @@ void IrcChat::reopenSocket() {
 
 void IrcChat::sendMessage(const QString &msg) {
 	sock->write(("PRIVMSG #" + room + " :" + msg + '\n').toStdString().c_str());
-	addMessage("", QColor("Blue"), nick, nick, parseUserEmotes(msg));
+	addMessage(QStringList(), QColor("Blue"), username, username, parseUserEmotes(msg));
 }
 
 void IrcChat::receive() {
@@ -99,18 +115,17 @@ void IrcChat::parseCommand(QString cmd) {
 		QString colorCode = getParamValue(params, "color");
 		QColor nickColor = colorCode == "" ? getDefaultColor(nickname) : QColor(colorCode);
 		QString displayName = getParamValue(params, "display-name");
-		QString badgeString = "";
+		QStringList specList = QStringList();
 		if(nickname == room)
-			badgeString += "<img src=" + badges["broadcaster"] + "/> ";
+			specList.append("broadcaster");
 		QString utype = getParamValue(params, "user-type");
 		qDebug() << utype;
 		if(utype != "")
-			badgeString += "<img src=" + badges[utype] + "/> ";
+			specList.append(utype);
 		if(getParamValue(params, "subscriber") == "1")
-			badgeString += "<img src=" + badges["subscriber"] + "/> ";
-		qDebug() << badgeString;
+			specList.append("subscriber");
 		if(getParamValue(params, "turbo") == "1")
-			badgeString += "<img src=" + badges["turbo"] + "/> ";
+			specList.append("turbo");
 
 		QStringList emoteList = getParamValue(params, "emotes").split('/', QString::SkipEmptyParts);
 		QString message = cmd.remove(0, cmd.indexOf(':', cmd.indexOf("PRIVMSG")) + 1);
@@ -152,7 +167,7 @@ void IrcChat::parseCommand(QString cmd) {
 		}
 		message = splittedMessage.join("");
 		qDebug() << message;
-		addMessage(badgeString, nickColor, nickname, displayName, message);
+		addMessage(specList, nickColor, nickname, displayName, message);
 		return;
 	}
 	if(cmd.contains("GLOBALUSERSTATE")) {
@@ -178,7 +193,7 @@ QString IrcChat::getParamValue(QString params, QString param) {
 // Looks like Twitch started to give a random color for every user session. There's no way to get this color, so we continue evaluating color from username.
 QColor IrcChat::getDefaultColor(QString name) {
 	int n = name[0].unicode() + name[name.length() - 1].unicode();
-	return DEFAULTCOLORS[n % (sizeof(DEFAULTCOLORS) / sizeof(*DEFAULTCOLORS))];
+	return DEFAULT_COLORS[n % (sizeof(DEFAULT_COLORS) / sizeof(*DEFAULT_COLORS))];
 }
 
 QString IrcChat::parseUserEmotes(QString msg) {
@@ -189,24 +204,61 @@ QString IrcChat::parseUserEmotes(QString msg) {
 	return res;
 }
 
-void IrcChat::setChatList(QStringList newChatList) {
-	if(newChatList != chat) {
-		chat = newChatList;
-		emit chatListChanged();
+QQmlListProperty<Message> IrcChat::messages() {
+	return QQmlListProperty<Message>(this, nullptr, &appendMessage, &messageCount, &messageAt, &messagesClear);
+}
+
+void IrcChat::appendMessage(QQmlListProperty<Message> *list, Message *m) {
+	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
+	if(ml && m) {
+		ml->chat.append(m);
+		emit ml->messagesChanged();
 	}
 }
 
-void IrcChat::addMessage(QString badges, QColor nickColor, QString nickname, QString displayName, QString message) {
-	chatBadges.insert(0, badges);
-	chatNicknames.insert(0, nickname);
-	chatMessages.insert(0, message);
-	chat.insert(0, badges + "<font color=" + nickColor.name() + ">" + (displayName != "" ? displayName : nickname) + "</font>" + ": " + message);
-	emit chatListChanged();
+int IrcChat::messageCount(QQmlListProperty<Message> *list) {
+	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
+	if(ml) {
+		return ml->chat.count();
+	}
+	return 0;
+}
+
+Message *IrcChat::messageAt(QQmlListProperty<Message> *list, int i) {
+	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
+	if(ml) {
+		return ml->chat.at(i);
+	}
+	return nullptr;
+}
+
+void IrcChat::messagesClear(QQmlListProperty<Message> *list) {
+	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
+	if(ml) {
+		return ml->chat.clear();
+		emit ml->messagesChanged();
+	}
+}
+
+void IrcChat::addMessage(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
+	Message* msg = new Message(specs, uColor, d_name, uname, text, RT(specs, uColor, d_name, uname, text));
+	chat.append(msg);
+	emit messagesChanged();
 }
 
 void IrcChat::addNotice(QString text) {
-	chat.insert(0, text);
-	emit chatListChanged();
+	chat.append(new Message());
+	emit messagesChanged();
+}
+
+QString IrcChat::RT(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
+	QString ubadges = "";
+	foreach(QString uspec, specs) {
+		qDebug() << uspec << badges[uspec];
+		ubadges += "<img src=" + badges[uspec] + "/> ";
+	}
+
+	return ubadges + "<font color=" + uColor.name() + ">" + (d_name != "" ? d_name : uname) + "</font>" + ": " + text;
 }
 
 void IrcChat::processError(QAbstractSocket::SocketError socketError) {
