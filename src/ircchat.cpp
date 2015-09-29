@@ -108,7 +108,10 @@ void IrcChat::parseCommand(QString cmd) {
 		QString params = cmd.left(cmd.indexOf("PRIVMSG"));
 		QString nickname = params.left(params.lastIndexOf('!')).remove(0, params.lastIndexOf(':') + 1);
 		qDebug() << nickname;
-		params = params.remove(params.lastIndexOf(':') - 1, params.length());
+		if(params.lastIndexOf(':') > 0)
+			params = params.remove(params.lastIndexOf(':') - 1, params.length());
+		else
+			params = "";
 		// Parsing params
 		QString colorCode = getParamValue(params, "color");
 		QColor nickColor = colorCode == "" ? getDefaultColor(nickname) : QColor(colorCode);
@@ -161,8 +164,13 @@ void IrcChat::parseCommand(QString cmd) {
 		}
 		message = splittedMessage.join("");
 		qDebug() << message;
-		addMessage(specList, nickColor, nickname, displayName, message);
+		addMessage(specList, nickColor, displayName, nickname, message);
 		return;
+	}
+	if(cmd.contains("NOTICE")) {
+		QString text = cmd.remove(0, cmd.indexOf(':', cmd.indexOf("NOTICE")) + 1);
+		qDebug() << text;
+		addNotice(text);
 	}
 	if(cmd.contains("GLOBALUSERSTATE")) {
 		// We are not interested in this one, it only exists because otherwise USERSTATE would be trigged instead
@@ -189,7 +197,6 @@ void IrcChat::parseCommand(QString cmd) {
 		userDisplayName = getParamValue(params, "display-name");
 		return;
 	}
-	//TODO: NOTICE support
 }
 
 QString IrcChat::getParamValue(QString params, QString param) {
@@ -207,7 +214,7 @@ QColor IrcChat::getDefaultColor(QString name) {
 QString IrcChat::parseUserEmotes(QString msg) {
 	QString res = msg;
 	foreach (int id, userEmotes.keys()) {
-		res = msg.replace(userEmotes[id], QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%1/%2.0\'/>").arg(textSize()).arg(id).arg(_emoteSize));
+		res = msg.replace(userEmotes[id], QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(textSize()).arg(id).arg(_emoteSize));
 	}
 	return res;
 }
@@ -249,13 +256,16 @@ void IrcChat::messagesClear(QQmlListProperty<Message> *list) {
 }
 
 void IrcChat::addMessage(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
-	Message* msg = new Message(specs, uColor, d_name, uname, text, RT(specs, uColor, d_name, uname, text));
+	Message* msg = new Message(RT(specs, uColor, d_name, uname, text), specs, uColor, d_name, uname, text);
 	chat.append(msg);
+	qDebug() << msg->notice;
 	emit messagesChanged();
 }
 
 void IrcChat::addNotice(QString text) {
-	chat.append(new Message());
+	Message* notice = new Message(text, text);
+	chat.append(notice);
+	qDebug() << notice->notice;
 	emit messagesChanged();
 }
 

@@ -30,18 +30,22 @@ class Message : public QObject
 public:
 	explicit Message(QObject *parent = 0);
 	explicit Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
-	explicit Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage);
+	explicit Message(QString RTMessage, QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
+	explicit Message(QString RTNotice, QString text);
 
 	QStringList userSpecificators;
 	QColor userColor;
 	QString displayName;
 	QString username;
 	QString messageText;
+	Q_PROPERTY(bool isNotice MEMBER notice NOTIFY isNoticeChanged)
+	bool notice;
 	Q_PROPERTY(QString richText READ richText NOTIFY richTextChanged)
 	inline QString richText() { return RT; }
 	void setRichText(QString RTMessage);
 signals:
 	void richTextChanged();
+	void isNoticeChanged();
 public slots:
 
 private:

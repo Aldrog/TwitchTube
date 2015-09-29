@@ -270,6 +270,7 @@ Page {
 					text: richText
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
+					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
 				Component.onCompleted: console.log(richText)
 			}

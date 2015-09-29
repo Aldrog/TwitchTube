@@ -30,12 +30,32 @@ Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname
 	displayName = d_name;
 	username = uname;
 	messageText = text;
+	notice = false;
+	emit isNoticeChanged();
 }
 
-Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage) {
-	Message(specs, uColor, d_name, uname, text);
+Message::Message(QString RTMessage, QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
+	userSpecificators = specs;
+	userColor = uColor;
+	displayName = d_name;
+	username = uname;
+	messageText = text;
+	notice = false;
+	emit isNoticeChanged();
 	RT = RTMessage;
 	emit richTextChanged();
+}
+
+Message::Message(QString RTNotice, QString text) {
+	userSpecificators = QStringList();
+	userColor = QColor();
+	displayName = "";
+	username = "";
+	messageText = text;
+	RT = RTNotice;
+	emit richTextChanged();
+	notice = true;
+	emit isNoticeChanged();
 }
 
 void Message::setRichText(QString RTMessage) {
