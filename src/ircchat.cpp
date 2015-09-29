@@ -70,14 +70,6 @@ void IrcChat::setTextSize(int textSize) {
     }
 }
 
-void IrcChat::setBadge(QString name, QString imageURL) {
-	badges.insert(name, imageURL);
-}
-
-void IrcChat::setUserEmote(int id, QString pattern) {
-	userEmotes.insert(id, QRegExp("\\b" + pattern + "\\b"));
-}
-
 void IrcChat::disconnect() {
 	sock->close();
 }
@@ -93,7 +85,7 @@ void IrcChat::reopenSocket() {
 
 void IrcChat::sendMessage(const QString &msg) {
 	sock->write(("PRIVMSG #" + room + " :" + msg + '\n').toStdString().c_str());
-	addMessage(QStringList(), QColor("Blue"), username, username, parseUserEmotes(msg));
+	addMessage(userSpecs, userColor, userDisplayName, username, parseUserEmotes(msg));
 }
 
 void IrcChat::receive() {
@@ -173,14 +165,28 @@ void IrcChat::parseCommand(QString cmd) {
 		return;
 	}
 	if(cmd.contains("GLOBALUSERSTATE")) {
-		// We are not interested in this one
+		// We are not interested in this one, it only exists because otherwise USERSTATE would be trigged instead
 		return;
 	}
 	if(cmd.contains("USERSTATE")) {
 		QString params = cmd.left(cmd.lastIndexOf(':') - 1);
-		QStringList emoteSets = getParamValue(params, "emote-sets").split(',');
-		//TODO
-		qDebug() << params;
+		setUserEmotes(getParamValue(params, "emote-sets"));
+		QStringList uspecs = QStringList();
+		if(username == room)
+			uspecs.append("broadcaster");
+		QString utype = getParamValue(params, "user-type");
+		qDebug() << utype;
+		if(utype != "")
+			uspecs.append(utype);
+		if(getParamValue(params, "subscriber") == "1")
+			uspecs.append("subscriber");
+		if(getParamValue(params, "turbo") == "1")
+			uspecs.append("turbo");
+		if(userSpecs != uspecs)
+			userSpecs = uspecs;
+		QString colorCode = getParamValue(params, "color");
+		userColor = colorCode == "" ? getDefaultColor(username) : QColor(colorCode);
+		userDisplayName = getParamValue(params, "display-name");
 		return;
 	}
 	//TODO: NOTICE support
@@ -267,11 +273,35 @@ void IrcChat::badgesReceived(QNetworkReply *dataSource) {
 	QByteArray rawData = dataSource->readAll();
 	QJsonDocument doc = QJsonDocument::fromJson(rawData);
 	QJsonObject data = doc.object();
-	foreach (QString spec, data.keys()) {
+	foreach(QString spec, data.keys()) {
 		if(!data[spec].toObject()["image"].isNull()) {
 			qDebug() << spec << data[spec].toObject()["image"];
 			badges.insert(spec, data[spec].toObject()["image"].toString());
 		}
+	}
+	dataSource->deleteLater();
+}
+
+void IrcChat::emotesReceived(QNetworkReply *dataSource) {
+	QByteArray rawData = dataSource->readAll();
+	QJsonDocument doc = QJsonDocument::fromJson(rawData);
+	QJsonObject data = doc.object();
+	foreach(QJsonValue set, data["emoticon_sets"].toObject()) {
+		qDebug() << set.isArray();
+		foreach(QJsonValue emote, set.toArray()) {
+			qDebug() << emote.toObject()["id"] << emote.toObject()["code"];
+			userEmotes.insert(emote.toObject()["id"].toInt(), QRegExp("\\b" + emote.toObject()["code"].toString() + "\\b"));
+		}
+	}
+	dataSource->deleteLater();
+}
+
+void IrcChat::setUserEmotes(QString emoteSets) {
+	if(emoteSets != userEmoteSets) {
+		QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+		connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(emotesReceived(QNetworkReply*)));
+		connect(manager, SIGNAL(finished(QNetworkReply*)), manager, SLOT(deleteLater()));
+		manager->get(QNetworkRequest(QUrl("https://api.twitch.tv/kraken/chat/emoticon_images?emotesets=" + emoteSets)));
 	}
 }
 

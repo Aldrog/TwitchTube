@@ -28,6 +28,7 @@
 #include <QUrl>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QMap>
 #include <QRegExp>
 #include <QColor>
@@ -66,6 +67,9 @@ public:
 	Q_PROPERTY(QString password MEMBER userpass)
 	QString username, userpass;
 	QMap<int, QRegExp> userEmotes;
+	QStringList userSpecs;
+	QColor userColor;
+	QString userDisplayName;
 
 	//# Network
 	Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
@@ -81,8 +85,6 @@ public:
 	static int messageCount(QQmlListProperty<Message> *list);
 	static Message *messageAt(QQmlListProperty<Message> *list, int i);
 	static void messagesClear(QQmlListProperty<Message> *list);
-	Q_INVOKABLE void setBadge(QString name, QString imageURL);
-	Q_INVOKABLE void setUserEmote(int id, QString pattern);
 	Q_INVOKABLE void join(const QString channel);
 	Q_INVOKABLE void disconnect();
 	Q_INVOKABLE void reopenSocket();
@@ -100,6 +102,7 @@ private slots:
 	void receive();
 	void processError(QAbstractSocket::SocketError socketError);
 	void badgesReceived(QNetworkReply *dataSource);
+	void emotesReceived(QNetworkReply *dataSource);
 private:
 	void parseCommand(QString cmd);
 	QString getParamValue(QString params, QString param);
@@ -114,7 +117,9 @@ private:
 	int _textSize;
 	QMap<QString, QString> badges;
 	QList<Message*> chat;
-	QList<int> userEmoteSet;
+	// Comma-separated list of set numbers
+	QString userEmoteSets;
+	void setUserEmotes(QString emoteSets);
 };
 
 #endif // IRCCHAT_H
