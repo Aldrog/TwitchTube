@@ -44,7 +44,7 @@ signals:
 	void richTextChanged();
 public slots:
 
-protected:
+private:
 	QString RT;
 };
 

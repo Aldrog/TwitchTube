@@ -46,6 +46,12 @@ void IrcChat::join(const QString channel) {
 	sock->write(("NICK " + username + "\n").toStdString().c_str());
 	// Join channel's chat room
 	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
+
+	QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(badgesReceived(QNetworkReply*)));
+	connect(manager, SIGNAL(finished(QNetworkReply*)), manager, SLOT(deleteLater()));
+	manager->get(QNetworkRequest(QUrl("https://api.twitch.tv/kraken/chat/" + channel + "/badges")));
+
 	// Save channel name for later use
 	room = channel;
 }
@@ -134,14 +140,10 @@ void IrcChat::parseCommand(QString cmd) {
 		QStringList splittedMessage = QStringList(message);
 		QVector<int> smLengths = QVector<int>(1, message.length());
 		foreach (QString emote, emoteList) {
-			//qDebug() << emote;
 			int id = emote.left(emote.indexOf(':')).toInt();
 			QString richTextEmote = QString("<img src=\'http://static-cdn.jtvnw.net/emoticons/v1/%1/%2.0\'/>").arg(id).arg(_emoteSize);
-			//qDebug() << richTextEmote;
 			QStringList coordList = emote.remove(0, emote.indexOf(':') + 1).split(',', QString::SkipEmptyParts);
-			//qDebug() << coordList;
 			foreach (QString position, coordList) {
-				//QString position = coordList[j];
 				int start = position.left(position.indexOf('-')).toInt();
 				int end = position.remove(0, position.indexOf('-') + 1).toInt();
 				for(int i = 0; i < splittedMessage.count(); i++) {
@@ -259,6 +261,18 @@ QString IrcChat::RT(QStringList specs, QColor uColor, QString d_name, QString un
 	}
 
 	return ubadges + "<font color=" + uColor.name() + ">" + (d_name != "" ? d_name : uname) + "</font>" + ": " + text;
+}
+
+void IrcChat::badgesReceived(QNetworkReply *dataSource) {
+	QByteArray rawData = dataSource->readAll();
+	QJsonDocument doc = QJsonDocument::fromJson(rawData);
+	QJsonObject data = doc.object();
+	foreach (QString spec, data.keys()) {
+		if(!data[spec].toObject()["image"].isNull()) {
+			qDebug() << spec << data[spec].toObject()["image"];
+			badges.insert(spec, data[spec].toObject()["image"].toString());
+		}
+	}
 }
 
 void IrcChat::processError(QAbstractSocket::SocketError socketError) {

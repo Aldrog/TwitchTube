@@ -22,9 +22,15 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include <QColor>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMap>
 #include <QRegExp>
+#include <QColor>
 #include <QQmlListProperty>
 #include "message.h"
 
@@ -45,7 +51,7 @@ const QColor DEFAULT_COLORS[15] = {	QColor("#FF0000"),	// Red
 									QColor("#FF69B4"),	// HotPink
 									QColor("#8A2BE2"),	// BlueViolet
 									QColor("#00FF7F"),	// SpringGreen
-								 };
+								  };
 
 // Backend for chat
 class IrcChat : public QObject
@@ -68,9 +74,7 @@ public:
 	//# Text and twitch-specific functionality
     Q_PROPERTY(int textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged)
     inline int textSize() { return _textSize; }
-    void setTextSize(int textSize);
-	Q_PROPERTY(QColor highlightColor MEMBER hColor)
-	QColor hColor;
+	void setTextSize(int textSize);
 	Q_PROPERTY(QQmlListProperty<Message> messages READ messages NOTIFY messagesChanged)
 	QQmlListProperty<Message> messages();
 	static void appendMessage(QQmlListProperty<Message> *list, Message *m);
@@ -95,7 +99,8 @@ public slots:
 private slots:
 	void receive();
 	void processError(QAbstractSocket::SocketError socketError);
-protected:
+	void badgesReceived(QNetworkReply *dataSource);
+private:
 	void parseCommand(QString cmd);
 	QString getParamValue(QString params, QString param);
 	QColor getDefaultColor(QString name);
@@ -109,6 +114,7 @@ protected:
 	int _textSize;
 	QMap<QString, QString> badges;
 	QList<Message*> chat;
+	QList<int> userEmoteSet;
 };
 
 #endif // IRCCHAT_H

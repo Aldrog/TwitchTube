@@ -270,38 +270,38 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="229"/>
+        <location filename="../qml/pages/StreamPage.qml" line="230"/>
         <source>Type your message here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="229"/>
         <location filename="../qml/pages/StreamPage.qml" line="230"/>
+        <location filename="../qml/pages/StreamPage.qml" line="231"/>
         <source>Chat is not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="230"/>
+        <location filename="../qml/pages/StreamPage.qml" line="231"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="256"/>
+        <location filename="../qml/pages/StreamPage.qml" line="257"/>
         <source>Welcome to the chat room</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="256"/>
+        <location filename="../qml/pages/StreamPage.qml" line="257"/>
         <source>Connecting to chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="256"/>
+        <location filename="../qml/pages/StreamPage.qml" line="257"/>
         <source>You must login to use chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="296"/>
+        <location filename="../qml/pages/StreamPage.qml" line="297"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

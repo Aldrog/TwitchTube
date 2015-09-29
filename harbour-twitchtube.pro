@@ -14,7 +14,7 @@ TARGET = harbour-twitchtube
 
 CONFIG += sailfishapp c++11
 
-QT += dbus
+QT += network dbus
 
 SOURCES += \
     src/harbour-twitchtube.cpp \
