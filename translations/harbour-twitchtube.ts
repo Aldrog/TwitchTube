@@ -255,53 +255,53 @@
 <context>
     <name>StreamPage</name>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="93"/>
+        <location filename="../qml/pages/StreamPage.qml" line="92"/>
         <source>Follow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="102"/>
+        <location filename="../qml/pages/StreamPage.qml" line="101"/>
         <source>Unfollow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="111"/>
+        <location filename="../qml/pages/StreamPage.qml" line="110"/>
         <source>Quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="230"/>
+        <location filename="../qml/pages/StreamPage.qml" line="229"/>
         <source>Type your message here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qml/pages/StreamPage.qml" line="229"/>
         <location filename="../qml/pages/StreamPage.qml" line="230"/>
-        <location filename="../qml/pages/StreamPage.qml" line="231"/>
         <source>Chat is not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="231"/>
+        <location filename="../qml/pages/StreamPage.qml" line="230"/>
         <source>Message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="257"/>
+        <location filename="../qml/pages/StreamPage.qml" line="256"/>
         <source>Welcome to the chat room</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="257"/>
+        <location filename="../qml/pages/StreamPage.qml" line="256"/>
         <source>Connecting to chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="257"/>
+        <location filename="../qml/pages/StreamPage.qml" line="256"/>
         <source>You must login to use chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="297"/>
+        <location filename="../qml/pages/StreamPage.qml" line="296"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

@@ -133,7 +133,7 @@ void IrcChat::parseCommand(QString cmd) {
 		QVector<int> smLengths = QVector<int>(1, message.length());
 		foreach (QString emote, emoteList) {
 			int id = emote.left(emote.indexOf(':')).toInt();
-			QString richTextEmote = QString("<img src=\'http://static-cdn.jtvnw.net/emoticons/v1/%1/%2.0\'/>").arg(id).arg(_emoteSize);
+			QString richTextEmote = QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(textSize()).arg(id).arg(_emoteSize);
 			QStringList coordList = emote.remove(0, emote.indexOf(':') + 1).split(',', QString::SkipEmptyParts);
 			foreach (QString position, coordList) {
 				int start = position.left(position.indexOf('-')).toInt();
@@ -207,7 +207,7 @@ QColor IrcChat::getDefaultColor(QString name) {
 QString IrcChat::parseUserEmotes(QString msg) {
 	QString res = msg;
 	foreach (int id, userEmotes.keys()) {
-		res = msg.replace(userEmotes[id], QString("<img src=\'http://static-cdn.jtvnw.net/emoticons/v1/%1/%2.0\'/>").arg(id).arg(_emoteSize));
+		res = msg.replace(userEmotes[id], QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%1/%2.0\'/>").arg(textSize()).arg(id).arg(_emoteSize));
 	}
 	return res;
 }
@@ -263,10 +263,10 @@ QString IrcChat::RT(QStringList specs, QColor uColor, QString d_name, QString un
 	QString ubadges = "";
 	foreach(QString uspec, specs) {
 		qDebug() << uspec << badges[uspec];
-		ubadges += "<img src=" + badges[uspec] + "/> ";
+		ubadges += QString("<img height=%1 src=%2/> ").arg(textSize()).arg(badges[uspec]);
 	}
 
-	return ubadges + "<font color=" + uColor.name() + ">" + (d_name != "" ? d_name : uname) + "</font>" + ": " + text;
+	return ubadges + QString("<font color=%1>%2</font>: %3").arg(uColor.name()).arg(d_name != "" ? d_name : uname).arg(text);
 }
 
 void IrcChat::badgesReceived(QNetworkReply *dataSource) {
