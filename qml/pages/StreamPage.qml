@@ -259,6 +259,7 @@ Page {
 			}
 
 			currentIndex: count - 1
+			highlightRangeMode: ListView.ApplyRange
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
 			model: twitchChat.messages

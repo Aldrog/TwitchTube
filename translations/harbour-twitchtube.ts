@@ -301,7 +301,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/StreamPage.qml" line="297"/>
+        <location filename="../qml/pages/StreamPage.qml" line="298"/>
         <source>Chat error, reconnecting</source>
         <translation type="unfinished"></translation>
     </message>

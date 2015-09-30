@@ -71,6 +71,7 @@ void IrcChat::setTextSize(int textSize) {
 }
 
 void IrcChat::disconnect() {
+	sock->write(("PART #" + room + "\n").toStdString().c_str());
 	sock->close();
 }
 
