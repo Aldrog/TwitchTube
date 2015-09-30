@@ -26,7 +26,6 @@ Page {
 	id: page
 	allowedOrientations: Orientation.All
 
-	property string username
 	// Status for NavigationCover
 	property string navStatus: qsTr("Following")
 
@@ -36,7 +35,7 @@ Page {
 		parameters: { "fromFollowings": true }
 
 		function loadGames() {
-			var url = "https://api.twitch.tv/api/users/" + username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
+			var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
 			console.log(url)
 			HTTP.getRequest(url,function(data) {
 				if (data) {
@@ -59,12 +58,6 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken.value) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				var user = JSON.parse(data)
-				username = user.name
-				gridGames.loadGames()
-			})
-		}
+		gridGames.loadGames()
 	}
 }

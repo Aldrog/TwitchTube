@@ -20,13 +20,30 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 import "pages"
+import "js/httphelper.js" as HTTP
 
 ApplicationWindow
 {
-	property string currentChannel: ""
 	id: mainWindow
+
+	property string currentChannel
+	property string username
+
 	initialPage: Component { GamesPage { } }
 	cover: Qt.resolvedUrl("cover/NavigationCover.qml")
+
+	Component.onCompleted: {
+		if(authToken.value) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+				if(data) {
+					var user = JSON.parse(data)
+					console.log(user)
+					username = user.name
+					console.log(username)
+				}
+			})
+		}
+	}
 }
 
 

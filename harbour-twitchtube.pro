@@ -12,15 +12,16 @@
 # The name of your application
 TARGET = harbour-twitchtube
 
-CONFIG += sailfishapp
+CONFIG += sailfishapp c++11
 
-QT += dbus
+QT += network dbus
 
 SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
     src/tools.cpp \
-    src/qmlsettings.cpp
+    src/qmlsettings.cpp \
+    src/message.cpp
 
 OTHER_FILES += \
     translations/*.ts \
@@ -37,7 +38,6 @@ OTHER_FILES += \
     harbour-twitchtube.png \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
-    qml/js/chathelper.js \
     qml/pages/elements/Categories.qml \
     qml/pages/QualityChooserPage.qml \
     rpm/harbour-twitchtube.changes \
@@ -59,5 +59,6 @@ CONFIG += sailfishapp_i18n
 HEADERS += \
     src/ircchat.h \
     src/tools.h \
-    src/qmlsettings.h
+    src/qmlsettings.h \
+    src/message.h
 

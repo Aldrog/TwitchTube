@@ -22,31 +22,77 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QMap>
+#include <QRegExp>
+#include <QColor>
+#include <QQmlListProperty>
+#include "message.h"
 
 const qint16 PORT = 6667;
 const QString HOST = "irc.twitch.tv";
+const QColor DEFAULT_COLORS[15] = {	QColor("#FF0000"),	// Red
+									QColor("#0000FF"),	// Blue
+									QColor("#00FF00"),	// Green
+									QColor("#B22222"),	// FireBrick
+									QColor("#FF7F50"),	// Coral
+									QColor("#9ACD32"),	// YellowGreen
+									QColor("#FF4500"),	// OrangeRed
+									QColor("#2E8B57"),	// SeaGreen
+									QColor("#DAA520"),	// GoldenRod
+									QColor("#D2691E"),	// Chocolate
+									QColor("#5F9EA0"),	// CadetBlue
+									QColor("#1E90FF"),	// DodgerBlue
+									QColor("#FF69B4"),	// HotPink
+									QColor("#8A2BE2"),	// BlueViolet
+									QColor("#00FF7F"),	// SpringGreen
+								  };
 
 // Backend for chat
 class IrcChat : public QObject
 {
 	Q_OBJECT
 public:
-	Q_PROPERTY(QString name MEMBER nick)
-	Q_PROPERTY(QString password MEMBER ircpass)
-	Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
-
 	explicit IrcChat(QObject *parent = 0);
 	~IrcChat();
 
+	//# User
+	Q_PROPERTY(QString name MEMBER username)
+	Q_PROPERTY(QString password MEMBER userpass)
+	QString username, userpass;
+	QMap<int, QRegExp> userEmotes;
+	QStringList userSpecs;
+	QColor userColor;
+	QString userDisplayName;
+
+	//# Network
+	Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
 	bool connected();
+
+	//# Text and twitch-specific functionality
+    Q_PROPERTY(int textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged)
+    inline int textSize() { return _textSize; }
+	void setTextSize(int textSize);
+	Q_PROPERTY(QQmlListProperty<Message> messages READ messages NOTIFY messagesChanged)
+	QQmlListProperty<Message> messages();
+	static void appendMessage(QQmlListProperty<Message> *list, Message *m);
+	static int messageCount(QQmlListProperty<Message> *list);
+	static Message *messageAt(QQmlListProperty<Message> *list, int i);
+	static void messagesClear(QQmlListProperty<Message> *list);
 	Q_INVOKABLE void join(const QString channel);
 	Q_INVOKABLE void disconnect();
 	Q_INVOKABLE void reopenSocket();
+	void addMessage(QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
+	void addNotice(QString text);
 signals:
-	void messageReceived(QString sndnick, QString msg);
-	void colorReceived(QString nick, QString color);
-	void specReceived(QString nick, QString type);
-	void specRemoved(QString nick, QString type);
+	void textSizeChanged();
+	void messagesChanged();
 	void errorOccured(QString errorDescription);
 	void connectedChanged();
 public slots:
@@ -55,12 +101,25 @@ public slots:
 private slots:
 	void receive();
 	void processError(QAbstractSocket::SocketError socketError);
+	void badgesReceived(QNetworkReply *dataSource);
+	void emotesReceived(QNetworkReply *dataSource);
 private:
-	QString nick, ircpass;
+	void parseCommand(QString cmd);
+	QString getParamValue(QString params, QString param);
+	QColor getDefaultColor(QString name);
+	QString parseUserEmotes(QString msg);
+	QString RT(QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
+	//Message *formRTMessage(QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
+	//void formRTMessage(Message *incompleteMsg);
 	QTcpSocket *sock;
 	QString room;
-	bool motdended;
-	void parseCommand(QString cmd);
+	int _emoteSize;
+	int _textSize;
+	QMap<QString, QString> badges;
+	QList<Message*> chat;
+	// Comma-separated list of set numbers
+	QString userEmoteSets;
+	void setUserEmotes(QString emoteSets);
 };
 
 #endif // IRCCHAT_H

@@ -22,7 +22,6 @@ import Sailfish.Silica 1.0
 import QtMultimedia 5.5
 import harbour.twitchtube.ircchat 1.0
 import "../js/httphelper.js" as HTTP
-import "../js/chathelper.js" as CH
 
 Page {
 	id: page
@@ -220,7 +219,8 @@ Page {
 
 		TextField {
 			id: chatMessage
-			anchors {	left: parent.left
+			anchors {
+				left: parent.left
 				right: parent.right
 				top: chatFlowBtT.value ? videoBackground.bottom : undefined
 				bottom: chatFlowBtT.value ? undefined : parent.bottom
@@ -232,14 +232,14 @@ Page {
 			EnterKey.enabled: text.length > 0 && twitchChat.connected
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
-				CH.parseMessage(username, text)
 				text = ""
 			}
 		}
 
 		SilicaListView {
 			id: chat
-			anchors {	left: parent.left
+			anchors {
+				left: parent.left
 				right: parent.right
 				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
@@ -252,57 +252,51 @@ Page {
 			ViewPlaceholder {
 				id: chatPlaceholder
 				text: authToken.value ? (twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")) : qsTr("You must login to use chat")
-				enabled: chat.model.count <= 0
+				enabled: chat.model.length <= 0
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
+			currentIndex: count - 1
+			highlightRangeMode: ListView.ApplyRange
+
 			clip: true
-			verticalLayoutDirection: chatFlowBtT.value ? ListView.TopToBottom : ListView.BottomToTop
-			model: ListModel { id: messages }
+			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
+			model: twitchChat.messages
 			delegate: Item {
 				height: lbl.height
 				Label {
 					id: lbl
 					width: chat.width
-					text: (nick ? (badges.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-								   "<font color=" + nick_color + ">" + nick + "</font>: ") : "") +
-						  (nick ? "" : ("<font color=" + Theme.highlightColor + ">")) +
-						  message.replace(new RegExp("<img", 'g'), "<img heiht=" + lbl.font.pixelSize + " width=" + lbl.font.pixelSize) +
-						  (nick ? "" : "</font>")
+					text: richText
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
-
-					Component.onCompleted: {
-						if(messages.count >= 500) {
-							messages.remove(messages.count - 1)
-						}
-					}
+					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
+				Component.onCompleted: console.log(richText)
 			}
 
 			IrcChat {
 				id: twitchChat
+				name: mainWindow.username
 				password: 'oauth:' + authToken.value
+				textSize: Theme.fontSizeMedium
 
-				onMessageReceived: {
-					CH.parseMessage(sndnick, msg)
-				}
-
-				onColorReceived: {
-					CH.setColor(nick, color)
-				}
-
-				onSpecReceived: {
-					CH.addSpec(nick, type)
-				}
-
-				onSpecRemoved: {
-					CH.rmSpec(nick, type)
+				Component.onCompleted: {
+					if(authToken.value) {
+						twitchChat.join(channel)
+					}
 				}
 
 				onErrorOccured: {
-					console.log("Socket error: ", errorDescription)
-					reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+					console.log("Chat error: ", errorDescription)
+				}
+
+				onConnectedChanged: {
+					console.log(connected)
+					if(!twitchChat.connected)
+						reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
+					else
+						reconnect.cancel()
 				}
 			}
 
@@ -312,7 +306,7 @@ Page {
 				width: parent.width
 				height: Theme.itemSizeMedium
 				color: "transparent"
-				RemorseItem { id: reconnect }
+				RemorseItem { id: reconnect; onTriggered: console.log(twitchChat.connected) }
 			}
 
 			VerticalScrollDecorator { flickable: chat }
@@ -347,19 +341,12 @@ Page {
 			}
 		})
 
-		if(authToken.value) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				var user = JSON.parse(data)
-				username = user.name
-				twitchChat.name = user.name
-				CH.init()
-
-				HTTP.getRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel, function(data) {
-					if(data)
-						followed = true
-					else
-						followed = false
-				})
+		if(mainWindow.username) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
+				if(data)
+					followed = true
+				else
+					followed = false
 			})
 		}
 	}
