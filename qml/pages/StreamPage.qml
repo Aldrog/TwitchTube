@@ -19,7 +19,7 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import QtMultimedia 5.0
+import QtMultimedia 5.5
 import harbour.twitchtube.ircchat 1.0
 import "../js/httphelper.js" as HTTP
 
@@ -249,8 +249,6 @@ Page {
 				rightMargin: Theme.paddingLarge
 			}
 
-			Component.onCompleted: console.log(chat.height)
-
 			ViewPlaceholder {
 				id: chatPlaceholder
 				text: authToken.value ? (twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")) : qsTr("You must login to use chat")
@@ -260,6 +258,7 @@ Page {
 
 			currentIndex: count - 1
 			highlightRangeMode: ListView.ApplyRange
+
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
 			model: twitchChat.messages

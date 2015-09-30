@@ -21,9 +21,11 @@
 #define TOOLS_H
 
 #include <QObject>
-#include <QStringList>
-#include <QDir>
-#include <QStandardPaths>
+#include <QTimer>
+#include <QDBusConnection>
+#include <QDBusInterface>
+
+const int PAUSE_PERIOD = 50000; //ms
 
 class Tools : public QObject
 {
@@ -33,7 +35,12 @@ public:
 	~Tools();
 
 	Q_INVOKABLE int clearCookies();
-	Q_INVOKABLE void setBlankingMode(bool state);
+    Q_INVOKABLE void setBlankingMode(bool state);
+public slots:
+	void refreshPause();
+protected:
+	QDBusInterface mceReqInterface;
+	QTimer* pauseRefresher;
 };
 
 #endif // TOOLS_H
