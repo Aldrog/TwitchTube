@@ -22,9 +22,7 @@ Dialog {
 			anchors {
 				top: header.bottom
 				left: parent.left
-				leftMargin: Theme.horizontalPageMargin
 				right: parent.right
-				rightMargin: Theme.horizontalPageMargin
 			}
 
 			ComboBox {

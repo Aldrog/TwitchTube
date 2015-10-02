@@ -48,9 +48,7 @@ Dialog {
 			anchors {
 				top: header.bottom
 				left: parent.left
-				leftMargin: Theme.horizontalPageMargin
 				right: parent.right
-				rightMargin: Theme.horizontalPageMargin
 			}
 
 			BackgroundItem {
@@ -63,7 +61,9 @@ Dialog {
 					anchors {	top: parent.top
 								left: parent.left
 								right: parent.right
-								margins: Theme.paddingLarge
+								topMargin: Theme.paddingLarge
+								leftMargin: Theme.horizontalPageMargin
+								rightMargin: Theme.horizontalPageMargin
 							}
 					text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
 					color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
@@ -75,7 +75,9 @@ Dialog {
 					anchors {	bottom: parent.bottom
 								left: parent.left
 								right: parent.right
-								margins: Theme.paddingLarge
+								bottomMargin: Theme.paddingLarge
+								leftMargin: Theme.horizontalPageMargin
+								rightMargin: Theme.horizontalPageMargin
 							}
 					text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
 					color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
