@@ -59,7 +59,7 @@ Page {
 			id: header
 			title: (authToken.value ? "\t\t " : "") + game
 			BackgroundItem {
-				id: follow
+				id: switchFollow
 				parent: header.extraContent
 				visible: authToken.value
 				anchors.verticalCenter: parent.verticalCenter
@@ -71,51 +71,18 @@ Page {
 				Image {
 					id: heart
 					anchors.fill: parent
-					source: "../images/heart.png"
+					source: followed ? "../images/heart_crossed.png" : "../images/heart.png"
 					visible: false
 				}
 				ColorOverlay {
-					id: heartEffect1
+					id: heartColor
 					anchors.fill: heart
 					source: heart
-					visible: false
-					color: follow.highlighted ? Theme.highlightColor : Theme.primaryColor
-				}
-				DropShadow {
-					id: heartEffect2
-					anchors.fill: heartEffect1
-					source: heartEffect1
-					horizontalOffset: 3
-					verticalOffset: 3
-					radius: 8.0
-					samples: 16
-					color: "#80000000"
-				}
+					color: follow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
 
-				Image {
-					id: cross
-					anchors.fill: parent
-					source: "../images/cross.png"
-					z: 1
-					visible: false
-				}
-				ColorOverlay {
-					id: crossEffect1
-					anchors.fill: cross
-					source: cross
-					visible: false
-					color: follow.highlighted ? Theme.highlightColor : Theme.primaryColor
-				}
-				DropShadow {
-					id: crossEffect2
-					anchors.fill: crossEffect1
-					source: crossEffect1
-					horizontalOffset: 3
-					verticalOffset: 3
-					radius: 8.0
-					samples: 16
-					color: "#80000000"
-					visible: followed
+					function overlayColor(color) {
+						return Qt.rgba(color.r, color.g, color.b, color.a - Math.min(color.r, color.g, color.b))
+					}
 				}
 
 				onClicked: {

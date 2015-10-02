@@ -37,9 +37,8 @@ ApplicationWindow
 			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 				if(data) {
 					var user = JSON.parse(data)
-					console.log(user)
 					username = user.name
-					console.log(username)
+					console.log("Username:", username)
 				}
 			})
 		}

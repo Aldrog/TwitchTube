@@ -41,7 +41,6 @@ OTHER_FILES += \
     qml/pages/elements/Categories.qml \
     qml/pages/QualityChooserPage.qml \
     rpm/harbour-twitchtube.changes \
-    qml/images/cross.png \
     qml/images/heart.png \
     qml/images/icon.png \
     qml/pages/elements/GamesGrid.qml \
@@ -49,7 +48,8 @@ OTHER_FILES += \
     qml/pages/GameChannelsPage.qml \
     qml/pages/FollowedGamesPage.qml \
     qml/cover/NavigationCover.qml \
-    qml/cover/StreamCover.qml
+    qml/cover/StreamCover.qml \
+    qml/images/heart_crossed.png
 
 # to disable building translations every time, comment out the
 # following CONFIG line
