@@ -224,7 +224,10 @@ Page {
 				right: parent.right
 				top: chatFlowBtT.value ? videoBackground.bottom : undefined
 				bottom: chatFlowBtT.value ? undefined : parent.bottom
-				margins: Theme.paddingSmall
+				leftMargin: Theme.horizontalPageMargin
+				rightMargin: Theme.horizontalPageMargin
+				topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
+				bottomMargin: Theme.paddingLarge
 			}
 			placeholderText: twitchChat.connected ? qsTr("Type your message here") : qsTr("Chat is not available")
 			label: twitchChat.connected ? qsTr("Message to send") : qsTr("Chat is not available")
@@ -243,10 +246,10 @@ Page {
 				right: parent.right
 				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-				topMargin: chatFlowBtT.value ? Theme.paddingSmall : Theme.paddingMedium
-				bottomMargin: chatFlowBtT.value ? Theme.paddingMedium : Theme.paddingSmall
-				leftMargin: Theme.paddingLarge
-				rightMargin: Theme.paddingLarge
+				topMargin: (!showStream && !chatFlowBtT.value) ? Theme.paddingLarge : Theme.paddingMedium//chatFlowBtT.value ? Theme.paddingSmall : Theme.paddingMedium
+				bottomMargin: chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
+				leftMargin: Theme.horizontalPageMargin
+				rightMargin: Theme.horizontalPageMargin
 			}
 
 			ViewPlaceholder {

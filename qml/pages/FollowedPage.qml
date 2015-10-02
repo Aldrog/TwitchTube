@@ -41,7 +41,7 @@ Page {
 					var result = JSON.parse(data)
 					totalCount = result._total
 					for (var i in result.streams)
-						model.append(result.streams[i])
+						channels.append(result.streams[i])
 				}
 			})
 		}

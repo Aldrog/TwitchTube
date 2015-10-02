@@ -20,9 +20,14 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-SilicaGridView {
+SilicaFlickable {
 	id: root
 	anchors.fill: parent
+	contentHeight: grid.height + Theme.paddingLarge // for bottom margin
+
+	property alias grid: grid
+	property alias header: grid.header
+	property alias games: grid.model
 	property int row: isPortrait ? 2 : 4
 	// In brackets must be row lengths for portrait and landscape orientations
 	property int countOnPage: (2*4) * 2
@@ -43,52 +48,61 @@ SilicaGridView {
 		}
 	}
 
-	ViewPlaceholder {
-		enabled: model.count <= 0
-		text: qsTr("No games to show")
-	}
+	SilicaGridView {
+		id: grid
+		anchors {
+			left: parent.left; leftMargin: Theme.horizontalPageMargin
+			right: parent.right; rightMargin: Theme.horizontalPageMargin
+		}
+		height: childrenRect.height - headerItem.height
 
-	model: ListModel { id: gameList }
-	cellWidth: width/row
-	// 18:13 is the actual aspect ratio of previews
-	cellHeight: cellWidth * 18/13
-
-	delegate: BackgroundItem {
-		id: delegate
-		width: root.cellWidth
-		height: root.cellHeight
-		onClicked: {
-			var properties = parameters
-			properties.game = name
-			pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
+		ViewPlaceholder {
+			enabled: games.count <= 0
+			text: qsTr("No games to show")
 		}
 
-		Image {
-			id: logo
-			anchors.fill: parent
-			anchors.margins: Theme.paddingSmall
-			fillMode: Image.PreserveAspectCrop
-			source: box[gameImageSize.value]
-		}
+		model: ListModel { id: gameList }
+		cellWidth: width/row
+		// 18:13 is the actual aspect ratio of previews
+		cellHeight: cellWidth * 18/13
 
-		OpacityRampEffect {
-			sourceItem: logo
-			direction: OpacityRamp.BottomToTop
-			offset: 1 - 1.25 * (gameName.height / logo.height)
-			slope: logo.height / gameName.height
-		}
-
-		Label {
-			id: gameName
-			anchors {
-				left: parent.left; leftMargin: Theme.paddingLarge
-				right: parent.right; rightMargin: Theme.paddingLarge
-				topMargin: Theme.paddingMedium
+		delegate: BackgroundItem {
+			id: delegate
+			width: grid.cellWidth
+			height: grid.cellHeight
+			onClicked: {
+				var properties = parameters
+				properties.game = name
+				pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
 			}
-			text: name
-			truncationMode: TruncationMode.Fade
-			color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-			font.pixelSize: Theme.fontSizeSmall
+
+			Image {
+				id: logo
+				anchors.fill: parent
+				anchors.margins: Theme.paddingSmall
+				fillMode: Image.PreserveAspectCrop
+				source: box[gameImageSize.value]
+			}
+
+			OpacityRampEffect {
+				sourceItem: logo
+				direction: OpacityRamp.BottomToTop
+				offset: 1 - 1.25 * (gameName.height / logo.height)
+				slope: logo.height / gameName.height
+			}
+
+			Label {
+				id: gameName
+				anchors {
+					left: parent.left; leftMargin: Theme.paddingLarge
+					right: parent.right; rightMargin: Theme.paddingLarge
+					topMargin: Theme.paddingMedium
+				}
+				text: name
+				truncationMode: TruncationMode.Fade
+				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+				font.pixelSize: Theme.fontSizeSmall
+			}
 		}
 	}
 

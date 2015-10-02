@@ -35,17 +35,22 @@ Page {
 		property string querry: ""
 
 		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
-			console.log(url)
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.streams)
-						model.append(result.streams[i])
-				}
-			})
+			if(querry) {
+				var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
+				console.log(url)
+				HTTP.getRequest(url,function(data) {
+					if (data) {
+						offset += countOnPage
+						var result = JSON.parse(data)
+						totalCount = result._total
+						for (var i in result.streams)
+							channels.append(result.streams[i])
+					}
+				})
+			}
+			else {
+				totalCount = 0
+			}
 		}
 
 		Categories {
@@ -57,7 +62,7 @@ Page {
 			width: parent.width
 			placeholderText: qsTr("Search channels")
 			onTextChanged: {
-				gridResults.model.clear()
+				gridResults.channels.clear()
 				gridResults.offset = 0
 				gridResults.querry = text
 				gridResults.loadChannels()
@@ -65,6 +70,6 @@ Page {
 		}
 
 		// This prevents search field from loosing focus when grid changes
-		currentIndex: -1
+		grid.currentIndex: -1
 	}
 }

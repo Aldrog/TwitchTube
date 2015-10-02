@@ -41,7 +41,7 @@ Page {
 					var result = JSON.parse(data)
 					totalCount = result._total
 					for (var i in result.top)
-						model.append(result.top[i].game)
+						games.append(result.top[i].game)
 				}
 			})
 		}

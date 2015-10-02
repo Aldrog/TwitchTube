@@ -32,7 +32,7 @@ Dialog {
 
 	SilicaFlickable {
 		anchors.fill: parent
-		contentHeight: header.height + settingsContainer.height
+		contentHeight: header.height + settingsContainer.height + Theme.paddingLarge // for bottom margin
 
 		DialogHeader {
 			id: header
@@ -45,8 +45,13 @@ Dialog {
 
 		Column {
 			id: settingsContainer
-			anchors.top: header.bottom
-			width: page.width
+			anchors {
+				top: header.bottom
+				left: parent.left
+				leftMargin: Theme.horizontalPageMargin
+				right: parent.right
+				rightMargin: Theme.horizontalPageMargin
+			}
 
 			BackgroundItem {
 				id: login
@@ -73,7 +78,7 @@ Dialog {
 								margins: Theme.paddingLarge
 							}
 					text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
-					color: login.highlighted ? Theme.highlightColor : Theme.secondaryColor
+					color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
 					font.pixelSize: Theme.fontSizeSmall
 				}
 

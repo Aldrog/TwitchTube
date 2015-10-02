@@ -45,7 +45,7 @@ Page {
 					var result = JSON.parse(data)
 					totalCount = result._total
 					for (var i in result.streams)
-						model.append(result.streams[i])
+						channels.append(result.streams[i])
 				}
 			})
 		}
@@ -57,14 +57,15 @@ Page {
 
 		header: PageHeader {
 			id: header
-			title: (authToken.value ? "\t\t " : "") + game
+			title: game
+			rightMargin: Theme.horizontalPageMargin + switchFollow.width + Theme.paddingSmall
+
 			BackgroundItem {
 				id: switchFollow
-				parent: header.extraContent
 				visible: authToken.value
 				anchors.verticalCenter: parent.verticalCenter
-				anchors.left: parent.left
-				anchors.leftMargin: 50
+				anchors.right: parent.right
+				anchors.rightMargin: Theme.horizontalPageMargin
 				height: Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)
 				width: height
 
@@ -78,7 +79,7 @@ Page {
 					id: heartColor
 					anchors.fill: heart
 					source: heart
-					color: follow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
+					color: switchFollow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
 
 					function overlayColor(color) {
 						return Qt.rgba(color.r, color.g, color.b, color.a - Math.min(color.r, color.g, color.b))

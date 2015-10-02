@@ -10,17 +10,22 @@ Dialog {
 
 	SilicaFlickable {
 		anchors.fill: parent
-		contentHeight: head.height + optionsContainer.height
+		contentHeight: header.height + optionsContainer.height
 
 		DialogHeader {
-			id: head
-			title: qsTr("Set up stream quality")
+			id: header
+			title: qsTr("Set stream quality")
 		}
 
 		Column {
 			id: optionsContainer
-			anchors.top: head.bottom
-			width: page.width
+			anchors {
+				top: header.bottom
+				left: parent.left
+				leftMargin: Theme.horizontalPageMargin
+				right: parent.right
+				rightMargin: Theme.horizontalPageMargin
+			}
 
 			ComboBox {
 				id: qualityChooser
@@ -40,7 +45,7 @@ Dialog {
 			TextSwitch {
 				id: noVideo
 				checked: chatOnly
-				text: "Chat only"
+				text: qsTr("Chat only")
 			}
 		}
 	}
