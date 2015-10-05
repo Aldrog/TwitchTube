@@ -20,8 +20,9 @@
 #include "ircchat.h"
 
 IrcChat::IrcChat(QObject *parent) :
-	QObject(parent),
-	_emoteSize(2) {
+				QObject(parent),
+				_emoteSize(2) {
+	chatModel = new MessageListModel(this);
 	// Open socket
 	sock = new QTcpSocket(this);
 	if(sock) {
@@ -108,7 +109,6 @@ void IrcChat::parseCommand(QString cmd) {
 		// Structure of message: '@color=#HEX;display-name=NicK;emotes=id:start-end,start-end/id:start-end;subscriber=0or1;turbo=0or1;user-type=type :nick!nick@nick.tmi.twitch.tv PRIVMSG #channel :message'
 		QString params = cmd.left(cmd.indexOf("PRIVMSG"));
 		QString nickname = params.left(params.lastIndexOf('!')).remove(0, params.lastIndexOf(':') + 1);
-		qDebug() << nickname;
 		if(params.lastIndexOf(':') > 0)
 			params = params.remove(params.lastIndexOf(':') - 1, params.length());
 		else
@@ -121,7 +121,6 @@ void IrcChat::parseCommand(QString cmd) {
 		if(nickname == room)
 			specList.append("broadcaster");
 		QString utype = getParamValue(params, "user-type");
-		qDebug() << utype;
 		if(utype != "")
 			specList.append(utype);
 		if(getParamValue(params, "subscriber") == "1")
@@ -131,7 +130,6 @@ void IrcChat::parseCommand(QString cmd) {
 
 		QStringList emoteList = getParamValue(params, "emotes").split('/', QString::SkipEmptyParts);
 		QString message = cmd.remove(0, cmd.indexOf(':', cmd.indexOf("PRIVMSG")) + 1);
-		qDebug() << message;
 		// Parsing emotes
 		QStringList splittedMessage = QStringList(message);
 		QVector<int> smLengths = QVector<int>(1, message.length());
@@ -164,7 +162,6 @@ void IrcChat::parseCommand(QString cmd) {
 			}
 		}
 		message = splittedMessage.join("");
-		qDebug() << message;
 		addMessage(specList, nickColor, displayName, nickname, message);
 		return;
 	}
@@ -220,53 +217,15 @@ QString IrcChat::parseUserEmotes(QString msg) {
 	return res;
 }
 
-QQmlListProperty<Message> IrcChat::messages() {
-	return QQmlListProperty<Message>(this, nullptr, &appendMessage, &messageCount, &messageAt, &messagesClear);
-}
-
-void IrcChat::appendMessage(QQmlListProperty<Message> *list, Message *m) {
-	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
-	if(ml && m) {
-		ml->chat.append(m);
-		emit ml->messagesChanged();
-	}
-}
-
-int IrcChat::messageCount(QQmlListProperty<Message> *list) {
-	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
-	if(ml) {
-		return ml->chat.count();
-	}
-	return 0;
-}
-
-Message *IrcChat::messageAt(QQmlListProperty<Message> *list, int i) {
-	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
-	if(ml) {
-		return ml->chat.at(i);
-	}
-	return nullptr;
-}
-
-void IrcChat::messagesClear(QQmlListProperty<Message> *list) {
-	IrcChat *ml = qobject_cast<IrcChat*>(list->object);
-	if(ml) {
-		return ml->chat.clear();
-		emit ml->messagesChanged();
-	}
-}
-
 void IrcChat::addMessage(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
-	Message* msg = new Message(RT(specs, uColor, d_name, uname, text), specs, uColor, d_name, uname, text);
-	chat.append(msg);
-	qDebug() << msg->notice;
+	Message msg = Message(specs, uColor, d_name, uname, text, RT(specs, uColor, d_name, uname, text));
+	chatModel->appendMessage(msg);
 	emit messagesChanged();
 }
 
 void IrcChat::addNotice(QString text) {
-	Message* notice = new Message(text, text);
-	chat.append(notice);
-	qDebug() << notice->notice;
+	Message notice = Message(text, text);
+	chatModel->appendMessage(notice);
 	emit messagesChanged();
 }
 

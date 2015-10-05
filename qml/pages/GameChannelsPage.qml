@@ -58,7 +58,7 @@ Page {
 		header: PageHeader {
 			id: header
 			title: game
-			rightMargin: Theme.horizontalPageMargin + switchFollow.width + Theme.paddingSmall
+			rightMargin: Theme.horizontalPageMargin + switchFollow.width + Theme.paddingMedium
 
 			BackgroundItem {
 				id: switchFollow

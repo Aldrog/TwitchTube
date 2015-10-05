@@ -30,7 +30,7 @@ public:
 	Q_PROPERTY(QVariant defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
 	Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
-	explicit QMLSettings(QObject *parent = 0);
+	QMLSettings(QObject *parent = 0);
 
 	inline QString key() { return _key; }
 	void setKey(QString key);

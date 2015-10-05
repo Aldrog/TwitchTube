@@ -21,7 +21,8 @@ SOURCES += \
     src/ircchat.cpp \
     src/tools.cpp \
     src/qmlsettings.cpp \
-    src/message.cpp
+    src/message.cpp \
+    src/messagelistmodel.cpp
 
 OTHER_FILES += \
     translations/*.ts \
@@ -60,5 +61,6 @@ HEADERS += \
     src/ircchat.h \
     src/tools.h \
     src/qmlsettings.h \
-    src/message.h
+    src/message.h \
+    src/messagelistmodel.h
 

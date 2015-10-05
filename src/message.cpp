@@ -19,31 +19,18 @@
 
 #include "message.h"
 
-Message::Message(QObject *parent) :
-	QObject(parent)
+Message::Message()
 {
 }
 
-Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
+Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage) {
 	userSpecificators = specs;
 	userColor = uColor;
 	displayName = d_name;
 	username = uname;
 	messageText = text;
 	notice = false;
-	emit isNoticeChanged();
-}
-
-Message::Message(QString RTMessage, QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
-	userSpecificators = specs;
-	userColor = uColor;
-	displayName = d_name;
-	username = uname;
-	messageText = text;
-	notice = false;
-	emit isNoticeChanged();
-	RT = RTMessage;
-	emit richTextChanged();
+	richTextMessage = RTMessage;
 }
 
 Message::Message(QString RTNotice, QString text) {
@@ -52,15 +39,6 @@ Message::Message(QString RTNotice, QString text) {
 	displayName = "";
 	username = "";
 	messageText = text;
-	RT = RTNotice;
-	emit richTextChanged();
+	richTextMessage = RTNotice;
 	notice = true;
-	emit isNoticeChanged();
-}
-
-void Message::setRichText(QString RTMessage) {
-	if(RTMessage != RT) {
-		RT = RTMessage;
-		emit richTextChanged();
-	}
 }

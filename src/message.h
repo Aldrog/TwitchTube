@@ -20,36 +20,25 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <QObject>
 #include <QStringList>
 #include <QColor>
 
-class Message : public QObject
+class Message
 {
-	Q_OBJECT
 public:
-	explicit Message(QObject *parent = 0);
-	explicit Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
-	explicit Message(QString RTMessage, QStringList specs, QColor uColor, QString d_name, QString uname, QString text);
-	explicit Message(QString RTNotice, QString text);
+	Message();
+	// Message constructor
+	Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage = "");
+	// Notice constructor
+	Message(QString RTNotice, QString text);
 
 	QStringList userSpecificators;
 	QColor userColor;
 	QString displayName;
 	QString username;
 	QString messageText;
-	Q_PROPERTY(bool isNotice MEMBER notice NOTIFY isNoticeChanged)
 	bool notice;
-	Q_PROPERTY(QString richText READ richText NOTIFY richTextChanged)
-	inline QString richText() { return RT; }
-	void setRichText(QString RTMessage);
-signals:
-	void richTextChanged();
-	void isNoticeChanged();
-public slots:
-
-private:
-	QString RT;
+	QString richTextMessage;
 };
 
 #endif // MESSAGE_H

@@ -33,6 +33,7 @@
 #include <QRegExp>
 #include <QColor>
 #include <QQmlListProperty>
+#include "messagelistmodel.h"
 #include "message.h"
 
 const qint16 PORT = 6667;
@@ -59,7 +60,7 @@ class IrcChat : public QObject
 {
 	Q_OBJECT
 public:
-	explicit IrcChat(QObject *parent = 0);
+	IrcChat(QObject *parent = 0);
 	~IrcChat();
 
 	//# User
@@ -79,12 +80,8 @@ public:
     Q_PROPERTY(int textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged)
     inline int textSize() { return _textSize; }
 	void setTextSize(int textSize);
-	Q_PROPERTY(QQmlListProperty<Message> messages READ messages NOTIFY messagesChanged)
-	QQmlListProperty<Message> messages();
-	static void appendMessage(QQmlListProperty<Message> *list, Message *m);
-	static int messageCount(QQmlListProperty<Message> *list);
-	static Message *messageAt(QQmlListProperty<Message> *list, int i);
-	static void messagesClear(QQmlListProperty<Message> *list);
+	Q_PROPERTY(MessageListModel* messages READ messages NOTIFY messagesChanged)
+	inline MessageListModel *messages() { return chatModel; }
 	Q_INVOKABLE void join(const QString channel);
 	Q_INVOKABLE void disconnect();
 	Q_INVOKABLE void reopenSocket();
@@ -116,7 +113,7 @@ private:
 	int _emoteSize;
 	int _textSize;
 	QMap<QString, QString> badges;
-	QList<Message*> chat;
+	MessageListModel *chatModel;
 	// Comma-separated list of set numbers
 	QString userEmoteSets;
 	void setUserEmotes(QString emoteSets);

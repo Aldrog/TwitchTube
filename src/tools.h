@@ -31,7 +31,7 @@ class Tools : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Tools(QObject *parent = 0);
+	Tools(QObject *parent = 0);
 	~Tools();
 
 	Q_INVOKABLE int clearCookies();

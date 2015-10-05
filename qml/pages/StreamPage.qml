@@ -64,6 +64,28 @@ Page {
 		}
 	}
 
+	function checkFullscreenConditions() {
+		if(main.visibleArea.yPosition === 0 && isLandscape) {
+			fullscreenTimer.start()
+		} else {
+			fullscreenTimer.stop()
+		}
+	}
+
+	onStatusChanged: {
+		if(status === PageStatus.Activating) {
+			mainWindow.currentChannel = channel
+			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+			cpptools.setBlankingMode(false)
+		}
+		if(status === PageStatus.Deactivating) {
+			if (_navigation === PageNavigation.Back) {
+				mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+			}
+			cpptools.setBlankingMode(true)
+		}
+	}
+
 	onActiveChanged: {
 		if(page.status === PageStatus.Active) {
 			if(active) {
@@ -72,6 +94,7 @@ Page {
 					twitchChat.reopenSocket()
 					twitchChat.join(channel)
 				}
+				checkFullscreenConditions()
 			}
 			else {
 				video.pause()
@@ -81,10 +104,53 @@ Page {
 		}
 	}
 
+	onOrientationChanged: checkFullscreenConditions()
+
+	Timer {
+		id: fullscreenTimer
+		interval: 2000
+		onTriggered: page.state = "fullscreen"
+	}
+
+	Component.onCompleted: {
+		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
+			if (tokendata) {
+				var token = JSON.parse(tokendata)
+				HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
+					if (data) {
+						var videourls = data.split('\n')
+						url = {
+							chunked: searchURL(videourls, "chunked"),
+							high: searchURL(videourls, "high"),
+							medium: searchURL(videourls, "medium"),
+							low: searchURL(videourls, "low"),
+							mobile: searchURL(videourls, "mobile")
+						}
+						video.play()
+					}
+				})
+			}
+		})
+
+		if(mainWindow.username) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
+				if(data)
+					followed = true
+				else
+					followed = false
+			})
+		}
+
+		checkFullscreenConditions()
+	}
+
 	SilicaFlickable {
 		id: main
 		anchors.fill: parent
 		contentHeight: isPortrait ? height : height + Screen.width
+
+		onMovementEnded: checkFullscreenConditions()
+		onMovementStarted: fullscreenTimer.stop()
 
 		PullDownMenu {
 			id: streamMenu
@@ -120,22 +186,6 @@ Page {
 				}
 			}
 		}
-
-		Timer {
-			id: fullscreenTimer
-			interval: 2000
-			onTriggered: page.state = "fullscreen"
-			running: page.orientation === isLandscape
-		}
-
-		onMovementEnded: {
-			if(visibleArea.yPosition === 0 && isLandscape) {
-				fullscreenTimer.start()
-			} else {
-				fullscreenTimer.stop()
-			}
-		}
-		onMovementStarted: fullscreenTimer.stop()
 
 		Rectangle {
 			id: videoBackground
@@ -224,8 +274,6 @@ Page {
 				right: parent.right
 				top: chatFlowBtT.value ? videoBackground.bottom : undefined
 				bottom: chatFlowBtT.value ? undefined : parent.bottom
-				leftMargin: Theme.horizontalPageMargin
-				rightMargin: Theme.horizontalPageMargin
 				topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
 				bottomMargin: Theme.paddingLarge
 			}
@@ -259,8 +307,14 @@ Page {
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
-			currentIndex: count - 1
-			highlightRangeMode: ListView.ApplyRange
+			onCountChanged: {
+				if(currentIndex >= count - 2)
+					currentIndex = count - 1
+			}
+
+			highlightRangeMode: ListView.StrictlyEnforceRange
+			preferredHighlightBegin: chat.height
+			preferredHighlightEnd: chat.height
 
 			clip: true
 			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
@@ -270,12 +324,11 @@ Page {
 				Label {
 					id: lbl
 					width: chat.width
-					text: richText
+					text: richTextMessage
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
 					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
-				Component.onCompleted: console.log(richText)
 			}
 
 			IrcChat {
@@ -321,50 +374,6 @@ Page {
 		for (var x in s) {
 			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
 				return s[x]
-		}
-	}
-
-	Component.onCompleted: {
-		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
-			if (tokendata) {
-				var token = JSON.parse(tokendata)
-				HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
-					if (data) {
-						var videourls = data.split('\n')
-						url = {
-							chunked: searchURL(videourls, "chunked"),
-							high: searchURL(videourls, "high"),
-							medium: searchURL(videourls, "medium"),
-							low: searchURL(videourls, "low"),
-							mobile: searchURL(videourls, "mobile")
-						}
-						video.play()
-					}
-				})
-			}
-		})
-
-		if(mainWindow.username) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
-				if(data)
-					followed = true
-				else
-					followed = false
-			})
-		}
-	}
-
-	onStatusChanged: {
-		if(status === PageStatus.Activating) {
-			mainWindow.currentChannel = channel
-			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
-			cpptools.setBlankingMode(false)
-		}
-		if(status === PageStatus.Deactivating) {
-			if (_navigation === PageNavigation.Back) {
-				mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
-			}
-			cpptools.setBlankingMode(true)
 		}
 	}
 }
