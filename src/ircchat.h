@@ -67,6 +67,10 @@ public:
 	Q_PROPERTY(QString name MEMBER username)
 	Q_PROPERTY(QString password MEMBER userpass)
 	QString username, userpass;
+	Q_PROPERTY(bool anonymous READ anonymous WRITE setAnonymous NOTIFY anonymousChanged)
+	inline bool anonymous() { return anonym; }
+	void setAnonymous(bool newAnonymous);
+	bool anonym;
 	QMap<int, QRegExp> userEmotes;
 	QStringList userSpecs;
 	QColor userColor;
@@ -92,6 +96,7 @@ signals:
 	void messagesChanged();
 	void errorOccured(QString errorDescription);
 	void connectedChanged();
+	void anonymousChanged();
 public slots:
 	void sendMessage(const QString &msg);
 	void onSockStateChanged();

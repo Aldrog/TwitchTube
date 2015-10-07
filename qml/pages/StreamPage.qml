@@ -275,12 +275,13 @@ Page {
 				top: chatFlowBtT.value ? videoBackground.bottom : undefined
 				bottom: chatFlowBtT.value ? undefined : parent.bottom
 				topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
-				bottomMargin: Theme.paddingLarge
+				bottomMargin: Theme.paddingMedium
 			}
-			placeholderText: twitchChat.connected ? qsTr("Type your message here") : qsTr("Chat is not available")
-			label: twitchChat.connected ? qsTr("Message to send") : qsTr("Chat is not available")
+			// Maybe it's better to replace ternary operators with if else blocks
+			placeholderText: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
+			label: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
 			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-			EnterKey.enabled: text.length > 0 && twitchChat.connected
+			EnterKey.enabled: text.length > 0 && twitchChat.connected && !twitchChat.anonymous
 			EnterKey.onClicked: {
 				twitchChat.sendMessage(text)
 				text = ""
@@ -302,7 +303,7 @@ Page {
 
 			ViewPlaceholder {
 				id: chatPlaceholder
-				text: authToken.value ? (twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")) : qsTr("You must login to use chat")
+				text: twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")
 				enabled: chat.model.length <= 0
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
@@ -335,12 +336,11 @@ Page {
 				id: twitchChat
 				name: mainWindow.username
 				password: 'oauth:' + authToken.value
+				anonymous: !mainWindow.username
 				textSize: Theme.fontSizeMedium
 
 				Component.onCompleted: {
-					if(authToken.value) {
-						twitchChat.join(channel)
-					}
+					twitchChat.join(channel)
 				}
 
 				onErrorOccured: {

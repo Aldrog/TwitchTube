@@ -28,6 +28,7 @@ IrcChat::IrcChat(QObject *parent) :
 	if(sock) {
 		emit errorOccured("Error opening socket");
 	}
+	sock->connectToHost(HOST, PORT);
 	connect(sock, SIGNAL(readyRead()), this, SLOT(receive()));
 	connect(sock, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(processError(QAbstractSocket::SocketError)));
 	connect(sock, SIGNAL(connected()), this, SLOT(onSockStateChanged()));
@@ -37,16 +38,15 @@ IrcChat::IrcChat(QObject *parent) :
 IrcChat::~IrcChat() { disconnect(); }
 
 void IrcChat::join(const QString channel) {
-	sock->connectToHost(HOST, PORT);
-	emit connectedChanged();
 	// Tell server that we support twitch-specific commands
-	sock->write("CAP REQ :twitch.tv/commands\n");
-	sock->write("CAP REQ :twitch.tv/tags\n");
+	sock->write("CAP REQ :twitch.tv/commands\r\n");
+	sock->write("CAP REQ :twitch.tv/tags\r\n");
 	// Login
-	sock->write(("PASS " + userpass + "\n").toStdString().c_str());
-	sock->write(("NICK " + username + "\n").toStdString().c_str());
+	qDebug() << username << userpass;
+	sock->write(("PASS " + userpass + "\r\n").toStdString().c_str());
+	sock->write(("NICK " + username + "\r\n").toStdString().c_str());
 	// Join channel's chat room
-	sock->write(("JOIN #" + channel + "\n").toStdString().c_str());
+	sock->write(("JOIN #" + channel + "\r\n").toStdString().c_str());
 
 	QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(badgesReceived(QNetworkReply*)));
@@ -55,6 +55,20 @@ void IrcChat::join(const QString channel) {
 
 	// Save channel name for later use
 	room = channel;
+}
+
+void IrcChat::setAnonymous(bool newAnonymous) {
+	if(newAnonymous != anonym) {
+		if(newAnonymous) {
+			qsrand(QTime::currentTime().msec());
+			username = "";
+			username.sprintf("justinfan%06d", qrand() % 1000000);
+			qDebug() << username;
+			userpass = "blah";
+		}
+		anonym = newAnonymous;
+		emit anonymousChanged();
+	}
 }
 
 void IrcChat::setTextSize(int textSize) {
@@ -72,7 +86,7 @@ void IrcChat::setTextSize(int textSize) {
 }
 
 void IrcChat::disconnect() {
-	sock->write(("PART #" + room + "\n").toStdString().c_str());
+	sock->write(("PART #" + room + "\r\n").toStdString().c_str());
 	sock->close();
 }
 
@@ -86,7 +100,7 @@ void IrcChat::reopenSocket() {
 }
 
 void IrcChat::sendMessage(const QString &msg) {
-	sock->write(("PRIVMSG #" + room + " :" + msg + '\n').toStdString().c_str());
+	sock->write(("PRIVMSG #" + room + " :" + msg + "\r\n").toStdString().c_str());
 	addMessage(userSpecs, userColor, userDisplayName, username, parseUserEmotes(msg));
 }
 
@@ -102,7 +116,7 @@ void IrcChat::receive() {
 void IrcChat::parseCommand(QString cmd) {
 	qDebug() << cmd;
 	if(cmd.startsWith("PING ")) {
-		sock->write(("PONG " + cmd.remove("PING ")).toStdString().c_str());
+		sock->write("PONG\r\n");
 		return;
 	}
 	if(cmd.contains("PRIVMSG")) {
