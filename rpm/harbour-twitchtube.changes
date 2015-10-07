@@ -5,5 +5,17 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Tue Feb 17 2015 Andrew Penkrat <penkrat8@gmail.com> 0.2.1-2
+* Wed Oct 7 2015 Andrew Penkrat <contact.aldrog@gmail.com> 0.91.0-1
+- Fully reworked chat (fixes TWITCHCLIENT issue, better performance and display-name support)
+- Anonymous chat support (view chat without logging in)
+- Some minor UI improvements
+
+* Mon Sep 28 2015 Andrew Penkrat <contact.aldrog@gmail.com> 0.90.2-2
+- A lot of UI improvements
+- Viewing followed games
+- Follow and unfollow games
+- Fixed screen blanking issue
+- New way to store settings (they can now be found in ~/.config/harbour-twitchtube/harbour-twitchtube.conf)
+
+* Tue Feb 17 2015 Andrew Penkrat <contact.aldrog@gmail.com> 0.2.1-2
 - Hot fix for video playback
