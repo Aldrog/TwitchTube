@@ -160,7 +160,7 @@ Page {
 					if(data)
 						followed = true
 				})
-				visible: authToken.value && !followed
+				visible: mainWindow.username && !followed
 			}
 
 			MenuItem {
@@ -169,7 +169,7 @@ Page {
 					if(data === 204)
 						followed = false
 				})
-				visible: authToken.value && followed
+				visible: mainWindow.username && followed
 			}
 
 			MenuItem {

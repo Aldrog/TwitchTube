@@ -52,7 +52,7 @@ Page {
 
 		Categories {
 			games: fromFollowings
-			following: !fromFollowings && authToken.value
+			following: !fromFollowings && mainWindow.username
 		}
 
 		header: PageHeader {
@@ -62,7 +62,7 @@ Page {
 
 			BackgroundItem {
 				id: switchFollow
-				visible: authToken.value
+				visible: mainWindow.username
 				anchors.verticalCenter: parent.verticalCenter
 				anchors.right: parent.right
 				anchors.rightMargin: Theme.horizontalPageMargin
@@ -103,7 +103,7 @@ Page {
 	}
 
 	Component.onCompleted: {
-		if(authToken.value) {
+		if(mainWindow.username) {
 			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
 				var user = JSON.parse(data)
 				username = user.name
