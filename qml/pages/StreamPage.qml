@@ -238,7 +238,7 @@ Page {
 			ViewPlaceholder {
 				id: chatPlaceholder
 				text: twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")
-				enabled: chat.model.length <= 0
+				enabled: chat.count <= 0
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
@@ -247,7 +247,7 @@ Page {
 					currentIndex = count - 1
 			}
 
-			highlightRangeMode: ListView.StrictlyEnforceRange
+			highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
 			preferredHighlightBegin: chat.height
 			preferredHighlightEnd: chat.height
 
@@ -271,6 +271,8 @@ Page {
 					wrapMode: Text.WordWrap
 					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
+
+				Component.onCompleted: console.log("Something happened")
 			}
 
 			IrcChat {
@@ -290,20 +292,7 @@ Page {
 
 				onConnectedChanged: {
 					console.log(connected)
-					if(!twitchChat.connected)
-						reconnect.execute(remorseContainer, qsTr("Chat error, reconnecting"), function() { reopenSocket(); join(channel) })
-					else
-						reconnect.cancel()
 				}
-			}
-
-			Rectangle {
-				id: remorseContainer
-				anchors.top: parent.top
-				width: parent.width
-				height: Theme.itemSizeMedium
-				color: "transparent"
-				RemorseItem { id: reconnect; onTriggered: console.log(twitchChat.connected) }
 			}
 
 			VerticalScrollDecorator { flickable: chat }
