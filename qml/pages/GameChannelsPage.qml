@@ -28,7 +28,6 @@ Page {
 	allowedOrientations: Orientation.All
 
 	property string game
-	property string username
 	property bool followed
 	property bool fromFollowings: false
 	// Status for NavigationCover
@@ -37,15 +36,11 @@ Page {
 	function checkIfFollowed() {
 		followed = false
 		if(mainWindow.username) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				var user = JSON.parse(data)
-				username = user.name
-				HTTP.getRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game, function(data) {
-					if(data)
-						followed = true
-					else
-						followed = false
-				})
+			HTTP.getRequest("https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games/" + game, function(data) {
+				if(data)
+					followed = true
+				else
+					followed = false
 			})
 		}
 	}
