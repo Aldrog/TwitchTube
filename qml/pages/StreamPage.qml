@@ -235,6 +235,8 @@ Page {
 				bottomMargin: chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
 			}
 
+			property int lastItemHeight: 0
+
 			ViewPlaceholder {
 				id: chatPlaceholder
 				text: twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")
@@ -243,12 +245,12 @@ Page {
 			}
 
 			onCountChanged: {
-				if(currentIndex >= count - 2)
+				if(currentIndex >= count - 3)
 					currentIndex = count - 1
 			}
 
 			highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
-			preferredHighlightBegin: chat.height
+			preferredHighlightBegin: chat.height - lastItemHeight
 			preferredHighlightEnd: chat.height
 
 			clip: true
@@ -272,7 +274,10 @@ Page {
 					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
 
-				Component.onCompleted: console.log("Something happened")
+				Component.onCompleted: {
+					if(index >= chat.count - 1)
+						chat.lastItemHeight = height
+				}
 			}
 
 			IrcChat {
