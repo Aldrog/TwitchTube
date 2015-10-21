@@ -34,6 +34,22 @@ Page {
 	// Status for NavigationCover
 	property string navStatus: game
 
+	function checkIfFollowed() {
+		followed = false
+		if(mainWindow.username) {
+			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+				var user = JSON.parse(data)
+				username = user.name
+				HTTP.getRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game, function(data) {
+					if(data)
+						followed = true
+					else
+						followed = false
+				})
+			})
+		}
+	}
+
 	ChannelsGrid {
 		id: gridChannels
 
@@ -58,7 +74,7 @@ Page {
 		header: PageHeader {
 			id: header
 			title: game
-			rightMargin: Theme.horizontalPageMargin + switchFollow.width + Theme.paddingMedium
+			rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
 
 			BackgroundItem {
 				id: switchFollow
@@ -66,8 +82,12 @@ Page {
 				anchors.verticalCenter: parent.verticalCenter
 				anchors.right: parent.right
 				anchors.rightMargin: Theme.horizontalPageMargin
-				height: Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)
+				height: visible ? (Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)) : 0
 				width: height
+
+				Component.onCompleted: checkIfFollowed()
+
+				onVisibleChanged: checkIfFollowed()
 
 				Image {
 					id: heart
@@ -99,21 +119,6 @@ Page {
 						})
 				}
 			}
-		}
-	}
-
-	Component.onCompleted: {
-		if(mainWindow.username) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				var user = JSON.parse(data)
-				username = user.name
-				HTTP.getRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game, function(data) {
-					if(data)
-						followed = true
-					else
-						followed = false
-				})
-			})
 		}
 	}
 }
