@@ -20,8 +20,7 @@
 #include "ircchat.h"
 
 IrcChat::IrcChat(QObject *parent) :
-				QObject(parent),
-				_emoteSize(2) {
+				QObject(parent) {
 	chatModel = new MessageListModel(this);
 	// Open socket
 	sock = new QTcpSocket(this);
@@ -42,7 +41,6 @@ void IrcChat::join(const QString channel) {
 	sock->write("CAP REQ :twitch.tv/commands\r\n");
 	sock->write("CAP REQ :twitch.tv/tags\r\n");
 	// Login
-	qDebug() << username << userpass;
 	sock->write(("PASS " + userpass + "\r\n").toStdString().c_str());
 	sock->write(("NICK " + username + "\r\n").toStdString().c_str());
 	// Join channel's chat room
@@ -63,7 +61,6 @@ void IrcChat::setAnonymous(bool newAnonymous) {
 			qsrand(QTime::currentTime().msec());
 			username = "";
 			username.sprintf("justinfan%06d", qrand() % 1000000);
-			qDebug() << username;
 			userpass = "blah";
 		}
 		anonym = newAnonymous;
@@ -74,13 +71,14 @@ void IrcChat::setAnonymous(bool newAnonymous) {
 void IrcChat::setTextSize(int textSize) {
     if(textSize != _textSize) {
         qDebug() << textSize;
-		if(textSize < 30)
-            _emoteSize = 1;
-		else if(textSize < 50)
-            _emoteSize = 2;
+		_textSize = textSize;
+		m_emoteSize = textSize * 1.2;
+		if(m_emoteSize < 45)
+			m_emoteSizeCategory = 1;
+		else if(m_emoteSize < 75)
+			m_emoteSizeCategory = 2;
         else
-            _emoteSize = 3;
-        _textSize = textSize;
+			m_emoteSizeCategory = 3;
         emit textSizeChanged();
     }
 }
@@ -149,7 +147,7 @@ void IrcChat::parseCommand(QString cmd) {
 		QVector<int> smLengths = QVector<int>(1, message.length());
 		foreach (QString emote, emoteList) {
 			int id = emote.left(emote.indexOf(':')).toInt();
-			QString richTextEmote = QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(textSize()).arg(id).arg(_emoteSize);
+			QString richTextEmote = QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(m_emoteSize).arg(id).arg(m_emoteSizeCategory);
 			QStringList coordList = emote.remove(0, emote.indexOf(':') + 1).split(',', QString::SkipEmptyParts);
 			foreach (QString position, coordList) {
 				int start = position.left(position.indexOf('-')).toInt();
@@ -226,7 +224,7 @@ QColor IrcChat::getDefaultColor(QString name) {
 QString IrcChat::parseUserEmotes(QString msg) {
 	QString res = msg;
 	foreach (int id, userEmotes.keys()) {
-		res = msg.replace(userEmotes[id], QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(textSize()).arg(id).arg(_emoteSize));
+		res = msg.replace(userEmotes[id], QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(m_emoteSize).arg(id).arg(m_emoteSizeCategory));
 	}
 	return res;
 }

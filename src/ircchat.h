@@ -115,7 +115,8 @@ private:
 	//void formRTMessage(Message *incompleteMsg);
 	QTcpSocket *sock;
 	QString room;
-	int _emoteSize;
+	int m_emoteSize;
+	int m_emoteSizeCategory;
 	int _textSize;
 	QMap<QString, QString> badges;
 	MessageListModel *chatModel;
