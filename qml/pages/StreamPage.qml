@@ -64,12 +64,13 @@ Page {
 		}
 	}
 
-	function checkFullscreenConditions() {
-		if(main.visibleArea.yPosition === 0 && isLandscape) {
-			fullscreenTimer.start()
-		} else {
-			fullscreenTimer.stop()
-		}
+	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state
+
+	Timer {
+		id: fullscreenTimer
+		interval: 3000
+		running: fullscreenConditions
+		onTriggered: page.state = "fullscreen"
 	}
 
 	onStatusChanged: {
@@ -94,7 +95,6 @@ Page {
 					twitchChat.reopenSocket()
 					twitchChat.join(channel)
 				}
-				checkFullscreenConditions()
 			}
 			else {
 				video.pause()
@@ -102,14 +102,6 @@ Page {
 					twitchChat.disconnect()
 			}
 		}
-	}
-
-	onOrientationChanged: checkFullscreenConditions()
-
-	Timer {
-		id: fullscreenTimer
-		interval: 2000
-		onTriggered: page.state = "fullscreen"
 	}
 
 	Component.onCompleted: {
@@ -140,17 +132,12 @@ Page {
 					followed = false
 			})
 		}
-
-		checkFullscreenConditions()
 	}
 
 	SilicaFlickable {
 		id: main
 		anchors.fill: parent
 		contentHeight: isPortrait ? height : height + Screen.width
-
-		onMovementEnded: checkFullscreenConditions()
-		onMovementStarted: fullscreenTimer.stop()
 
 		PullDownMenu {
 			id: streamMenu
