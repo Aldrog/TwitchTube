@@ -55,6 +55,7 @@ SilicaFlickable {
 			right: parent.right; rightMargin: Theme.horizontalPageMargin
 		}
 		height: childrenRect.height - headerItem.height
+		interactive: false
 
 		ViewPlaceholder {
 			enabled: channels.count <= 0
