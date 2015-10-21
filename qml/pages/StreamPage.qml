@@ -19,7 +19,7 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import QtMultimedia 5.5
+import QtMultimedia 5.0
 import harbour.twitchtube.ircchat 1.0
 import "../js/httphelper.js" as HTTP
 
@@ -33,6 +33,7 @@ Page {
 	property bool followed
 	property bool showStream: true
 	property bool active: Qt.application.active
+	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state
 
 	states: State {
 		name: "fullscreen"
@@ -63,8 +64,6 @@ Page {
 			allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
 		}
 	}
-
-	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state
 
 	Timer {
 		id: fullscreenTimer
@@ -194,62 +193,12 @@ Page {
 
 				onErrorChanged: console.error("video error:", errorString)
 
-				onPlaybackStateChanged: {
-					logState()
-				}
-				onAvailabilityChanged: {
-					logAvailability()
-				}
-
 				MouseArea {
 					anchors.fill: parent
 					onClicked: {
 						page.state = !page.state ? "fullscreen" : ""
 						console.log(page.state)
-
-						console.log("video height:", video.height)
-						parent.logState()
-						parent.logAvailability()
-						console.log("video buffer:", video.bufferProgress)
-						console.log("video error:", video.errorString)
 					}
-				}
-
-				function logAvailability() {
-					var av
-					switch (availability) {
-					case MediaPlayer.Available:
-						state = "available"
-						break
-					case MediaPlayer.Busy:
-						state = "busy"
-						break
-					case MediaPlayer.Unavailable:
-						state = "unavailable"
-						break
-					case MediaPlayer.ResourceMissing:
-						state = "missing resource"
-						break
-					}
-
-					console.log("video availability:", av)
-				}
-
-				function logState() {
-					var state
-					switch (playbackState) {
-					case MediaPlayer.PlayingState:
-						state = "playing"
-						break
-					case MediaPlayer.PausedState:
-						state = "paused"
-						break
-					case MediaPlayer.StoppedState:
-						state = "stopped"
-						break
-					}
-
-					console.log("video state:", state)
 				}
 			}
 		}
@@ -284,8 +233,6 @@ Page {
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
 				topMargin: (!showStream && !chatFlowBtT.value) ? Theme.paddingLarge : Theme.paddingMedium//chatFlowBtT.value ? Theme.paddingSmall : Theme.paddingMedium
 				bottomMargin: chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
-				leftMargin: Theme.horizontalPageMargin
-				rightMargin: Theme.horizontalPageMargin
 			}
 
 			ViewPlaceholder {
@@ -309,9 +256,16 @@ Page {
 			model: twitchChat.messages
 			delegate: Item {
 				height: lbl.height
+				width: chat.width
 				Label {
 					id: lbl
-					width: chat.width
+					anchors {
+						left: parent.left
+						right: parent.right
+						leftMargin: Theme.horizontalPageMargin
+						rightMargin: Theme.horizontalPageMargin
+					}
+
 					text: richTextMessage
 					textFormat: Text.RichText
 					wrapMode: Text.WordWrap
@@ -354,7 +308,7 @@ Page {
 
 			VerticalScrollDecorator { flickable: chat }
 		}
-		VerticalScrollDecorator { flickable: main }
+		//VerticalScrollDecorator { flickable: main }
 	}
 
 	function searchURL(s, q) {
