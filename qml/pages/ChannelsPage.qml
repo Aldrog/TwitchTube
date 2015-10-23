@@ -50,7 +50,7 @@ Page {
 		}
 
 		header: PageHeader {
-			title: qsTr("Live Channels")
+			title: qsTr("Top Channels")
 		}
 	}
 }

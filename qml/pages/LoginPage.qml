@@ -42,7 +42,6 @@ Page {
 			right: parent.right
 		}
 		onNavigationRequested: {
-			console.log(request.url)
 			var url = request.url.toString()
 			if(url.indexOf("http://localhost") === 0) {
 				var params = url.substring(url.lastIndexOf('/') + 1)

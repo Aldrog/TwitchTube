@@ -51,7 +51,7 @@ Page {
 		}
 
 		header: PageHeader {
-			title: qsTr("Popular Games")
+			title: qsTr("Top Games")
 		}
 	}
 }

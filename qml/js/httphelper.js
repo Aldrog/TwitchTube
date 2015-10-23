@@ -26,7 +26,6 @@ function getRequest(url, callback) {
 	request.onreadystatechange = function() {
 		if (request.readyState === XMLHttpRequest.DONE) {
 			if (request.status && request.status === 200) {
-				//console.log("response", request.responseText)
 				callback(request.responseText)
 			} else {
 				console.log("Error accessing url", url)
@@ -44,7 +43,6 @@ function putRequest(url, callback) {
 	request.onreadystatechange = function() {
 		if (request.readyState === XMLHttpRequest.DONE) {
 			if (request.status && request.status === 200) {
-				console.log("response", request.responseText)
 				callback(request.responseText)
 			} else {
 				console.log("HTTP:", request.status, request.statusText)

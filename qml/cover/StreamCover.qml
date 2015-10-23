@@ -21,6 +21,8 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 import "../js/httphelper.js" as HTTP
 
+// The most of this code was taken from Sailfish Silica components
+
 CoverBackground {
 	id: root
 
@@ -50,8 +52,6 @@ CoverBackground {
 			// Workaround -- seems to be necessary for the ShaderEffect to update the texture
 			wallpaperEffect.wallpaperTexture = null
 			wallpaperEffect.wallpaperTexture = streamPreview
-			console.log(width, height)
-			console.log(sourceSize.width, sourceSize.height)
 		}
 	}
 

@@ -38,7 +38,7 @@ ApplicationWindow
 				if(data) {
 					var user = JSON.parse(data)
 					username = user.name
-					console.log("Username:", username)
+					console.log("Successfully received username")
 				}
 			})
 		}

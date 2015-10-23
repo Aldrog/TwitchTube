@@ -38,7 +38,7 @@ Dialog {
 			id: header
 			dialog: page
 
-			title: qsTr("TwitchTube Settings")
+			title: qsTr("Settings")
 			acceptText: qsTr("Apply")
 			cancelText: qsTr("Cancel")
 		}

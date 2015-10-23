@@ -51,7 +51,7 @@ Page {
 		}
 
 		header: PageHeader {
-			title: qsTr("Followed Streams")
+			title: qsTr("Followed Channels")
 		}
 	}
 

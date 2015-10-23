@@ -69,8 +69,7 @@ void IrcChat::setAnonymous(bool newAnonymous) {
 }
 
 void IrcChat::setTextSize(int textSize) {
-    if(textSize != _textSize) {
-        qDebug() << textSize;
+	if(textSize != _textSize) {
 		_textSize = textSize;
 		m_emoteSize = textSize * 1.2;
 		if(m_emoteSize < 45)
@@ -179,7 +178,6 @@ void IrcChat::parseCommand(QString cmd) {
 	}
 	if(cmd.contains("NOTICE")) {
 		QString text = cmd.remove(0, cmd.indexOf(':', cmd.indexOf("NOTICE")) + 1);
-		qDebug() << text;
 		addNotice(text);
 	}
 	if(cmd.contains("GLOBALUSERSTATE")) {
@@ -193,7 +191,6 @@ void IrcChat::parseCommand(QString cmd) {
 		if(username == room)
 			uspecs.append("broadcaster");
 		QString utype = getParamValue(params, "user-type");
-		qDebug() << utype;
 		if(utype != "")
 			uspecs.append(utype);
 		if(getParamValue(params, "subscriber") == "1")
@@ -244,7 +241,6 @@ void IrcChat::addNotice(QString text) {
 QString IrcChat::RT(QStringList specs, QColor uColor, QString d_name, QString uname, QString text) {
 	QString ubadges = "";
 	foreach(QString uspec, specs) {
-		qDebug() << uspec << badges[uspec];
 		ubadges += QString("<img height=%1 src=%2/> ").arg(textSize()).arg(badges[uspec]);
 	}
 
@@ -257,7 +253,6 @@ void IrcChat::badgesReceived(QNetworkReply *dataSource) {
 	QJsonObject data = doc.object();
 	foreach(QString spec, data.keys()) {
 		if(!data[spec].toObject()["image"].isNull()) {
-			qDebug() << spec << data[spec].toObject()["image"];
 			badges.insert(spec, data[spec].toObject()["image"].toString());
 		}
 	}
@@ -269,12 +264,11 @@ void IrcChat::emotesReceived(QNetworkReply *dataSource) {
 	QJsonDocument doc = QJsonDocument::fromJson(rawData);
 	QJsonObject data = doc.object();
 	foreach(QJsonValue set, data["emoticon_sets"].toObject()) {
-		qDebug() << set.isArray();
 		foreach(QJsonValue emote, set.toArray()) {
-			qDebug() << emote.toObject()["id"] << emote.toObject()["code"];
 			userEmotes.insert(emote.toObject()["id"].toInt(), QRegExp("\\b" + emote.toObject()["code"].toString() + "\\b"));
 		}
 	}
+	qDebug() << "Received" << userEmotes.count() << "user emotes";
 	dataSource->deleteLater();
 }
 
@@ -307,7 +301,6 @@ void IrcChat::processError(QAbstractSocket::SocketError socketError) {
 }
 
 void IrcChat::onSockStateChanged() {
-	qDebug() << this->connected() << sock->state();
 	// We don't check if connected property actually changed because this slot should only be awaken when it did
 	emit connectedChanged();
 }

@@ -14,7 +14,7 @@ Dialog {
 
 		DialogHeader {
 			id: header
-			title: qsTr("Set stream quality")
+			title: qsTr("Stream properties")
 		}
 
 		Column {
@@ -28,7 +28,7 @@ Dialog {
 			ComboBox {
 				id: qualityChooser
 				width: parent.width
-				label: qsTr("Stream quality")
+				label: qsTr("Quality")
 				currentIndex: qualities.indexOf(streamQuality.value)
 
 				menu: ContextMenu {
