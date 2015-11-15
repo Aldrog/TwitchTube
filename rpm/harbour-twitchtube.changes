@@ -5,6 +5,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Nov 15 2015 Andrew Penkrat <contact.aldrog@gmail.com> 1.0-1
+- 20% more Kappa
+- UX issues fixes
+- Bug fixes
+
 * Wed Oct 7 2015 Andrew Penkrat <contact.aldrog@gmail.com> 0.91.0-1
 - Fully reworked chat (fixes TWITCHCLIENT issue, better performance and display-name support)
 - Anonymous chat support (view chat without logging in)
