@@ -144,6 +144,7 @@ void IrcChat::parseCommand(QString cmd) {
 		// Parsing emotes
 		QStringList splittedMessage = QStringList(message);
 		QVector<int> smLengths = QVector<int>(1, message.length());
+		QVector<bool> isEmote = QVector<bool>(1, false);
 		foreach (QString emote, emoteList) {
 			int id = emote.left(emote.indexOf(':')).toInt();
 			QString richTextEmote = QString("<img height=%1 src=\'http://static-cdn.jtvnw.net/emoticons/v1/%2/%3.0\'/>").arg(m_emoteSize).arg(id).arg(m_emoteSizeCategory);
@@ -167,9 +168,20 @@ void IrcChat::parseCommand(QString cmd) {
 						smLengths.insert(i, pieceBeforeEmote.length());
 						smLengths.insert(i + 1, end - start + 1);
 						smLengths.insert(i + 2, pieceAfterEmote.length());
+						isEmote.removeAt(i);
+						isEmote.insert(i, false);
+						isEmote.insert(i + 1, true);
+						isEmote.insert(i + 2, false);
 						break;
 					}
 				}
+			}
+		}
+		for(int i = 0; i < splittedMessage.count(); i++) {
+			if(!isEmote[i]) {
+				splittedMessage[i].replace('>', "&gt;");
+				splittedMessage[i].replace('<', "&lt;");
+				splittedMessage[i].replace('"', "&quot;");
 			}
 		}
 		message = splittedMessage.join("");
