@@ -16,6 +16,10 @@ CONFIG += sailfishapp c++11
 
 QT += network dbus
 
+icons.path = /usr/share/icons/hicolor
+icons.files = icons/*
+INSTALLS += icons
+
 SOURCES += \
     src/harbour-twitchtube.cpp \
     src/ircchat.cpp \
@@ -36,7 +40,6 @@ OTHER_FILES += \
     qml/pages/FollowedPage.qml \
     qml/harbour-twitchtube.qml \
     harbour-twitchtube.desktop \
-    harbour-twitchtube.png \
     rpm/harbour-twitchtube.spec \
     rpm/harbour-twitchtube.yaml \
     qml/pages/elements/Categories.qml \
@@ -63,4 +66,10 @@ HEADERS += \
     src/qmlsettings.h \
     src/message.h \
     src/messagelistmodel.h
+
+DISTFILES += \
+    icons/108x108/apps/harbour-twitchtube.png \
+    icons/128x128/apps/harbour-twitchtube.png \
+    icons/256x256/apps/harbour-twitchtube.png \
+    icons/86x86/apps/harbour-twitchtube.png
 
