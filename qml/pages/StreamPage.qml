@@ -33,7 +33,7 @@ Page {
 	property bool followed
 	property bool showStream: true
 	property bool active: Qt.application.active
-	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state
+	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
 
 	states: State {
 		name: "fullscreen"
@@ -136,7 +136,8 @@ Page {
 	SilicaFlickable {
 		id: main
 		anchors.fill: parent
-		contentHeight: isPortrait ? height : height + Screen.width
+		contentHeight: isPortrait ? page.height : (showStream ? (5/3 * Screen.width) : page.height)
+		//onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
 
 		PullDownMenu {
 			id: streamMenu
@@ -231,11 +232,9 @@ Page {
 				right: parent.right
 				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
 				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-				topMargin: (!showStream && !chatFlowBtT.value) ? Theme.paddingLarge : Theme.paddingMedium//chatFlowBtT.value ? Theme.paddingSmall : Theme.paddingMedium
-				bottomMargin: chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
+				//topMargin: (!showStream && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
+				//bottomMargin: 0//chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
 			}
-
-			property int lastItemHeight: 0
 
 			ViewPlaceholder {
 				id: chatPlaceholder
@@ -244,13 +243,8 @@ Page {
 				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
 			}
 
-			onCountChanged: {
-				if(currentIndex >= count - 3)
-					currentIndex = count - 1
-			}
-
 			highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
-			preferredHighlightBegin: chat.height - lastItemHeight
+			preferredHighlightBegin: chat.height - currentItem.height
 			preferredHighlightEnd: chat.height
 
 			clip: true
@@ -274,9 +268,10 @@ Page {
 					color: isNotice ? Theme.highlightColor : Theme.primaryColor
 				}
 
-				Component.onCompleted: {
-					if(index >= chat.count - 1)
-						chat.lastItemHeight = height
+				ListView.onAdd: {
+					if(chat.currentIndex >= chat.count - 3) {
+						chat.currentIndex = chat.count - 1
+					}
 				}
 			}
 

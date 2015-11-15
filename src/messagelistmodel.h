@@ -26,6 +26,8 @@
 #include <QVariant>
 #include "message.h"
 
+const int MAX_MESSAGE_POOL = 1000;
+
 class MessageListModel : public QAbstractListModel
 {
 	Q_OBJECT

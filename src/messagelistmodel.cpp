@@ -43,6 +43,11 @@ QVariant MessageListModel::data(const QModelIndex &index, int role) const {
 }
 
 void MessageListModel::appendMessage(Message &message) {
+	if(rowCount() > MAX_MESSAGE_POOL) {
+		beginRemoveRows(QModelIndex(), 0, 0);
+		messageList.removeFirst();
+		endRemoveRows();
+	}
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	messageList.append(message);
 	endInsertRows();
