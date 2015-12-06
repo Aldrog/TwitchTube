@@ -3,26 +3,23 @@ TwitchTube
 
 Twitch.tv client for Sailfish OS.
 
-Video playback has serious issues because Sailfish currently uses deprecated GStreamer 0.10. It should switch to gst 1.0 not later than 2.0 version of the OS.
-
 Features
 --------
-- Navigating by game
-- Viewing top channels
+- Navigate by game
+- View top channels
 - Browse followed channels and games
-- Following and unfollowing channels and games
+- Follow and unfollow channels and games
 - Search channels
 - Chat
 
 State of development
 --------------------
-1.0 roadmap has been completed and now the app only requires some polishing (adjusting opacity levels of items on multitasking cover as an example).
-The app will be updated (and most likely published in Jolla Store) as soon as GStreamer 1.0 based multimedia stack is available in Sailfish.
+Version 1.0 has been released and waiting for the Harbour QA.
 
-Future plans
-------------
-Version 1.0 doesn't mean the development of the app is over. After release I will start adding new features like:
-- Tablet interface
+TODO
+----
+- Special tablet interface
 - Ability to enable sound playback in minimized app (aka "radio mode")
-- Viewing channel's biography
-- Watching past broadcasts
+- Past broadcasts
+- Channel biography
+- Suggestions are welcome.
