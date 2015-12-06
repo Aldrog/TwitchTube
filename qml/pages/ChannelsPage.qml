@@ -23,39 +23,35 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	// Status for NavigationCover
-	property string navStatus: qsTr("Channels")
+    // Status for NavigationCover
+    property string navStatus: qsTr("Channels")
 
-	ChannelsGrid {
-		id: gridChannels
+    allowedOrientations: Orientation.All
 
-		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.streams)
-						channels.append(result.streams[i])
-				}
-			})
-		}
+    ChannelsGrid {
+        id: gridChannels
 
-		Categories {
-			channels: false
-		}
+        function loadChannels() {
+            var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
+            HTTP.getRequest(url,function(data) {
+                if (data) {
+                    offset += countOnPage
+                    var result = JSON.parse(data)
+                    totalCount = result._total
+                    for (var i in result.streams)
+                        channels.append(result.streams[i])
+                }
+            })
+        }
 
-		header: PageHeader {
-			title: qsTr("Top Channels")
-		}
-	}
+        header: PageHeader {
+            title: qsTr("Top Channels")
+        }
+
+        Categories {
+            channels: false
+        }
+    }
 }
-
-
-
-
-

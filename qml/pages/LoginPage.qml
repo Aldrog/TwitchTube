@@ -21,43 +21,44 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
+    allowedOrientations: Orientation.All
 
-	property bool needExit: false
-	// Status for NavigationCover
-	property string navStatus: qsTr("Settings")
+    property bool needExit: false
+    // Status for NavigationCover
+    property string navStatus: qsTr("Settings")
 
-	PageHeader {
-		id: head
-		title: qsTr("Log into Twitch account")
-	}
+    PageHeader {
+        id: head
+        title: qsTr("Log into Twitch account")
+    }
 
-	SilicaWebView {
-		id: twitchLogin
-		anchors {
-			top: head.bottom
-			bottom: parent.bottom
-			left: parent.left
-			right: parent.right
-		}
-		onNavigationRequested: {
-			var url = request.url.toString()
-			if(url.indexOf("http://localhost") === 0) {
-				var params = url.substring(url.lastIndexOf('/') + 1)
-				if(params.indexOf("#access_token") >= 0) {
-					authToken.value = params.split('=')[1].split('&')[0]
-				}
-				if(status === PageStatus.Activating)
-					needExit = true
-				else
-					pageStack.pop()
-			}
-			else
-				request.action = SilicaWebView.AcceptRequest;
-		}
-		url: encodeURI("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=n57dx0ypqy48ogn1ac08buvoe13bnsu&redirect_uri=http://localhost&scope=user_read user_follows_edit chat_login")
-	}
+    SilicaWebView {
+        id: twitchLogin
 
-	onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
+        anchors {
+            top: head.bottom
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        onNavigationRequested: {
+            var url = request.url.toString()
+            if(url.indexOf("http://localhost") === 0) {
+                var params = url.substring(url.lastIndexOf('/') + 1)
+                if(params.indexOf("#access_token") >= 0) {
+                    authToken.value = params.split('=')[1].split('&')[0]
+                }
+                if(status === PageStatus.Activating)
+                    needExit = true
+                else
+                    pageStack.pop()
+            }
+            else
+                request.action = SilicaWebView.AcceptRequest;
+        }
+        url: encodeURI("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=n57dx0ypqy48ogn1ac08buvoe13bnsu&redirect_uri=http://localhost&scope=user_read user_follows_edit chat_login")
+    }
+
+    onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
 }

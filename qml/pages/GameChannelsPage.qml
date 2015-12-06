@@ -24,96 +24,99 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	property string game
-	property bool followed
-	property bool fromFollowings: false
-	// Status for NavigationCover
-	property string navStatus: game
+    property string game
+    property bool followed
+    property bool fromFollowings: false
+    // Status for NavigationCover
+    property string navStatus: game
 
-	function checkIfFollowed() {
-		followed = false
-		if(mainWindow.username) {
-			HTTP.getRequest("https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games/" + game, function(data) {
-				if(data)
-					followed = true
-				else
-					followed = false
-			})
-		}
-	}
+    function checkIfFollowed() {
+        followed = false
+        if(mainWindow.username) {
+            HTTP.getRequest("https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games/" + game, function(data) {
+                if(data)
+                    followed = true
+                else
+                    followed = false
+            })
+        }
+    }
 
-	ChannelsGrid {
-		id: gridChannels
+    allowedOrientations: Orientation.All
 
-		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset + encodeURI("&game=" + game)
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.streams)
-						channels.append(result.streams[i])
-				}
-			})
-		}
+    ChannelsGrid {
+        id: gridChannels
 
-		Categories {
-			games: fromFollowings
-			following: !fromFollowings && mainWindow.username
-		}
+        function loadChannels() {
+            var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset + encodeURI("&game=" + game)
+            HTTP.getRequest(url,function(data) {
+                if (data) {
+                    offset += countOnPage
+                    var result = JSON.parse(data)
+                    totalCount = result._total
+                    for (var i in result.streams)
+                        channels.append(result.streams[i])
+                }
+            })
+        }
 
-		header: PageHeader {
-			id: header
-			title: game
-			rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
+        header: PageHeader {
+            id: header
 
-			BackgroundItem {
-				id: switchFollow
-				visible: mainWindow.username
-				anchors.verticalCenter: parent.verticalCenter
-				anchors.right: parent.right
-				anchors.rightMargin: Theme.horizontalPageMargin
-				height: visible ? (Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)) : 0
-				width: height
+            title: game
+            rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
 
-				Component.onCompleted: checkIfFollowed()
+            BackgroundItem {
+                id: switchFollow
 
-				onVisibleChanged: checkIfFollowed()
+                visible: mainWindow.username
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: Theme.horizontalPageMargin
+                height: visible ? (Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)) : 0
+                width: height
 
-				Image {
-					id: heart
-					anchors.fill: parent
-					source: followed ? "../images/heart_crossed.png" : "../images/heart.png"
-					visible: false
-				}
-				ColorOverlay {
-					id: heartColor
-					anchors.fill: heart
-					source: heart
-					color: switchFollow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
+                Component.onCompleted: checkIfFollowed()
+                onVisibleChanged: checkIfFollowed()
 
-					function overlayColor(color) {
-						return Qt.rgba(color.r, color.g, color.b, color.a - Math.min(color.r, color.g, color.b))
-					}
-				}
+                onClicked: {
+                    if(!followed)
+                        HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+                            if(data)
+                                followed = true
+                        })
+                    else
+                        HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+                            if(data === 204)
+                                followed = false
+                        })
+                }
 
-				onClicked: {
-					if(!followed)
-						HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
-							if(data)
-								followed = true
-						})
-					else
-						HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
-							if(data === 204)
-								followed = false
-						})
-				}
-			}
-		}
-	}
+                Image {
+                    id: heart
+                    anchors.fill: parent
+                    source: followed ? "../images/heart_crossed.png" : "../images/heart.png"
+                    visible: false
+                }
+                ColorOverlay {
+                    id: heartColor
+
+                    function overlayColor(color) {
+                        return Qt.rgba(color.r, color.g, color.b, color.a - Math.min(color.r, color.g, color.b))
+                    }
+
+                    anchors.fill: heart
+                    source: heart
+                    color: switchFollow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
+                }
+            }
+        }
+
+        Categories {
+            games: fromFollowings
+            following: !fromFollowings && mainWindow.username
+        }
+    }
 }

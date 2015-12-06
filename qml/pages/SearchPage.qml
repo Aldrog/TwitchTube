@@ -23,53 +23,57 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	// Status for NavigationCover
-	property string navStatus: qsTr("Search")
+    // Status for NavigationCover
+    property string navStatus: qsTr("Search")
 
-	ChannelsGrid {
-		id: gridResults
-		autoLoad: false
-		property string querry: ""
+    allowedOrientations: Orientation.All
 
-		function loadChannels() {
-			if(querry) {
-				var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
-				console.log(url)
-				HTTP.getRequest(url,function(data) {
-					if (data) {
-						offset += countOnPage
-						var result = JSON.parse(data)
-						totalCount = result._total
-						for (var i in result.streams)
-							channels.append(result.streams[i])
-					}
-				})
-			}
-			else {
-				totalCount = 0
-			}
-		}
+    ChannelsGrid {
+        id: gridResults
 
-		Categories {
-			search: false
-		}
+        property string querry: ""
 
-		header: SearchField {
-			id: searchQuerry
-			width: parent.width
-			placeholderText: qsTr("Search channels")
-			onTextChanged: {
-				gridResults.channels.clear()
-				gridResults.offset = 0
-				gridResults.querry = text
-				gridResults.loadChannels()
-			}
-		}
+        function loadChannels() {
+            if(querry) {
+                var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
+                console.log(url)
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.streams)
+                            channels.append(result.streams[i])
+                    }
+                })
+            }
+            else {
+                totalCount = 0
+            }
+        }
 
-		// This prevents search field from loosing focus when grid changes
-		grid.currentIndex: -1
-	}
+        autoLoad: false
+
+        // This prevents search field from loosing focus when grid changes
+        grid.currentIndex: -1
+
+        header: SearchField {
+            id: searchQuerry
+
+            width: parent.width
+            placeholderText: qsTr("Search channels")
+            onTextChanged: {
+                gridResults.channels.clear()
+                gridResults.offset = 0
+                gridResults.querry = text
+                gridResults.loadChannels()
+            }
+        }
+
+        Categories {
+            search: false
+        }
+    }
 }

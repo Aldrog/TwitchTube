@@ -23,40 +23,40 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
+    allowedOrientations: Orientation.All
 
-	// Status for NavigationCover
-	property string navStatus: qsTr("Following")
+    // Status for NavigationCover
+    property string navStatus: qsTr("Following")
 
-	ChannelsGrid {
-		id: gridChannels
+    onStatusChanged: {
+        if(status === PageStatus.Active)
+            pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
+    }
 
-		function loadChannels() {
-			var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
-			console.log(url)
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.streams)
-						channels.append(result.streams[i])
-				}
-			})
-		}
+    ChannelsGrid {
+        id: gridChannels
 
-		Categories {
-			following: false
-		}
+        function loadChannels() {
+            var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
+            console.log(url)
+            HTTP.getRequest(url,function(data) {
+                if (data) {
+                    offset += countOnPage
+                    var result = JSON.parse(data)
+                    totalCount = result._total
+                    for (var i in result.streams)
+                        channels.append(result.streams[i])
+                }
+            })
+        }
 
-		header: PageHeader {
-			title: qsTr("Followed Channels")
-		}
-	}
+        header: PageHeader {
+            title: qsTr("Followed Channels")
+        }
 
-	onStatusChanged: {
-		if(status === PageStatus.Active)
-			pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
-	}
+        Categories {
+            following: false
+        }
+    }
 }

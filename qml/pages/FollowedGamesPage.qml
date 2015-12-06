@@ -23,41 +23,37 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	// Status for NavigationCover
-	property string navStatus: qsTr("Following")
+    // Status for NavigationCover
+    property string navStatus: qsTr("Following")
 
-	GamesGrid {
-		id: gridGames
-		autoLoad: false
-		parameters: { "fromFollowings": true }
+    allowedOrientations: Orientation.All
 
-		function loadGames() {
-			var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
-			console.log(url)
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.follows)
-						games.append(result.follows[i])
-				}
-			})
-		}
+    GamesGrid {
+        id: gridGames
 
-		Categories {
-			following: false
-		}
+        function loadGames() {
+            var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
+            console.log(url)
+            HTTP.getRequest(url,function(data) {
+                if (data) {
+                    offset += countOnPage
+                    var result = JSON.parse(data)
+                    totalCount = result._total
+                    for (var i in result.follows)
+                        games.append(result.follows[i])
+                }
+            })
+        }
 
-		header: PageHeader {
-			title: qsTr("Followed Games")
-		}
-	}
+        parameters: { "fromFollowings": true }
+        header: PageHeader {
+            title: qsTr("Followed Games")
+        }
 
-	Component.onCompleted: {
-		gridGames.loadGames()
-	}
+        Categories {
+            following: false
+        }
+    }
 }

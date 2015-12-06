@@ -24,30 +24,30 @@
 QMLSettings::QMLSettings(QObject *parent) : QSettings(QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName(), parent){}
 
 void QMLSettings::setKey(QString key) {
-	if(key != _key) {
-		_key = key;
-		emit keyChanged();
-	}
+    if(key != key_p) {
+        key_p = key;
+        emit keyChanged();
+    }
 }
 
 void QMLSettings::setDefaultValue(QVariant defaultValue) {
-	if(defaultValue != _default) {
-		_default = defaultValue;
-		emit defaultValueChanged();
-	}
+    if(defaultValue != default_p) {
+        default_p = defaultValue;
+        emit defaultValueChanged();
+    }
 }
 
 QVariant QMLSettings::value() {
-	QVariant val = QSettings::value(_key, _default);
-	if(val.convert(_default.type())) {
-		return val;
-	}
-	else return QSettings::value(_key, _default);
+    QVariant val = QSettings::value(key_p, default_p);
+    if(val.convert(default_p.type())) {
+        return val;
+    }
+    else return QSettings::value(key_p, default_p);
 }
 
 void QMLSettings::setValue(QVariant value) {
-	if(value != this->value()) {
-		QSettings::setValue(_key, value);
-		emit valueChanged();
-	}
+    if(value != this->value()) {
+        QSettings::setValue(key_p, value);
+        emit valueChanged();
+    }
 }

@@ -24,25 +24,23 @@ import "js/httphelper.js" as HTTP
 
 ApplicationWindow
 {
-	id: mainWindow
+    id: mainWindow
 
-	property string currentChannel
-	property string username
+    property string currentChannel
+    property string username
 
-	initialPage: Component { GamesPage { } }
-	cover: Qt.resolvedUrl("cover/NavigationCover.qml")
+    initialPage: Component { GamesPage { } }
+    cover: Qt.resolvedUrl("cover/NavigationCover.qml")
 
-	Component.onCompleted: {
-		if(authToken.value) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-				if(data) {
-					var user = JSON.parse(data)
-					username = user.name
-					console.log("Successfully received username")
-				}
-			})
-		}
-	}
+    Component.onCompleted: {
+        if(authToken.value) {
+            HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+                if(data) {
+                    var user = JSON.parse(data)
+                    username = user.name
+                    console.log("Successfully received username")
+                }
+            })
+        }
+    }
 }
-
-

@@ -21,38 +21,38 @@
 #include <QDebug>
 
 MessageListModel::MessageListModel(QObject *parent) :
-	QAbstractListModel(parent) {
-	messageList = QList<Message>();
+    QAbstractListModel(parent) {
+    messageList = QList<Message>();
 }
 
 int MessageListModel::rowCount(const QModelIndex &parent) const {
-	Q_UNUSED(parent)
-	return messageList.count();
+    Q_UNUSED(parent)
+    return messageList.count();
 }
 
 QVariant MessageListModel::data(const QModelIndex &index, int role) const {
-	if (index.row() < 0 || index.row() >= rowCount())
-		return QVariant();
+    if (index.row() < 0 || index.row() >= rowCount())
+        return QVariant();
 
-	Message msg = messageList[index.row()];
-	if (role == RichTextMessageRole)
-		return msg.richTextMessage;
-	else if (role == IsNoticeRole)
-		return msg.notice;
-	return QVariant();
+    Message msg = messageList[index.row()];
+    if (role == RichTextMessageRole)
+        return msg.richTextMessage;
+    else if (role == IsNoticeRole)
+        return msg.notice;
+    return QVariant();
 }
 
 void MessageListModel::appendMessage(Message &message) {
-	if(rowCount() > MAX_MESSAGE_POOL) {
-		beginRemoveRows(QModelIndex(), 0, 0);
-		messageList.removeFirst();
-		endRemoveRows();
-	}
-	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	messageList.append(message);
-	endInsertRows();
+    if(rowCount() > MAX_MESSAGE_POOL) {
+        beginRemoveRows(QModelIndex(), 0, 0);
+        messageList.removeFirst();
+        endRemoveRows();
+    }
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    messageList.append(message);
+    endInsertRows();
 }
 
 QHash<int, QByteArray> MessageListModel::roleNames() const {
-	return QHash<int, QByteArray>({{RichTextMessageRole, "richTextMessage"}, {IsNoticeRole, "isNotice"}});
+    return QHash<int, QByteArray>({{RichTextMessageRole, "richTextMessage"}, {IsNoticeRole, "isNotice"}});
 }

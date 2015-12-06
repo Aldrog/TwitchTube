@@ -24,21 +24,21 @@ Message::Message()
 }
 
 Message::Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage) {
-	userSpecificators = specs;
-	userColor = uColor;
-	displayName = d_name;
-	username = uname;
-	messageText = text;
-	notice = false;
-	richTextMessage = RTMessage;
+    userSpecificators = specs;
+    userColor = uColor;
+    displayName = d_name;
+    username = uname;
+    messageText = text;
+    notice = false;
+    richTextMessage = RTMessage;
 }
 
 Message::Message(QString RTNotice, QString text) {
-	userSpecificators = QStringList();
-	userColor = QColor();
-	displayName = "";
-	username = "";
-	messageText = text;
-	richTextMessage = RTNotice;
-	notice = true;
+    userSpecificators = QStringList();
+    userColor = QColor();
+    displayName = "";
+    username = "";
+    messageText = text;
+    richTextMessage = RTNotice;
+    notice = true;
 }

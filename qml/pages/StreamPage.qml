@@ -24,286 +24,304 @@ import harbour.twitchtube.ircchat 1.0
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	property var url
-	property string channel
-	property string username
-	property bool followed
-	property bool showStream: true
-	property bool active: Qt.application.active
-	property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
+    property var url
+    property string channel
+    property string username
+    property bool followed
+    property bool showStream: true
+    property bool active: Qt.application.active
+    property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
 
-	states: State {
-		name: "fullscreen"
-		PropertyChanges {
-			target: main
-			contentHeight: page.height
-		}
+    function findUrl(s, q) {
+        for (var x in s) {
+            if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
+                return s[x]
+        }
+    }
 
-		PropertyChanges {
-			target: chatMessage
-			visible: false
-		}
+    function loadStreamInfo() {
+        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
+            if (tokendata) {
+                var token = JSON.parse(tokendata)
+                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
+                    if (data) {
+                        var videourls = data.split('\n')
+                        url = {
+                            chunked: findUrl(videourls, "chunked"),
+                            high: findUrl(videourls, "high"),
+                            medium: findUrl(videourls, "medium"),
+                            low: findUrl(videourls, "low"),
+                            mobile: findUrl(videourls, "mobile")
+                        }
+                        video.play()
+                    }
+                })
+            }
+        })
+    }
 
-		PropertyChanges {
-			target: chat
-			visible: false
-		}
+    function checkFollow() {
+        if(mainWindow.username) {
+            HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
+                if(data)
+                    return true
+            })
+        }
+        return false
+    }
 
-		PropertyChanges {
-			target: streamMenu
-			visible: false
-			active: false
-		}
+    allowedOrientations: Orientation.All
 
-		PropertyChanges {
-			target: page
-			showNavigationIndicator: false; backNavigation: false
-			allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
-		}
-	}
+    onStatusChanged: {
+        if(status === PageStatus.Activating) {
+            mainWindow.currentChannel = channel
+            mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+            cpptools.setBlankingMode(false)
+        }
+        if(status === PageStatus.Deactivating) {
+            if (_navigation === PageNavigation.Back) {
+                mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+            }
+            cpptools.setBlankingMode(true)
+        }
+    }
 
-	Timer {
-		id: fullscreenTimer
-		interval: 3000
-		running: fullscreenConditions
-		onTriggered: page.state = "fullscreen"
-	}
+    onActiveChanged: {
+        if(page.status === PageStatus.Active) {
+            if(active) {
+                video.play()
+                if(!twitchChat.connected) {
+                    twitchChat.reopenSocket()
+                    twitchChat.join(channel)
+                }
+            }
+            else {
+                video.pause()
+                if(twitchChat.connected)
+                    twitchChat.disconnect()
+            }
+        }
+    }
 
-	onStatusChanged: {
-		if(status === PageStatus.Activating) {
-			mainWindow.currentChannel = channel
-			mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
-			cpptools.setBlankingMode(false)
-		}
-		if(status === PageStatus.Deactivating) {
-			if (_navigation === PageNavigation.Back) {
-				mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
-			}
-			cpptools.setBlankingMode(true)
-		}
-	}
+    Component.onCompleted: {
+        loadStreamInfo()
+        followed = checkFollow()
+    }
 
-	onActiveChanged: {
-		if(page.status === PageStatus.Active) {
-			if(active) {
-				video.play()
-				if(!twitchChat.connected) {
-					twitchChat.reopenSocket()
-					twitchChat.join(channel)
-				}
-			}
-			else {
-				video.pause()
-				if(twitchChat.connected)
-					twitchChat.disconnect()
-			}
-		}
-	}
+    Timer {
+        id: fullscreenTimer
 
-	Component.onCompleted: {
-		HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
-			if (tokendata) {
-				var token = JSON.parse(tokendata)
-				HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
-					if (data) {
-						var videourls = data.split('\n')
-						url = {
-							chunked: searchURL(videourls, "chunked"),
-							high: searchURL(videourls, "high"),
-							medium: searchURL(videourls, "medium"),
-							low: searchURL(videourls, "low"),
-							mobile: searchURL(videourls, "mobile")
-						}
-						video.play()
-					}
-				})
-			}
-		})
+        interval: 3000
+        running: fullscreenConditions
+        onTriggered: page.state = "fullscreen"
+    }
 
-		if(mainWindow.username) {
-			HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
-				if(data)
-					followed = true
-				else
-					followed = false
-			})
-		}
-	}
+    SilicaFlickable {
+        id: main
 
-	SilicaFlickable {
-		id: main
-		anchors.fill: parent
-		contentHeight: isPortrait ? page.height : (showStream ? (5/3 * Screen.width) : page.height)
-		//onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
+        anchors.fill: parent
+        contentHeight: isPortrait ? page.height : (showStream ? (5/3 * Screen.width) : page.height)
+        //onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
 
-		PullDownMenu {
-			id: streamMenu
-			MenuItem {
-				text: qsTr("Follow")
-				onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
-					if(data)
-						followed = true
-				})
-				visible: mainWindow.username && !followed
-			}
+        PullDownMenu {
+            id: streamMenu
 
-			MenuItem {
-				text: qsTr("Unfollow")
-				onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
-					if(data === 204)
-						followed = false
-				})
-				visible: mainWindow.username && followed
-			}
+            MenuItem {
+                text: qsTr("Follow")
+                onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                    if(data)
+                        followed = true
+                })
+                visible: mainWindow.username && !followed
+            }
 
-			MenuItem {
-				text: qsTr("Quality")
-				onClicked: {
-					var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream, channel: channel })
-					dialog.accepted.connect(function() {
-						showStream = !dialog.chatOnly
-						if(showStream && video.playbackState !== MediaPlayer.PlayingState)
-							video.play()
-						if(!showStream && video.playbackState !== MediaPlayer.StoppedState)
-							video.stop()
-					})
-				}
-			}
-		}
+            MenuItem {
+                text: qsTr("Unfollow")
+                onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                    if(data === 204)
+                        followed = false
+                })
+                visible: mainWindow.username && followed
+            }
 
-		Rectangle {
-			id: videoBackground
-			color: "black"
-			anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-			height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-			visible: showStream
+            MenuItem {
+                text: qsTr("Quality")
+                onClicked: {
+                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream, channel: channel })
+                    dialog.accepted.connect(function() {
+                        showStream = !dialog.chatOnly
+                        if(showStream && video.playbackState !== MediaPlayer.PlayingState)
+                            video.play()
+                        if(!showStream && video.playbackState !== MediaPlayer.StoppedState)
+                            video.stop()
+                    })
+                }
+            }
+        }
 
-			Video {
-				id: video
-				anchors.fill: parent
-				source: url[streamQuality.value]
+        Rectangle {
+            id: videoBackground
 
-				BusyIndicator {
-					anchors.centerIn: parent
-					running: video.playbackState !== MediaPlayer.PlayingState
-					size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
-				}
+            color: "black"
+            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+            height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+            visible: showStream
 
-				onErrorChanged: console.error("video error:", errorString)
+            Video {
+                id: video
 
-				MouseArea {
-					anchors.fill: parent
-					onClicked: {
-						page.state = !page.state ? "fullscreen" : ""
-						console.log(page.state)
-					}
-				}
-			}
-		}
+                anchors.fill: parent
+                source: url[streamQuality.value]
 
-		TextField {
-			id: chatMessage
-			anchors {
-				left: parent.left
-				right: parent.right
-				top: chatFlowBtT.value ? videoBackground.bottom : undefined
-				bottom: chatFlowBtT.value ? undefined : parent.bottom
-				topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
-				bottomMargin: Theme.paddingMedium
-			}
-			// Maybe it's better to replace ternary operators with if else blocks
-			placeholderText: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
-			label: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
-			EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-			EnterKey.enabled: text.length > 0 && twitchChat.connected && !twitchChat.anonymous
-			EnterKey.onClicked: {
-				twitchChat.sendMessage(text)
-				text = ""
-			}
-		}
+                onErrorChanged: console.error("video error:", errorString)
 
-		SilicaListView {
-			id: chat
-			anchors {
-				left: parent.left
-				right: parent.right
-				top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
-				bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-				//topMargin: (!showStream && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
-				//bottomMargin: 0//chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
-			}
+                BusyIndicator {
+                    anchors.centerIn: parent
+                    running: video.playbackState !== MediaPlayer.PlayingState
+                    size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
+                }
 
-			ViewPlaceholder {
-				id: chatPlaceholder
-				text: twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")
-				enabled: chat.count <= 0
-				verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
-			}
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        page.state = !page.state ? "fullscreen" : ""
+                        console.log(page.state)
+                    }
+                }
+            }
+        }
 
-			highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
-			preferredHighlightBegin: chat.height - currentItem.height
-			preferredHighlightEnd: chat.height
+        TextField {
+            id: chatMessage
 
-			clip: true
-			verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
-			model: twitchChat.messages
-			delegate: Item {
-				height: lbl.height
-				width: chat.width
-				Label {
-					id: lbl
-					anchors {
-						left: parent.left
-						right: parent.right
-						leftMargin: Theme.horizontalPageMargin
-						rightMargin: Theme.horizontalPageMargin
-					}
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: chatFlowBtT.value ? videoBackground.bottom : undefined
+                bottom: chatFlowBtT.value ? undefined : parent.bottom
+                topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
+                bottomMargin: Theme.paddingMedium
+            }
+            // Maybe it's better to replace ternary operators with if else blocks
+            placeholderText: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
+            label: twitchChat.connected ? (twitchChat.anonymous ? qsTr("Please log in to send messages") : qsTr("Type your message here")) : qsTr("Chat is not available")
+            EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+            EnterKey.enabled: text.length > 0 && twitchChat.connected && !twitchChat.anonymous
+            EnterKey.onClicked: {
+                twitchChat.sendMessage(text)
+                text = ""
+            }
+        }
 
-					text: richTextMessage
-					textFormat: Text.RichText
-					wrapMode: Text.WordWrap
-					color: isNotice ? Theme.highlightColor : Theme.primaryColor
-				}
+        SilicaListView {
+            id: chat
 
-				ListView.onAdd: {
-					if(chat.currentIndex >= chat.count - 3) {
-						chat.currentIndex = chat.count - 1
-					}
-				}
-			}
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
+                bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
+                //topMargin: (!showStream && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
+                //bottomMargin: 0//chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
+            }
 
-			IrcChat {
-				id: twitchChat
-				name: mainWindow.username
-				password: 'oauth:' + authToken.value
-				anonymous: !mainWindow.username
-				textSize: Theme.fontSizeMedium
+            highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
+            preferredHighlightBegin: chat.height - currentItem.height
+            preferredHighlightEnd: chat.height
+            clip: true
+            verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
 
-				Component.onCompleted: {
-					twitchChat.join(channel)
-				}
+            model: twitchChat.messages
+            delegate: Item {
+                height: lbl.height
+                width: chat.width
 
-				onErrorOccured: {
-					console.log("Chat error: ", errorDescription)
-				}
+                ListView.onAdd: {
+                    if(chat.currentIndex >= chat.count - 3) {
+                        chat.currentIndex = chat.count - 1
+                    }
+                }
 
-				onConnectedChanged: {
-					console.log(connected)
-				}
-			}
+                Label {
+                    id: lbl
 
-			VerticalScrollDecorator { flickable: chat }
-		}
-		//VerticalScrollDecorator { flickable: main }
-	}
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: Theme.horizontalPageMargin
+                        rightMargin: Theme.horizontalPageMargin
+                    }
 
-	function searchURL(s, q) {
-		for (var x in s) {
-			if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
-				return s[x]
-		}
-	}
+                    text: richTextMessage
+                    textFormat: Text.RichText
+                    wrapMode: Text.WordWrap
+                    color: isNotice ? Theme.highlightColor : Theme.primaryColor
+                }
+            }
+
+            IrcChat {
+                id: twitchChat
+
+                name: mainWindow.username
+                password: 'oauth:' + authToken.value
+                anonymous: !mainWindow.username
+                textSize: Theme.fontSizeMedium
+
+                Component.onCompleted: {
+                    twitchChat.join(channel)
+                }
+
+                onErrorOccured: {
+                    console.log("Chat error: ", errorDescription)
+                }
+
+                onConnectedChanged: {
+                    console.log(connected)
+                }
+            }
+
+            ViewPlaceholder {
+                id: chatPlaceholder
+
+                text: twitchChat.connected ? qsTr("Welcome to the chat room") : qsTr("Connecting to chat...")
+                enabled: chat.count <= 0
+                verticalOffset: -(chat.verticalLayoutDirection == ListView.TopToBottom ? (page.height - chat.height) / 2 : page.height - (page.height - chat.height) / 2)
+            }
+
+            VerticalScrollDecorator { flickable: chat }
+        }
+        //VerticalScrollDecorator { flickable: main }
+    }
+
+    states: State {
+        name: "fullscreen"
+        PropertyChanges {
+            target: main
+            contentHeight: page.height
+        }
+
+        PropertyChanges {
+            target: chatMessage
+            visible: false
+        }
+
+        PropertyChanges {
+            target: chat
+            visible: false
+        }
+
+        PropertyChanges {
+            target: streamMenu
+            visible: false
+            active: false
+        }
+
+        PropertyChanges {
+            target: page
+            showNavigationIndicator: false; backNavigation: false
+            allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
+        }
+    }
 }

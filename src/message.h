@@ -26,19 +26,19 @@
 class Message
 {
 public:
-	Message();
-	// Message constructor
-	Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage = "");
-	// Notice constructor
-	Message(QString RTNotice, QString text);
+    Message();
+    // Message constructor
+    Message(QStringList specs, QColor uColor, QString d_name, QString uname, QString text, QString RTMessage = "");
+    // Notice constructor
+    Message(QString RTNotice, QString text);
 
-	QStringList userSpecificators;
-	QColor userColor;
-	QString displayName;
-	QString username;
-	QString messageText;
-	bool notice;
-	QString richTextMessage;
+    QStringList userSpecificators;
+    QColor userColor;
+    QString displayName;
+    QString username;
+    QString messageText;
+    bool notice;
+    QString richTextMessage;
 };
 
 #endif // MESSAGE_H

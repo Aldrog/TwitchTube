@@ -30,26 +30,26 @@ const int MAX_MESSAGE_POOL = 1000;
 
 class MessageListModel : public QAbstractListModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	enum MessageRoles {
-		RichTextMessageRole = Qt::UserRole + 1,
-		IsNoticeRole
-	};
+    enum MessageRoles {
+        RichTextMessageRole = Qt::UserRole + 1,
+        IsNoticeRole
+    };
 
-	MessageListModel(QObject *parent = 0);
+    MessageListModel(QObject *parent = 0);
 
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-	void appendMessage(Message &message);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    void appendMessage(Message &message);
 signals:
 
 public slots:
 
 protected:
-	QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const;
 private:
-	QList<Message> messageList;
+    QList<Message> messageList;
 };
 
 #endif // MESSAGELISTMODEL_H

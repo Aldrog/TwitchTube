@@ -21,10 +21,10 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 CoverBackground {
-	property string status: pageStack.currentPage.navStatus
+    property string status: pageStack.currentPage.navStatus
 
-	CoverPlaceholder {
-		icon.source: "../images/icon.png"
-		text: status
-	}
+    CoverPlaceholder {
+        icon.source: "../images/icon.png"
+        text: status
+    }
 }

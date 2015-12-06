@@ -24,29 +24,29 @@
 
 class QMLSettings : public QSettings
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged)
-	Q_PROPERTY(QVariant defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
-	Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(QString key READ key WRITE setKey NOTIFY keyChanged)
+    Q_PROPERTY(QVariant defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
+    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
-	QMLSettings(QObject *parent = 0);
+    QMLSettings(QObject *parent = 0);
 
-	inline QString key() { return _key; }
-	void setKey(QString key);
-	inline QVariant defaultValue() { return _default; }
-	void setDefaultValue(QVariant defaultValue);
-	QVariant value();
-	void setValue(QVariant value);
+    inline QString key() { return key_p; }
+    void setKey(QString key);
+    inline QVariant defaultValue() { return default_p; }
+    void setDefaultValue(QVariant defaultValue);
+    QVariant value();
+    void setValue(QVariant value);
 
 signals:
-	void keyChanged();
-	void defaultValueChanged();
-	void valueChanged();
+    void keyChanged();
+    void defaultValueChanged();
+    void valueChanged();
 
 private:
-	QString _key;
-	QVariant _default;
+    QString key_p;
+    QVariant default_p;
 };
 
 #endif // QMLSETTINGS_H

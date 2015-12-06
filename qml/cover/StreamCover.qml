@@ -24,107 +24,107 @@ import "../js/httphelper.js" as HTTP
 // The most of this code was taken from Sailfish Silica components
 
 CoverBackground {
-	id: root
+    id: root
 
-	property string channel: mainWindow.currentChannel
+    property string channel: mainWindow.currentChannel
 
-	Item {
-		id: glassTextureItem
-		visible: false
-		width: glassTextureImage.width
-		height: glassTextureImage.height
-		Image {
-			id: glassTextureImage
-			opacity: 0.1
-			scale: Theme.pixelRatio
-			source: "image://theme/graphic-shader-texture"
-			Behavior on opacity { FadeAnimation { duration: 200 } }
-		}
-	}
+    onChannelChanged: {
+        HTTP.getRequest("https://api.twitch.tv/kraken/streams/" + channel, function(data) {
+            if(data) {
+                var stream = JSON.parse(data).stream
+                streamPreview.source = stream.preview.template.replace("{height}", root.height).replace("{width}", ~~(root.height*16/9))
+                statusContainer.text = stream.channel.status
+            }
+        })
+    }
 
-	Image {
-		id: streamPreview
-		anchors.fill: parent
-		visible: false
-		fillMode: Image.PreserveAspectCrop
+    Item {
+        id: glassTextureItem
+        visible: false
+        width: glassTextureImage.width
+        height: glassTextureImage.height
+        Image {
+            id: glassTextureImage
+            opacity: 0.1
+            scale: Theme.pixelRatio
+            source: "image://theme/graphic-shader-texture"
+            Behavior on opacity { FadeAnimation { duration: 200 } }
+        }
+    }
 
-		onSourceChanged: {
-			// Workaround -- seems to be necessary for the ShaderEffect to update the texture
-			wallpaperEffect.wallpaperTexture = null
-			wallpaperEffect.wallpaperTexture = streamPreview
-		}
-	}
+    Image {
+        id: streamPreview
+        anchors.fill: parent
+        visible: false
+        fillMode: Image.PreserveAspectCrop
 
-	ShaderEffect {
-		id: wallpaperEffect
-		anchors.fill: parent
+        onSourceChanged: {
+            // Workaround -- seems to be necessary for the ShaderEffect to update the texture
+            wallpaperEffect.wallpaperTexture = null
+            wallpaperEffect.wallpaperTexture = streamPreview
+        }
+    }
 
-		property real horizontalOffset: -(root.height*16/9) / 2 + root.width / 2
-		property real verticalOffset: 0
+    ShaderEffect {
+        id: wallpaperEffect
+        anchors.fill: parent
 
-		visible: streamPreview.source != ""
+        property real horizontalOffset: -(root.height*16/9) / 2 + root.width / 2
+        property real verticalOffset: 0
 
-		// offset normalized to effect size
-		property size offset: Qt.size(horizontalOffset / width, verticalOffset / height)
+        visible: streamPreview.source != ""
 
-		// ratio of effect size vs home wallpaper size
-		property real ratio: 1
-		property size sizeRatio: Qt.size((9/16)*width/height, 1)
+        // offset normalized to effect size
+        property size offset: Qt.size(horizontalOffset / width, verticalOffset / height)
 
-		// glass texture size
-		property size glassTextureSizeInv: Qt.size(1.0/glassTextureImage.sourceSize.width, -1.0/glassTextureImage.sourceSize.height)
+        // ratio of effect size vs home wallpaper size
+        property real ratio: 1
+        property size sizeRatio: Qt.size((9/16)*width/height, 1)
 
-		property Image wallpaperTexture: streamPreview
-		property variant glassTexture: ShaderEffectSource {
-			hideSource: true
-			sourceItem: glassTextureItem
-			wrapMode: ShaderEffectSource.Repeat
-		}
+        // glass texture size
+        property size glassTextureSizeInv: Qt.size(1.0/glassTextureImage.sourceSize.width, -1.0/glassTextureImage.sourceSize.height)
 
-		opacity: 0.8
+        property Image wallpaperTexture: streamPreview
+        property variant glassTexture: ShaderEffectSource {
+            hideSource: true
+            sourceItem: glassTextureItem
+            wrapMode: ShaderEffectSource.Repeat
+        }
 
-		// Enable blending in compositor (for events view etc..)
-		blending: true
+        opacity: 0.8
 
-		vertexShader: "
-			   uniform highp mat4 qt_Matrix;
-			   uniform highp vec2 offset;
-			   uniform highp vec2 sizeRatio;
-			   attribute highp vec4 qt_Vertex;
-			   attribute highp vec2 qt_MultiTexCoord0;
-			   varying highp vec2 qt_TexCoord0;
-			   void main() {
-				  qt_TexCoord0 = (qt_MultiTexCoord0 - offset) * sizeRatio;
-				  gl_Position = qt_Matrix * qt_Vertex;
-			   }
-			"
+        // Enable blending in compositor (for events view etc..)
+        blending: true
 
-		fragmentShader: "
-			   uniform sampler2D wallpaperTexture;
-			   uniform sampler2D glassTexture;
-			   uniform highp vec2 glassTextureSizeInv;
-			   uniform lowp float qt_Opacity;
-			   varying highp vec2 qt_TexCoord0;
-			   void main() {
-				  lowp vec4 wp = texture2D(wallpaperTexture, qt_TexCoord0);
-				  lowp vec4 tx = texture2D(glassTexture, gl_FragCoord.xy * glassTextureSizeInv);
-				  gl_FragColor = vec4(0.8*wp.rgb + tx.rgb, 1.0)" + (blending ? "*qt_Opacity" : "") + ";
-			   }
-			"
-	}
+        vertexShader: "
+            uniform highp mat4 qt_Matrix;
+            uniform highp vec2 offset;
+            uniform highp vec2 sizeRatio;
+            attribute highp vec4 qt_Vertex;
+            attribute highp vec2 qt_MultiTexCoord0;
+            varying highp vec2 qt_TexCoord0;
+            void main() {
+               qt_TexCoord0 = (qt_MultiTexCoord0 - offset) * sizeRatio;
+               gl_Position = qt_Matrix * qt_Vertex;
+            }
+        "
 
-	CoverPlaceholder {
-		id: statusContainer
-		icon.source: "../images/icon.png"
-	}
+        fragmentShader: "
+            uniform sampler2D wallpaperTexture;
+            uniform sampler2D glassTexture;
+            uniform highp vec2 glassTextureSizeInv;
+            uniform lowp float qt_Opacity;
+            varying highp vec2 qt_TexCoord0;
+            void main() {
+                lowp vec4 wp = texture2D(wallpaperTexture, qt_TexCoord0);
+                lowp vec4 tx = texture2D(glassTexture, gl_FragCoord.xy * glassTextureSizeInv);
+                gl_FragColor = vec4(0.8*wp.rgb + tx.rgb, 1.0)" + (blending ? "*qt_Opacity" : "") + ";
+            }
+        "
+    }
 
-	onChannelChanged: {
-		HTTP.getRequest("https://api.twitch.tv/kraken/streams/" + channel, function(data) {
-			if(data) {
-				var stream = JSON.parse(data).stream
-				streamPreview.source = stream.preview.template.replace("{height}", root.height).replace("{width}", ~~(root.height*16/9))
-				statusContainer.text = stream.channel.status
-			}
-		})
-	}
+    CoverPlaceholder {
+        id: statusContainer
+        icon.source: "../images/icon.png"
+    }
 }

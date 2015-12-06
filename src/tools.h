@@ -29,18 +29,18 @@ const int PAUSE_PERIOD = 50000; //ms
 
 class Tools : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	Tools(QObject *parent = 0);
-	~Tools();
+    Tools(QObject *parent = 0);
+    ~Tools();
 
-	Q_INVOKABLE int clearCookies();
+    Q_INVOKABLE int clearCookies();
     Q_INVOKABLE void setBlankingMode(bool state);
 public slots:
-	void refreshPause();
+    void refreshPause();
 protected:
-	QDBusInterface mceReqInterface;
-	QTimer* pauseRefresher;
+    QDBusInterface mceReqInterface;
+    QTimer* pauseRefresher;
 };
 
 #endif // TOOLS_H

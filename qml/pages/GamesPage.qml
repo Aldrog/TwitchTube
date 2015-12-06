@@ -23,37 +23,35 @@ import "elements"
 import "../js/httphelper.js" as HTTP
 
 Page {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
+    allowedOrientations: Orientation.All
 
-	// Status for NavigationCover
-	property string navStatus: qsTr("Games")
+    // Status for NavigationCover
+    property string navStatus: qsTr("Games")
 
-	GamesGrid {
-		id: gridGames
+    GamesGrid {
+        id: gridGames
 
-		function loadGames() {
-			var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
-			console.log(url)
-			HTTP.getRequest(url,function(data) {
-				if (data) {
-					offset += countOnPage
-					var result = JSON.parse(data)
-					totalCount = result._total
-					for (var i in result.top)
-						games.append(result.top[i].game)
-				}
-			})
-		}
+        function loadGames() {
+            var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+            console.log(url)
+            HTTP.getRequest(url,function(data) {
+                if (data) {
+                    offset += countOnPage
+                    var result = JSON.parse(data)
+                    totalCount = result._total
+                    for (var i in result.top)
+                        games.append(result.top[i].game)
+                }
+            })
+        }
 
-		Categories {
-			games: false
-		}
+        header: PageHeader {
+            title: qsTr("Top Games")
+        }
 
-		header: PageHeader {
-			title: qsTr("Top Games")
-		}
-	}
+        Categories {
+            games: false
+        }
+    }
 }
-
-

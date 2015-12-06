@@ -21,96 +21,101 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 SilicaFlickable {
-	id: root
-	anchors.fill: parent
-	contentHeight: grid.height + Theme.paddingLarge // for bottom margin
+    id: root
 
-	property alias grid: grid
-	property alias header: grid.header
-	property alias games: grid.model
-	property int row: isPortrait ? 2 : 4
-	// In brackets must be row lengths for portrait and landscape orientations
-	property int countOnPage: (2*4) * 2
-	property int offset: 0
-	property int totalCount: 0
-	property bool autoLoad: true
-	property var parameters: ({})
+    property alias grid: grid
+    property alias header: grid.header
+    property alias games: grid.model
+    property int row: isPortrait ? 2 : 4
+    // In brackets must be row lengths for portrait and landscape orientations
+    property int countOnPage: (2*4) * 2
+    property int offset: 0
+    property int totalCount: 0
+    property bool autoLoad: true
+    property var parameters: ({})
 
-	PushUpMenu {
-		enabled: offset < totalCount
-		visible: offset < totalCount
+    anchors.fill: parent
+    contentHeight: grid.height + Theme.paddingLarge // for bottom margin
 
-		MenuItem {
-			text: qsTr("Load more")
-			onClicked: {
-				loadGames()
-			}
-		}
-	}
+    Component.onCompleted: {
+        if(autoLoad)
+            loadGames()
+    }
 
-	SilicaGridView {
-		id: grid
-		anchors {
-			left: parent.left; leftMargin: Theme.horizontalPageMargin
-			right: parent.right; rightMargin: Theme.horizontalPageMargin
-		}
-		height: childrenRect.height - headerItem.height
-		interactive: false
+    PushUpMenu {
+        enabled: offset < totalCount
+        visible: offset < totalCount
 
-		ViewPlaceholder {
-			enabled: games.count <= 0
-			text: qsTr("No games to show")
-		}
+        MenuItem {
+            text: qsTr("Load more")
+            onClicked: {
+                loadGames()
+            }
+        }
+    }
 
-		model: ListModel { id: gameList }
-		cellWidth: width/row
-		// 18:13 is the actual aspect ratio of previews
-		cellHeight: cellWidth * 18/13
+    SilicaGridView {
+        id: grid
 
-		delegate: BackgroundItem {
-			id: delegate
-			width: grid.cellWidth
-			height: grid.cellHeight
-			onClicked: {
-				var properties = parameters
-				properties.game = name
-				pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
-			}
+        anchors {
+            left: parent.left; leftMargin: Theme.horizontalPageMargin
+            right: parent.right; rightMargin: Theme.horizontalPageMargin
+        }
+        height: childrenRect.height - headerItem.height
+        interactive: false
 
-			Image {
-				id: logo
-				anchors.fill: parent
-				anchors.margins: Theme.paddingSmall
-				fillMode: Image.PreserveAspectCrop
-				source: box[gameImageSize.value]
-			}
+        model: ListModel { id: gameList }
+        cellWidth: width/row
+        // 18:13 is the actual aspect ratio of previews
+        cellHeight: cellWidth * 18/13
 
-			OpacityRampEffect {
-				sourceItem: logo
-				direction: OpacityRamp.BottomToTop
-				offset: 1 - 1.25 * (gameName.height / logo.height)
-				slope: logo.height / gameName.height
-			}
+        delegate: BackgroundItem {
+            id: delegate
 
-			Label {
-				id: gameName
-				anchors {
-					left: parent.left; leftMargin: Theme.paddingLarge
-					right: parent.right; rightMargin: Theme.paddingLarge
-					topMargin: Theme.paddingMedium
-				}
-				text: name
-				truncationMode: TruncationMode.Fade
-				color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-				font.pixelSize: Theme.fontSizeSmall
-			}
-		}
-	}
+            width: grid.cellWidth
+            height: grid.cellHeight
+            onClicked: {
+                var properties = parameters
+                properties.game = name
+                pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
+            }
 
-	VerticalScrollDecorator { flickable: root }
+            Image {
+                id: logo
 
-	Component.onCompleted: {
-		if(autoLoad)
-			loadGames()
-	}
+                anchors.fill: parent
+                anchors.margins: Theme.paddingSmall
+                fillMode: Image.PreserveAspectCrop
+                source: box[gameImageSize.value]
+            }
+
+            OpacityRampEffect {
+                sourceItem: logo
+                direction: OpacityRamp.BottomToTop
+                offset: 1 - 1.25 * (gameName.height / logo.height)
+                slope: logo.height / gameName.height
+            }
+
+            Label {
+                id: gameName
+
+                anchors {
+                    left: parent.left; leftMargin: Theme.paddingLarge
+                    right: parent.right; rightMargin: Theme.paddingLarge
+                    topMargin: Theme.paddingMedium
+                }
+                text: name
+                truncationMode: TruncationMode.Fade
+                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
+            }
+        }
+
+        ViewPlaceholder {
+            enabled: games.count <= 0
+            text: qsTr("No games to show")
+        }
+    }
+
+    VerticalScrollDecorator { flickable: root }
 }

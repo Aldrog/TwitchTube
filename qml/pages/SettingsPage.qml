@@ -22,142 +22,151 @@ import Sailfish.Silica 1.0
 import "../js/httphelper.js" as HTTP
 
 Dialog {
-	id: page
-	allowedOrientations: Orientation.All
+    id: page
 
-	property var imageSizes: ["large", "medium", "small"]
-	property string name
-	// Status for NavigationCover
-	property string navStatus: qsTr("Settings")
+    property var imageSizes: ["large", "medium", "small"]
+    property string name
+    // Status for NavigationCover
+    property string navStatus: qsTr("Settings")
 
-	SilicaFlickable {
-		anchors.fill: parent
-		contentHeight: header.height + settingsContainer.height + Theme.paddingLarge // for bottom margin
+    function getName() {
+        HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+            var user = JSON.parse(data)
+            name = user.display_name
+            mainWindow.username = user.name
+        })
+    }
 
-		DialogHeader {
-			id: header
-			dialog: page
+    allowedOrientations: Orientation.All
 
-			title: qsTr("Settings")
-			acceptText: qsTr("Apply")
-			cancelText: qsTr("Cancel")
-		}
+    Component.onCompleted: {
+        if(authToken.value)
+            getName()
+    }
 
-		Column {
-			id: settingsContainer
-			anchors {
-				top: header.bottom
-				left: parent.left
-				right: parent.right
-			}
+    onAccepted: {
+        gameImageSize.value = imageSizes[gameQ.currentIndex]
+        channelImageSize.value = imageSizes[previewQ.currentIndex]
+        showBroadcastTitles.value = streamTitles.checked
+        chatFlowBtT.value = chatTtB.checked
+    }
 
-			BackgroundItem {
-				id: login
-				width: parent.width
-				height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
+    SilicaFlickable {
+        anchors.fill: parent
+        contentHeight: header.height + settingsContainer.height + Theme.paddingLarge // for bottom margin
 
-				Label {
-					id: lblAcc1
-					anchors {	top: parent.top
-								left: parent.left
-								right: parent.right
-								topMargin: Theme.paddingLarge
-								leftMargin: Theme.horizontalPageMargin
-								rightMargin: Theme.horizontalPageMargin
-							}
-					text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
-					color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
-					font.pixelSize: Theme.fontSizeMedium
-				}
+        DialogHeader {
+            id: header
 
-				Label {
-					id: lblAcc2
-					anchors {	bottom: parent.bottom
-								left: parent.left
-								right: parent.right
-								bottomMargin: Theme.paddingLarge
-								leftMargin: Theme.horizontalPageMargin
-								rightMargin: Theme.horizontalPageMargin
-							}
-					text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
-					color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-					font.pixelSize: Theme.fontSizeSmall
-				}
+            dialog: page
+            title: qsTr("Settings")
+            acceptText: qsTr("Apply")
+            cancelText: qsTr("Cancel")
+        }
 
-				onClicked: {
-					console.log("old token:", authToken.value)
-					if(!authToken.value) {
-						var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-						lpage.statusChanged.connect(function() {
-							if(lpage.status === PageStatus.Deactivating) {
-								getName()
-							}
-						})
-					}
-					else {
-						authToken.value = ""
-						console.log("Cookie cleaning script result code:", cpptools.clearCookies())
-						name = ""
-						mainWindow.username = ""
-					}
-				}
-			}
+        Column {
+            id: settingsContainer
 
-			TextSwitch {
-				id: streamTitles
-				text: qsTr("Show broadcast titles")
-				checked: showBroadcastTitles.value
-			}
+            anchors {
+                top: header.bottom
+                left: parent.left
+                right: parent.right
+            }
 
-			TextSwitch {
-				id: chatTtB
-				text: qsTr("Chat flows from bottom to top")
-				checked: chatFlowBtT.value
-			}
+            BackgroundItem {
+                id: login
 
-			ComboBox {
-				id: gameQ
-				label: qsTr("Game posters quality")
-				menu: ContextMenu {
-					MenuItem { text: qsTr("High") }
-					MenuItem { text: qsTr("Medium") }
-					MenuItem { text: qsTr("Low") }
-				}
-				currentIndex: imageSizes.indexOf(gameImageSize.value)
-			}
+                width: parent.width
+                height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
 
-			ComboBox {
-				id: previewQ
-				label: qsTr("Stream previews quality")
-				menu: ContextMenu {
-					MenuItem { text: qsTr("High") }
-					MenuItem { text: qsTr("Medium") }
-					MenuItem { text: qsTr("Low") }
-				}
-				currentIndex: imageSizes.indexOf(channelImageSize.value)
-			}
-		}
+                onClicked: {
+                    console.log("old token:", authToken.value)
+                    if(!authToken.value) {
+                        var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+                        lpage.statusChanged.connect(function() {
+                            if(lpage.status === PageStatus.Deactivating) {
+                                getName()
+                            }
+                        })
+                    }
+                    else {
+                        authToken.value = ""
+                        console.log("Cookie cleaning script result code:", cpptools.clearCookies())
+                        name = ""
+                        mainWindow.username = ""
+                    }
+                }
 
-		VerticalScrollDecorator { flickable: parent }
-	}
+                Label {
+                    id: lblAcc1
 
-	function getName() {
-		HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-			var user = JSON.parse(data)
-			name = user.display_name
-			mainWindow.username = user.name
-		})
-	}
+                    anchors { top: parent.top
+                              left: parent.left
+                              right: parent.right
+                              topMargin: Theme.paddingLarge
+                              leftMargin: Theme.horizontalPageMargin
+                              rightMargin: Theme.horizontalPageMargin
+                            }
+                    text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
+                    color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
+                    font.pixelSize: Theme.fontSizeMedium
+                }
 
-	Component.onCompleted: {
-		if(authToken.value)
-			getName()
-	}
+                Label {
+                    id: lblAcc2
 
-	onAccepted: {
-		gameImageSize.value = imageSizes[gameQ.currentIndex]
-		channelImageSize.value = imageSizes[previewQ.currentIndex]
-		showBroadcastTitles.value = streamTitles.checked
-		chatFlowBtT.value = chatTtB.checked
-	}
+                    anchors { bottom: parent.bottom
+                              left: parent.left
+                              right: parent.right
+                              bottomMargin: Theme.paddingLarge
+                              leftMargin: Theme.horizontalPageMargin
+                              rightMargin: Theme.horizontalPageMargin
+                            }
+                    text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
+                    color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeSmall
+                }
+            }
+
+            TextSwitch {
+                id: streamTitles
+
+                text: qsTr("Show broadcast titles")
+                checked: showBroadcastTitles.value
+            }
+
+            TextSwitch {
+                id: chatTtB
+
+                text: qsTr("Chat flows from bottom to top")
+                checked: chatFlowBtT.value
+            }
+
+            ComboBox {
+                id: gameQ
+
+                label: qsTr("Game posters quality")
+                menu: ContextMenu {
+                    MenuItem { text: qsTr("High") }
+                    MenuItem { text: qsTr("Medium") }
+                    MenuItem { text: qsTr("Low") }
+                }
+                currentIndex: imageSizes.indexOf(gameImageSize.value)
+            }
+
+            ComboBox {
+                id: previewQ
+
+                label: qsTr("Stream previews quality")
+                menu: ContextMenu {
+                    MenuItem { text: qsTr("High") }
+                    MenuItem { text: qsTr("Medium") }
+                    MenuItem { text: qsTr("Low") }
+                }
+                currentIndex: imageSizes.indexOf(channelImageSize.value)
+            }
+        }
+
+        VerticalScrollDecorator { flickable: parent }
+    }
 }
