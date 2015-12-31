@@ -19,6 +19,7 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
+import QtMultimedia 5.0
 import "pages"
 import "js/httphelper.js" as HTTP
 
@@ -28,6 +29,16 @@ ApplicationWindow
 
     property string currentChannel
     property string username
+    property string audioUrl
+    property bool playing: player.playbackState == MediaPlayer.PlayingState
+
+    function playAudio() {
+        player.play()
+    }
+
+    function stopAudio() {
+        player.stop()
+    }
 
     initialPage: Component { GamesPage { } }
     cover: Qt.resolvedUrl("cover/NavigationCover.qml")
@@ -42,5 +53,11 @@ ApplicationWindow
                 }
             })
         }
+    }
+
+    MediaPlayer {
+        id: player
+        source: audioUrl
+        onSourceChanged: console.log(source)
     }
 }

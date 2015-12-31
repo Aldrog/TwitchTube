@@ -6,12 +6,14 @@ Dialog {
 
     property var qualities: ["chunked", "high", "medium", "low", "mobile"]
     property bool chatOnly
+    property bool audioOnly
 
     allowedOrientations: Orientation.All
 
     onAccepted: {
         streamQuality.value = qualities[qualityChooser.currentIndex]
-        chatOnly = noVideo.checked
+        chatOnly = chatOnlySwitch.checked
+        audioOnly = audioOnlySwitch.checked
     }
 
     SilicaFlickable {
@@ -49,9 +51,25 @@ Dialog {
             }
 
             TextSwitch {
-                id: noVideo
+                id: chatOnlySwitch
                 checked: chatOnly
                 text: qsTr("Chat only")
+
+                onCheckedChanged: {
+                    if(checked)
+                        audioOnlySwitch.checked = false
+                }
+            }
+
+            TextSwitch {
+                id: audioOnlySwitch
+                checked: audioOnly
+                text: qsTr("Audio only")
+
+                onCheckedChanged: {
+                    if(checked)
+                        chatOnlySwitch.checked = false
+                }
             }
         }
     }

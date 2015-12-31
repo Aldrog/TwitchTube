@@ -19,6 +19,7 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
+import QtMultimedia 5.0
 import "../js/httphelper.js" as HTTP
 
 // The most of this code was taken from Sailfish Silica components
@@ -36,6 +37,18 @@ CoverBackground {
                 statusContainer.text = stream.channel.status
             }
         })
+    }
+
+    CoverActionList {
+        CoverAction {
+            iconSource: mainWindow.playing ? "image://theme/icon-m-speaker-mute" : "image://theme/icon-m-speaker"
+            onTriggered: {
+                if(mainWindow.playing)
+                    mainWindow.stopAudio()
+                else
+                    mainWindow.playAudio()
+            }
+        }
     }
 
     Item {

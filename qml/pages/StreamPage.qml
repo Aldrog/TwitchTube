@@ -30,7 +30,8 @@ Page {
     property string channel
     property string username
     property bool followed
-    property bool showStream: true
+    property bool chatMode: false
+    property bool audioMode: false
     property bool active: Qt.application.active
     property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
 
@@ -45,7 +46,7 @@ Page {
         HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
+                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
                     if (data) {
                         var videourls = data.split('\n')
                         url = {
@@ -53,9 +54,11 @@ Page {
                             high: findUrl(videourls, "high"),
                             medium: findUrl(videourls, "medium"),
                             low: findUrl(videourls, "low"),
-                            mobile: findUrl(videourls, "mobile")
+                            mobile: findUrl(videourls, "mobile"),
+                            audio: findUrl(videourls, "audio_only")
                         }
                         video.play()
+                        mainWindow.audioUrl = url.audio
                     }
                 })
             }
@@ -70,6 +73,11 @@ Page {
             })
         }
         return false
+    }
+
+    onChatModeChanged: {
+        if(chatMode)
+            video.stop()
     }
 
     allowedOrientations: Orientation.All
@@ -91,6 +99,7 @@ Page {
     onActiveChanged: {
         if(page.status === PageStatus.Active) {
             if(active) {
+                mainWindow.stopAudio()
                 video.play()
                 if(!twitchChat.connected) {
                     twitchChat.reopenSocket()
@@ -99,6 +108,8 @@ Page {
             }
             else {
                 video.pause()
+                if(audioMode)
+                    mainWindow.playAudio()
                 if(twitchChat.connected)
                     twitchChat.disconnect()
             }
@@ -122,7 +133,7 @@ Page {
         id: main
 
         anchors.fill: parent
-        contentHeight: isPortrait ? page.height : (showStream ? (5/3 * Screen.width) : page.height)
+        contentHeight: isPortrait ? page.height : (chatMode ? page.height : (5/3 * Screen.width))
         //onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
 
         PullDownMenu {
@@ -149,13 +160,10 @@ Page {
             MenuItem {
                 text: qsTr("Quality")
                 onClicked: {
-                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: !showStream, channel: channel })
+                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: chatMode, audioOnly: audioMode, channel: channel })
                     dialog.accepted.connect(function() {
-                        showStream = !dialog.chatOnly
-                        if(showStream && video.playbackState !== MediaPlayer.PlayingState)
-                            video.play()
-                        if(!showStream && video.playbackState !== MediaPlayer.StoppedState)
-                            video.stop()
+                        chatMode = dialog.chatOnly
+                        audioMode = dialog.audioOnly
                     })
                 }
             }
@@ -166,14 +174,14 @@ Page {
 
             color: "black"
             anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
-            height: showStream ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
-            visible: showStream
+            height: (!chatMode && !audioMode) ? (isPortrait ? screen.width * 9/16 : screen.width) : 0
+            visible: (!chatMode && !audioMode)
 
             Video {
                 id: video
 
                 anchors.fill: parent
-                source: url[streamQuality.value]
+                source: audioMode ? url["audio"] : url[streamQuality.value]
 
                 onErrorChanged: console.error("video error:", errorString)
 
@@ -201,7 +209,7 @@ Page {
                 right: parent.right
                 top: chatFlowBtT.value ? videoBackground.bottom : undefined
                 bottom: chatFlowBtT.value ? undefined : parent.bottom
-                topMargin: showStream ? Theme.paddingMedium : Theme.paddingLarge
+                topMargin: chatMode ? Theme.paddingLarge : Theme.paddingMedium
                 bottomMargin: Theme.paddingMedium
             }
             // Maybe it's better to replace ternary operators with if else blocks
@@ -223,12 +231,12 @@ Page {
                 right: parent.right
                 top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
                 bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-                //topMargin: (!showStream && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
+                //topMargin: (chatMode && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
                 //bottomMargin: 0//chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
             }
 
             highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
-            preferredHighlightBegin: chat.height - currentItem.height
+            //preferredHighlightBegin: chat.height - currentItem.height
             preferredHighlightEnd: chat.height
             clip: true
             verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
