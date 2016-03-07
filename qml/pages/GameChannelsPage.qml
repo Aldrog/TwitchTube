@@ -46,28 +46,11 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    ChannelsGrid {
-        id: gridChannels
+    GridWrapper {
+        header.title: game
+        header.rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
 
-        function loadChannels() {
-            var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset + encodeURI("&game=" + game)
-            HTTP.getRequest(url,function(data) {
-                if (data) {
-                    offset += countOnPage
-                    var result = JSON.parse(data)
-                    totalCount = result._total
-                    for (var i in result.streams)
-                        channels.append(result.streams[i])
-                }
-            })
-        }
-
-        header: PageHeader {
-            id: header
-
-            title: game
-            rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
-
+        header.children: [
             BackgroundItem {
                 id: switchFollow
 
@@ -111,8 +94,25 @@ Page {
                     source: heart
                     color: switchFollow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
                 }
+            }]
+
+        grids: [
+        ChannelsGrid {
+            id: gridChannels
+
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset + encodeURI("&game=" + game)
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.streams)
+                            channels.append(result.streams[i])
+                    }
+                })
             }
-        }
+        }]
 
         Categories {
             games: fromFollowings

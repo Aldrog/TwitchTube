@@ -30,48 +30,52 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    ChannelsGrid {
-        id: gridResults
+    GridWrapper {
+        header.visible: false
 
-        property string querry: ""
+        grids: [
+        ChannelsGrid {
+            id: gridResults
 
-        function loadChannels() {
-            if(querry) {
-                var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
-                console.log(url)
-                HTTP.getRequest(url,function(data) {
-                    if (data) {
-                        offset += countOnPage
-                        var result = JSON.parse(data)
-                        totalCount = result._total
-                        for (var i in result.streams)
-                            channels.append(result.streams[i])
-                    }
-                })
+            property string querry: ""
+
+            function loadContent() {
+                if(querry) {
+                    var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
+                    console.log(url)
+                    HTTP.getRequest(url,function(data) {
+                        if (data) {
+                            offset += countOnPage
+                            var result = JSON.parse(data)
+                            totalCount = result._total
+                            for (var i in result.streams)
+                                channels.append(result.streams[i])
+                        }
+                    })
+                }
+                else {
+                    totalCount = 0
+                }
             }
-            else {
-                totalCount = 0
+
+            autoLoad: false
+
+            // This prevents search field from loosing focus when grid changes
+            currentIndex: -1
+
+            header: SearchField {
+                id: searchQuerry
+
+                width: parent.width
+                placeholderText: qsTr("Search channels")
+                onTextChanged: {
+                    gridResults.channels.clear()
+                    gridResults.offset = 0
+                    gridResults.querry = text
+                    gridResults.loadContent()
+                }
             }
-        }
-
-        autoLoad: false
-
-        // This prevents search field from loosing focus when grid changes
-        grid.currentIndex: -1
-
-        header: SearchField {
-            id: searchQuerry
-
-            width: parent.width
-            placeholderText: qsTr("Search channels")
-            onTextChanged: {
-                gridResults.channels.clear()
-                gridResults.offset = 0
-                gridResults.querry = text
-                gridResults.loadChannels()
-            }
-        }
-
+        }]
         Categories {
             search: false
         }

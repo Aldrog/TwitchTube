@@ -20,11 +20,9 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-SilicaFlickable {
-    id: root
+SilicaGridView {
+    id: grid
 
-    property alias grid: grid
-    property alias header: grid.header
     property alias games: grid.model
     property int row: isPortrait ? 2 : 4
     // In brackets must be row lengths for portrait and landscape orientations
@@ -34,88 +32,68 @@ SilicaFlickable {
     property bool autoLoad: true
     property var parameters: ({})
 
-    anchors.fill: parent
-    contentHeight: grid.height + Theme.paddingLarge // for bottom margin
-
     Component.onCompleted: {
         if(autoLoad)
-            loadGames()
+            loadContent()
     }
 
-    PushUpMenu {
-        enabled: offset < totalCount
-        visible: offset < totalCount
-
-        MenuItem {
-            text: qsTr("Load more")
-            onClicked: {
-                loadGames()
-            }
-        }
+    height: childrenRect.height
+    anchors {
+        left: parent.left
+        right: parent.right
     }
 
-    SilicaGridView {
-        id: grid
+    interactive: false
 
-        anchors {
-            left: parent.left; leftMargin: Theme.horizontalPageMargin
-            right: parent.right; rightMargin: Theme.horizontalPageMargin
-        }
-        height: childrenRect.height - headerItem.height
-        interactive: false
+    model: ListModel { id: gameList }
+    cellWidth: width/row
+    // 18:13 is the actual aspect ratio of previews
+    cellHeight: cellWidth * 18/13
 
-        model: ListModel { id: gameList }
-        cellWidth: width/row
-        // 18:13 is the actual aspect ratio of previews
-        cellHeight: cellWidth * 18/13
+    delegate: BackgroundItem {
+        id: delegate
 
-        delegate: BackgroundItem {
-            id: delegate
-
-            width: grid.cellWidth
-            height: grid.cellHeight
-            onClicked: {
-                var properties = parameters
-                properties.game = name
-                pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
-            }
-
-            Image {
-                id: logo
-
-                anchors.fill: parent
-                anchors.margins: Theme.paddingSmall
-                fillMode: Image.PreserveAspectCrop
-                source: box[gameImageSize.value]
-            }
-
-            OpacityRampEffect {
-                sourceItem: logo
-                direction: OpacityRamp.BottomToTop
-                offset: 1 - 1.25 * (gameName.height / logo.height)
-                slope: logo.height / gameName.height
-            }
-
-            Label {
-                id: gameName
-
-                anchors {
-                    left: parent.left; leftMargin: Theme.paddingLarge
-                    right: parent.right; rightMargin: Theme.paddingLarge
-                    topMargin: Theme.paddingMedium
-                }
-                text: name
-                truncationMode: TruncationMode.Fade
-                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
+        width: grid.cellWidth
+        height: grid.cellHeight
+        onClicked: {
+            var properties = parameters
+            properties.game = name
+            pageStack.push (Qt.resolvedUrl("../GameChannelsPage.qml"), properties)
         }
 
-        ViewPlaceholder {
-            enabled: games.count <= 0
-            text: qsTr("No games to show")
+        Image {
+            id: logo
+
+            anchors.fill: parent
+            anchors.margins: Theme.paddingSmall
+            fillMode: Image.PreserveAspectCrop
+            source: box[gameImageSize.value]
+        }
+
+        OpacityRampEffect {
+            sourceItem: logo
+            direction: OpacityRamp.BottomToTop
+            offset: 1 - 1.25 * (gameName.height / logo.height)
+            slope: logo.height / gameName.height
+        }
+
+        Label {
+            id: gameName
+
+            anchors {
+                left: parent.left; leftMargin: Theme.paddingLarge
+                right: parent.right; rightMargin: Theme.paddingLarge
+                topMargin: Theme.paddingMedium
+            }
+            text: name
+            truncationMode: TruncationMode.Fade
+            color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+            font.pixelSize: Theme.fontSizeSmall
         }
     }
 
-    VerticalScrollDecorator { flickable: root }
+    ViewPlaceholder {
+        enabled: games.count <= 0
+        text: qsTr("No games to show")
+    }
 }

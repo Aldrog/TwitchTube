@@ -71,5 +71,6 @@ DISTFILES += \
     icons/108x108/apps/harbour-twitchtube.png \
     icons/128x128/apps/harbour-twitchtube.png \
     icons/256x256/apps/harbour-twitchtube.png \
-    icons/86x86/apps/harbour-twitchtube.png
+    icons/86x86/apps/harbour-twitchtube.png \
+    qml/pages/elements/GridWrapper.qml
 

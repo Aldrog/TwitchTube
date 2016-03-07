@@ -30,25 +30,26 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    ChannelsGrid {
-        id: gridChannels
+    GridWrapper {
+        header.title: qsTr("Top Channels")
 
-        function loadChannels() {
-            var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
-            HTTP.getRequest(url,function(data) {
-                if (data) {
-                    offset += countOnPage
-                    var result = JSON.parse(data)
-                    totalCount = result._total
-                    for (var i in result.streams)
-                        channels.append(result.streams[i])
-                }
-            })
-        }
+        grids: [
+        ChannelsGrid {
+            id: gridChannels
 
-        header: PageHeader {
-            title: qsTr("Top Channels")
-        }
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.streams)
+                            channels.append(result.streams[i])
+                    }
+                })
+            }
+        }]
 
         Categories {
             channels: false

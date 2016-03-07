@@ -28,32 +28,40 @@ Page {
 
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
+    property bool showOffline: false
 
     onStatusChanged: {
         if(status === PageStatus.Active)
             pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
     }
 
-    ChannelsGrid {
-        id: gridChannels
+    GridWrapper {
+        header.title: qsTr("Followed Channels")
 
-        function loadChannels() {
-            var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
-            console.log(url)
-            HTTP.getRequest(url,function(data) {
-                if (data) {
-                    offset += countOnPage
-                    var result = JSON.parse(data)
-                    totalCount = result._total
-                    for (var i in result.streams)
-                        channels.append(result.streams[i])
+        grids: [
+        ChannelsGrid {
+            id: gridChannels
+
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
+                console.log(url)
+                HTTP.getRequest(url, function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.streams)
+                            channels.append(result.streams[i])
+                    }
+                })
+            }
+
+            onLoadMoreAvailableChanged: {
+                if(!loadMoreAvailable && !showOffline) {
+                    showOffline = true
                 }
-            })
-        }
-
-        header: PageHeader {
-            title: qsTr("Followed Channels")
-        }
+            }
+        }]
 
         Categories {
             following: false

@@ -20,12 +20,11 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-SilicaFlickable {
-    id: root
+SilicaGridView {
+    id: grid
 
-    property alias grid: grid
-    property alias header: grid.header
     property alias channels: grid.model
+    property bool loadMoreAvailable: offset < totalCount
     property int row: isPortrait ? 2 : 3
     // In brackets must be row lengths for portrait and landscape orientations
     property int countOnPage: (2*3) * 3
@@ -34,104 +33,84 @@ SilicaFlickable {
     property bool autoLoad: true
     property var parameters: ({})
 
-    anchors.fill: parent
-    contentHeight: grid.height + Theme.paddingLarge // for bottom margin
+    height: childrenRect.height
 
     Component.onCompleted: {
         if(autoLoad)
-            loadChannels()
+            loadContent()
     }
 
-    PushUpMenu {
-        enabled: offset < totalCount
-        visible: offset < totalCount
-
-        MenuItem {
-            text: qsTr("Load more")
-            onClicked: {
-                loadChannels()
-            }
-        }
+    anchors {
+        left: parent.left
+        right: parent.right
     }
+    interactive: false
 
-    SilicaGridView {
-        id: grid
+    model: ListModel { id: channelsList }
+    cellWidth: width/row
+    // 5:8 is the actual aspect ratio of previews
+    cellHeight: cellWidth * 5/8
 
-        anchors {
-            left: parent.left; leftMargin: Theme.horizontalPageMargin
-            right: parent.right; rightMargin: Theme.horizontalPageMargin
-        }
-        height: childrenRect.height - headerItem.height
-        interactive: false
+    delegate: BackgroundItem {
+        id: delegate
 
-        model: ListModel { id: channelsList }
-        cellWidth: width/row
-        // 5:8 is the actual aspect ratio of previews
-        cellHeight: cellWidth * 5/8
+        width: grid.cellWidth
+        height: grid.cellHeight
 
-        delegate: BackgroundItem {
-            id: delegate
-
-            width: grid.cellWidth
-            height: grid.cellHeight
-
-            onClicked: {
-                var properties = parameters
-                properties.channel = channel.name
-                pageStack.push (Qt.resolvedUrl("../StreamPage.qml"), properties)
-            }
-
-            Image {
-                id: previewImage
-
-                source: preview[channelImageSize.value]
-                anchors.fill: parent
-                anchors.margins: Theme.paddingSmall
-            }
-
-            OpacityRampEffect {
-                property real effHeight: (showBroadcastTitles.value && title.text) ? (title.height + title.y) : name.height
-                sourceItem: previewImage
-                direction: OpacityRamp.BottomToTop
-                offset: 1 - 1.25 * (effHeight / previewImage.height)
-                slope: previewImage.height / effHeight
-            }
-
-            Label {
-                id: name
-
-                anchors {
-                    left: previewImage.left; leftMargin: Theme.paddingMedium
-                    right: previewImage.right; rightMargin: Theme.paddingSmall
-                    topMargin: Theme.paddingSmall
-                }
-                text: channel.display_name
-                truncationMode: TruncationMode.Fade
-                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
-
-            Label {
-                id: title
-
-                visible: showBroadcastTitles.value
-                anchors {
-                    left: previewImage.left; leftMargin: Theme.paddingMedium
-                    right: previewImage.right; rightMargin: Theme.paddingSmall
-                    top: name.bottom; topMargin: -Theme.paddingSmall
-                }
-                text: channel.status
-                truncationMode: TruncationMode.Fade
-                color: delegate.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
+        onClicked: {
+            var properties = parameters
+            properties.channel = channel.name
+            pageStack.push (Qt.resolvedUrl("../StreamPage.qml"), properties)
         }
 
-        ViewPlaceholder {
-            enabled: channels.count <= 0
-            text: qsTr("No channels to show")
+        Image {
+            id: previewImage
+
+            source: preview[channelImageSize.value]
+            anchors.fill: parent
+            anchors.margins: Theme.paddingSmall
+        }
+
+        OpacityRampEffect {
+            property real effHeight: (showBroadcastTitles.value && title.text) ? (title.height + title.y) : name.height
+            sourceItem: previewImage
+            direction: OpacityRamp.BottomToTop
+            offset: 1 - 1.25 * (effHeight / previewImage.height)
+            slope: previewImage.height / effHeight
+        }
+
+        Label {
+            id: name
+
+            anchors {
+                left: previewImage.left; leftMargin: Theme.paddingMedium
+                right: previewImage.right; rightMargin: Theme.paddingSmall
+                topMargin: Theme.paddingSmall
+            }
+            text: channel.display_name
+            truncationMode: TruncationMode.Fade
+            color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+            font.pixelSize: Theme.fontSizeSmall
+        }
+
+        Label {
+            id: title
+
+            visible: showBroadcastTitles.value
+            anchors {
+                left: previewImage.left; leftMargin: Theme.paddingMedium
+                right: previewImage.right; rightMargin: Theme.paddingSmall
+                top: name.bottom; topMargin: -Theme.paddingSmall
+            }
+            text: channel.status
+            truncationMode: TruncationMode.Fade
+            color: delegate.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+            font.pixelSize: Theme.fontSizeSmall
         }
     }
 
-    VerticalScrollDecorator { flickable: root }
+    ViewPlaceholder {
+        enabled: channels.count <= 0
+        text: qsTr("No channels to show")
+    }
 }

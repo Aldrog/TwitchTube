@@ -24,32 +24,33 @@ import "../js/httphelper.js" as HTTP
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
 
     // Status for NavigationCover
     property string navStatus: qsTr("Games")
 
-    GamesGrid {
-        id: gridGames
+    allowedOrientations: Orientation.All
 
-        function loadGames() {
-            var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
-            console.log(url)
-            HTTP.getRequest(url,function(data) {
-                if (data) {
-                    offset += countOnPage
-                    var result = JSON.parse(data)
-                    totalCount = result._total
-                    for (var i in result.top)
-                        games.append(result.top[i].game)
-                }
-            })
-        }
+    GridWrapper {
+        header.title: qsTr("Top Games")
 
-        header: PageHeader {
-            title: qsTr("Top Games")
-        }
+        grids: [
+        GamesGrid {
+            id: gridGames
 
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+                console.log(url)
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.top)
+                            games.append(result.top[i].game)
+                    }
+                })
+            }
+        }]
         Categories {
             games: false
         }

@@ -30,27 +30,29 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    GamesGrid {
-        id: gridGames
+    GridWrapper {
+        header.title: qsTr("Followed Games")
 
-        function loadGames() {
-            var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
-            console.log(url)
-            HTTP.getRequest(url,function(data) {
-                if (data) {
-                    offset += countOnPage
-                    var result = JSON.parse(data)
-                    totalCount = result._total
-                    for (var i in result.follows)
-                        games.append(result.follows[i])
-                }
-            })
-        }
+        grids: [
+        GamesGrid {
+            id: gridGames
 
-        parameters: { "fromFollowings": true }
-        header: PageHeader {
-            title: qsTr("Followed Games")
-        }
+            function loadContent() {
+                var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
+                console.log(url)
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += countOnPage
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.follows)
+                            games.append(result.follows[i])
+                    }
+                })
+            }
+
+            parameters: { "fromFollowings": true }
+        }]
 
         Categories {
             following: false
