@@ -1,10 +1,8 @@
-TwitchTube
-==========
+# TwitchTube
 
 Twitch.tv client for Sailfish OS.
 
-Features
---------
+## Features
 - Navigate by game
 - View top channels
 - Browse followed channels and games
@@ -12,14 +10,20 @@ Features
 - Search channels
 - Chat
 
-State of development
---------------------
-Version 1.0 has been released and waiting for the Harbour QA.
+## Get TwitchTube
 
-TODO
-----
-- Special tablet interface
-- Ability to enable sound playback in minimized app (aka "radio mode")
-- Past broadcasts
-- Channel biography
-- Suggestions are welcome.
+### Jolla Store
+The app is available at Jolla Store for both Jolla and Jolla Tablet.
+
+### Prebuilt packages
+You can find prebuilt rpm packages for armv7 and i486 architectures on [releases page](https://github.com/Aldrog/TwitchTube/releases).
+
+### Build from source
+- Download and install SailfishOS SDK (https://sailfishos.org/develop/sdk-overview/develop-installation-article/).
+- git clone https://github.com/Aldrog/TwitchTube.git
+- Go to cloned directory and open harbour-twitchtube.pro with SailfishOS IDE
+
+## License
+This application is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+See LICENSE.md for more information.
