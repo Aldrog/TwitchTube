@@ -21,7 +21,9 @@
 #include <QtQuick>
 #endif
 
+#ifdef OS_SAILFISH
 #include <sailfishapp.h>
+#endif
 
 #include <QtQml>
 #include <QGuiApplication>
@@ -76,21 +78,32 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
+#ifdef OS_SAILFISH
     QGuiApplication *app(SailfishApp::application(argc, argv));
     QCoreApplication::setOrganizationName("harbour-twitchtube");
     QCoreApplication::setApplicationName("harbour-twitchtube");
-
     qmlRegisterType<IrcChat>("harbour.twitchtube.ircchat", 1, 0, "IrcChat");
     qmlRegisterType<MessageListModel>("harbour.twitchtube.ircchat", 1, 0, "MessageListModel");
     qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
 
     QQuickView *view(SailfishApp::createView());
+#else
+    QGuiApplication *app = new QGuiApplication(argc, argv);
+    QCoreApplication::setOrganizationName("harbour-twitchtube");
+    QCoreApplication::setApplicationName("harbour-twitchtube");
+    qmlRegisterType<IrcChat>("aldrog.twitchtube.ircchat", 1, 0, "IrcChat");
+    qmlRegisterType<MessageListModel>("aldrog.twitchtube.ircchat", 1, 0, "MessageListModel");
+    qmlRegisterType<QMLSettings>("aldrog.twitchtube.settings", 1, 0, "Setting");
+
+    QQuickView *view = new QQuickView();
+#endif
 
     registerSettings(view);
     Tools *tools = new Tools();
     view->rootContext()->setContextProperty("cpptools", tools);
 
-    view->setSource(SailfishApp::pathTo("qml/harbour-twitchtube.qml"));
+    view->setSource(QUrl("qrc:///Main.qml"));
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->show();
     return app->exec();
 }

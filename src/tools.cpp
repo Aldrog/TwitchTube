@@ -22,17 +22,24 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDebug>
+
+#ifdef OS_SAILFISH
 #include <QDBusReply>
+#endif
 
 Tools::Tools(QObject *parent) :
-    QObject(parent),
-    mceReqInterface("com.nokia.mce",
+    QObject(parent)
+#ifdef OS_SAILFISH
+  , mceReqInterface("com.nokia.mce",
                     "/com/nokia/mce/request",
                     "com.nokia.mce.request",
                     QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system"))
+#endif
 {
+#ifdef OS_SAILFISH
     pauseRefresher = new QTimer();
     connect(pauseRefresher, SIGNAL(timeout()), this, SLOT(refreshPause()));
+#endif
 }
 Tools::~Tools() { }
 
@@ -58,6 +65,7 @@ int Tools::clearCookies() {
     return -2;
 }
 
+#ifdef OS_SAILFISH
 // true - screen blanks (default)
 // false - no blanking
 void Tools::setBlankingMode(bool state)
@@ -80,3 +88,4 @@ void Tools::refreshPause() {
 
     mceReqInterface.call(QLatin1String("req_display_blanking_pause"));
 }
+#endif

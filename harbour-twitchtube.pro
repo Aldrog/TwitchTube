@@ -12,65 +12,34 @@
 # The name of your application
 TARGET = harbour-twitchtube
 
-CONFIG += sailfishapp c++11
+CONFIG += sailfishapp
 
-QT += network dbus
+DEFINES += OS_SAILFISH
 
-icons.path = /usr/share/icons/hicolor
-icons.files = icons/*
-INSTALLS += icons
+include(common.pri)
 
-SOURCES += \
-    src/harbour-twitchtube.cpp \
-    src/ircchat.cpp \
-    src/tools.cpp \
-    src/qmlsettings.cpp \
-    src/message.cpp \
-    src/messagelistmodel.cpp
+RESOURCES += sailfish-ui/TwitchTube.qrc
 
-OTHER_FILES += \
-    translations/*.ts \
-    qml/pages/GamesPage.qml \
-    qml/pages/ChannelsPage.qml \
-    qml/pages/StreamPage.qml \
-    qml/js/httphelper.js \
-    qml/pages/SettingsPage.qml \
-    qml/pages/SearchPage.qml \
-    qml/pages/LoginPage.qml \
-    qml/pages/FollowedPage.qml \
-    qml/harbour-twitchtube.qml \
-    harbour-twitchtube.desktop \
-    rpm/harbour-twitchtube.spec \
-    rpm/harbour-twitchtube.yaml \
-    qml/pages/elements/Categories.qml \
-    qml/pages/QualityChooserPage.qml \
-    rpm/harbour-twitchtube.changes \
-    qml/images/heart.png \
-    qml/images/icon.png \
-    qml/pages/elements/GamesGrid.qml \
-    qml/pages/elements/ChannelsGrid.qml \
-    qml/pages/GameChannelsPage.qml \
-    qml/pages/FollowedGamesPage.qml \
-    qml/cover/NavigationCover.qml \
-    qml/cover/StreamCover.qml \
-    qml/images/heart_crossed.png
+QML_FILES += $$files(sailfish-ui/*.qml,true) \
+             $$files(sailfish-ui/*.js,true) \
+             $$files(sailfish-ui/*.png,true)
+
+CONF_FILES += rpm/harbour-twitchtube.spec \
+              rpm/harbour-twitchtube.yaml \
+              rpm/harbour-twitchtube.changes
+
+TRANSLATIONS += $$files(translations/*.ts)
+
+OTHER_FILES += $${CONF_FILES} \
+               $${QML_FILES} \
+               harbour-twitchtube.desktop
+
+SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
-#TRANSLATIONS += translations/harbour-twitchtube-ru.ts
-
-HEADERS += \
-    src/ircchat.h \
-    src/tools.h \
-    src/qmlsettings.h \
-    src/message.h \
-    src/messagelistmodel.h
 
 DISTFILES += \
-    icons/108x108/apps/harbour-twitchtube.png \
-    icons/128x128/apps/harbour-twitchtube.png \
-    icons/256x256/apps/harbour-twitchtube.png \
-    icons/86x86/apps/harbour-twitchtube.png \
-    qml/pages/elements/GridWrapper.qml
+    sailfish-ui/Main.qml
 

@@ -1,0 +1,15 @@
+{
+    "name": "twitchtube-ubuntu.aldrog",
+    "description": "description of TwitchTube-ubuntu",
+    "architecture": "@CLICK_ARCH@",
+    "title": "TwitchTube-ubuntu",
+    "hooks": {
+        "TwitchTube": {
+            "apparmor": "TwitchTube/TwitchTube.apparmor",
+            "desktop": "TwitchTube/TwitchTube.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Andrew Penkrat <penkrat8@gmail.com>",
+    "framework": "ubuntu-sdk-15.04.4"
+}
