@@ -11,7 +11,7 @@ UBUNTU_MANIFEST_FILE=ubuntu/manifest.json.in
 
 # specify translation domain, this must be equal with the
 # app name in the manifest file
-UBUNTU_TRANSLATION_DOMAIN="twitchtube-ubuntu.aldrog"
+UBUNTU_TRANSLATION_DOMAIN="twitchtube.aldrog"
 
 DEFINES += OS_UBUNTU
 
@@ -35,7 +35,7 @@ INSTALLS += config_files
 #install the desktop file, a translated version is 
 #automatically created in the build directory
 desktop_file.path = /TwitchTube
-desktop_file.files = $$OUT_PWD/ubuntu/TwitchTube.desktop
+desktop_file.files = ubuntu/TwitchTube.desktop
 desktop_file.CONFIG += no_check_exist
 INSTALLS+=desktop_file
 

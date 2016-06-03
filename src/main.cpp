@@ -89,8 +89,8 @@ int main(int argc, char *argv[])
     QQuickView *view(SailfishApp::createView());
 #else
     QGuiApplication *app = new QGuiApplication(argc, argv);
-    QCoreApplication::setOrganizationName("harbour-twitchtube");
-    QCoreApplication::setApplicationName("harbour-twitchtube");
+    QCoreApplication::setOrganizationName("aldrog");
+    QCoreApplication::setApplicationName("twitchtube");
     qmlRegisterType<IrcChat>("aldrog.twitchtube.ircchat", 1, 0, "IrcChat");
     qmlRegisterType<MessageListModel>("aldrog.twitchtube.ircchat", 1, 0, "MessageListModel");
     qmlRegisterType<QMLSettings>("aldrog.twitchtube.settings", 1, 0, "Setting");

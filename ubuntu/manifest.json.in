@@ -1,8 +1,8 @@
 {
-    "name": "twitchtube-ubuntu.aldrog",
-    "description": "description of TwitchTube-ubuntu",
+    "name": "twitchtube.aldrog",
+    "description": "3rd party client for Twitch streaming service",
     "architecture": "@CLICK_ARCH@",
-    "title": "TwitchTube-ubuntu",
+    "title": "TwitchTube",
     "hooks": {
         "TwitchTube": {
             "apparmor": "TwitchTube/TwitchTube.apparmor",
@@ -11,5 +11,5 @@
     },
     "version": "0.1",
     "maintainer": "Andrew Penkrat <penkrat8@gmail.com>",
-    "framework": "ubuntu-sdk-15.04.4"
+    "framework": "ubuntu-sdk-15.04.5"
 }

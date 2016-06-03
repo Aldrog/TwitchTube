@@ -17,11 +17,11 @@
    xml:space="preserve"
    sodipodi:docname="ubuntu-icon.svg"
    inkscape:export-filename="/home/andrew/Development/TwitchTube/ubuntu/TwitchTube.png"
-   inkscape:export-xdpi="72"
-   inkscape:export-ydpi="72"><metadata
+   inkscape:export-xdpi="214.32558"
+   inkscape:export-ydpi="214.32558"><metadata
      id="metadata3010"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title><cc:license
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /><cc:license
            rdf:resource="http://creativecommons.org/licenses/by/3.0/" /></cc:Work><cc:License
          rdf:about="http://creativecommons.org/licenses/by/3.0/"><cc:permits
            rdf:resource="http://creativecommons.org/ns#Reproduction" /><cc:permits
@@ -118,8 +118,8 @@
      id="namedview3006"
      showgrid="false"
      inkscape:zoom="4.227907"
-     inkscape:cx="-25.899339"
-     inkscape:cy="54.229531"
+     inkscape:cx="-75.096258"
+     inkscape:cy="53.756484"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
