@@ -39,8 +39,7 @@ Page {
 
             function loadContent() {
                 var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
-                console.log(url)
-                HTTP.getRequest(url,function(data) {
+                HTTP.getRequest(url, function(data) {
                     if (data) {
                         offset += countOnPage
                         var result = JSON.parse(data)
@@ -48,7 +47,7 @@ Page {
                         for (var i in result.follows)
                             games.append(result.follows[i])
                     }
-                })
+                }, true)
             }
 
             parameters: { "fromFollowings": true }
