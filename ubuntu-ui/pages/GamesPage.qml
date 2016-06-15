@@ -31,6 +31,12 @@ Page {
     header: PageHeader {
         title: qsTr("Top Games")
         flickable: mainContainer
+
+        leadingActionBar.actions: categories.actions
+        Categories {
+            id: categories
+            games: false
+        }
     }
 
     GridWrapper {

@@ -28,16 +28,40 @@ Page {
     // Status for NavigationCover
     property string navStatus: qsTr("Search")
 
-    allowedOrientations: Orientation.All
+    property string querry: ""
+
+    header: PageHeader {
+
+        flickable: mainContainer
+
+        contents: TextField {
+            id: searchQuerry
+
+            anchors.fill: parent
+            anchors.margins: units.gu(1)
+
+            hasClearButton: true
+            placeholderText: qsTr("Search channels")
+            onTextChanged: {
+                gridResults.channels.clear()
+                gridResults.offset = 0
+                page.querry = text
+                gridResults.loadContent()
+            }
+        }
+
+        leadingActionBar.actions: categories.actions
+        Categories {
+            id: categories
+            search: false
+        }
+    }
 
     GridWrapper {
-        header.visible: false
-
+        id: mainContainer
         grids: [
         ChannelsGrid {
             id: gridResults
-
-            property string querry: ""
 
             function loadContent() {
                 if(querry) {
@@ -57,27 +81,10 @@ Page {
                     totalCount = 0
                 }
             }
-
             autoLoad: false
 
             // This prevents search field from loosing focus when grid changes
             currentIndex: -1
-
-            header: SearchField {
-                id: searchQuerry
-
-                width: parent.width
-                placeholderText: qsTr("Search channels")
-                onTextChanged: {
-                    gridResults.channels.clear()
-                    gridResults.offset = 0
-                    gridResults.querry = text
-                    gridResults.loadContent()
-                }
-            }
         }]
-        Categories {
-            search: false
-        }
     }
 }

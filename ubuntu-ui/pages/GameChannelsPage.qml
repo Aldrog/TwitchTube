@@ -68,7 +68,8 @@ Page {
                                 followed = false
                         })
                 }
-            }]
+            }
+        ]
     }
 
     GridWrapper {

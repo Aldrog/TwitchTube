@@ -24,20 +24,24 @@ import "../js/httphelper.js" as HTTP
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
 
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
     property bool showOffline: false
 
-    onStatusChanged: {
-        if(status === PageStatus.Active)
-            pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
+    header: PageHeader {
+        title: qsTr("Followed Channels")
+        flickable: mainContainer
+
+        leadingActionBar.actions: categories.actions
+        Categories {
+            id: categories
+            games: false
+        }
     }
 
     GridWrapper {
-        header.title: qsTr("Followed Channels")
-
+        id: mainContainer
         grids: [
         ChannelsGrid {
             id: gridChannels
@@ -62,9 +66,5 @@ Page {
                 }
             }
         }]
-
-        Categories {
-            following: false
-        }
     }
 }

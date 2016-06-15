@@ -20,38 +20,54 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-PullDownMenu {
+Item {
     property bool search: true
     property bool following: true
     property bool channels: true
     property bool games: true
 
-    MenuItem {
-        text: qsTr("Settings")
-        onClicked: pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"))
-    }
+    property list<Action> actions: [
+        Action {
+            text: qsTr("Games")
+            visible: games
+            onTriggered: {
+                pageStack.pop()
+                pageStack.push(Qt.resolvedUrl("../GamesPage.qml"))
+            }
+        },
 
-    MenuItem {
-        text: qsTr("Search")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../SearchPage.qml"))
-        visible: search
-    }
+        Action {
+            text: qsTr("Channels")
+            visible: channels
+            onTriggered: {
+                pageStack.pop()
+                pageStack.push(Qt.resolvedUrl("../ChannelsPage.qml"))
+            }
+        },
 
-    MenuItem {
-        text: qsTr("Following")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../FollowedPage.qml"))
-        visible: following && mainWindow.username
-    }
+        Action {
+            text: qsTr("Following")
+            visible: following && mainWindow.username
+            onTriggered: {
+                pageStack.pop()
+                pageStack.push(Qt.resolvedUrl("../FollowedPage.qml"))
+            }
+        },
 
-    MenuItem {
-        text: qsTr("Channels")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../ChannelsPage.qml"))
-        visible: channels
-    }
+        Action {
+            text: qsTr("Search")
+            visible: search
+            onTriggered: {
+                pageStack.pop()
+                pageStack.push(Qt.resolvedUrl("../SearchPage.qml"))
+            }
+        },
 
-    MenuItem {
-        text: qsTr("Games")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../GamesPage.qml"))
-        visible: games
-    }
+        Action {
+            text: qsTr("Settings")
+            onTriggered: {
+                pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"))
+            }
+        }
+    ]
 }

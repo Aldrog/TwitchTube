@@ -28,9 +28,19 @@ Page {
     // Status for NavigationCover
     property string navStatus: qsTr("Channels")
 
-    GridWrapper {
-        header.title: qsTr("Top Channels")
+    header: PageHeader {
+        title: qsTr("Top Channels")
+        flickable: mainContainer
 
+        leadingActionBar.actions: categories.actions
+        Categories {
+            id: categories
+            channels: false
+        }
+    }
+
+    GridWrapper {
+        id: mainContainer
         grids: [
         ChannelsGrid {
             id: gridChannels
@@ -48,9 +58,5 @@ Page {
                 })
             }
         }]
-
-        Categories {
-            channels: false
-        }
     }
 }
