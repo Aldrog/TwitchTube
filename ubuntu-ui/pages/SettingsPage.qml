@@ -37,65 +37,85 @@ Page {
         })
     }
 
-    allowedOrientations: Orientation.All
-
     Component.onCompleted: {
         if(authToken.value)
             getName()
     }
 
-    onAccepted: {
-        gameImageSize.value = imageSizes[gameQ.currentIndex]
-        channelImageSize.value = imageSizes[previewQ.currentIndex]
-        showBroadcastTitles.value = streamTitles.checked
-        chatFlowBtT.value = chatTtB.checked
+    header: PageHeader {
+        id: header
+
+        title: qsTr("Settings")
+        flickable: mainContainer
+        trailingActionBar.actions: [
+            Action {
+                text: qsTr("Apply")
+                iconName: "ok"
+
+                onTriggered: {
+                    gameImageSize.value = imageSizes[gameQ.selectedIndex]
+                    channelImageSize.value = imageSizes[previewQ.selectedIndex]
+                    showBroadcastTitles.value = streamTitles.checked
+                    chatFlowBtT.value = chatTtB.checked
+                    pageStack.pop()
+                }
+            },
+            Action {
+                text: qsTr("Cancel")
+                iconName: "close"
+
+                onTriggered: pageStack.pop()
+            }
+        ]
     }
 
-    SilicaFlickable {
+    Flickable {
+        id: mainContainer
         anchors.fill: parent
-        contentHeight: header.height + settingsContainer.height + Theme.paddingLarge // for bottom margin
-
-        DialogHeader {
-            id: header
-
-            dialog: page
-            title: qsTr("Settings")
-            acceptText: qsTr("Apply")
-            cancelText: qsTr("Cancel")
-        }
+        contentHeight: header.height + settingsContainer.height + units.gu(2) // for bottom margin
 
         Column {
             id: settingsContainer
 
             anchors {
-                top: header.bottom
+                top: parent.top
                 left: parent.left
                 right: parent.right
             }
 
-            BackgroundItem {
+            ListItem {
                 id: login
 
                 width: parent.width
-                height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
+                height: lblAcc1.height + lblAcc2.height + 2*units.gu(2) + units.gu(1)
 
-                onClicked: {
-                    console.log("old token:", authToken.value)
-                    if(!authToken.value) {
-                        var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-                        lpage.statusChanged.connect(function() {
-                            if(lpage.status === PageStatus.Deactivating) {
-                                getName()
-                            }
-                        })
+                trailingActions: ListItemActions {
+                    actions: [Action {
+                    id: accountAction
+                    text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
+                    iconName: "go-next"
+
+                    onTriggered: {
+                        console.log("old token:", authToken.value)
+                        if(!authToken.value) {
+                            var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+                            lpage.statusChanged.connect(function() {
+                                if(lpage.status === PageStatus.Deactivating) {
+                                    getName()
+                                }
+                            })
+                        }
+                        else {
+                            authToken.value = ""
+                            console.log("Cookie cleaning script result code:", cpptools.clearCookies())
+                            name = ""
+                            mainWindow.username = ""
+                        }
                     }
-                    else {
-                        authToken.value = ""
-                        console.log("Cookie cleaning script result code:", cpptools.clearCookies())
-                        name = ""
-                        mainWindow.username = ""
-                    }
+                }]
                 }
+
+                onClicked: accountAction.trigger()
 
                 Label {
                     id: lblAcc1
@@ -103,13 +123,12 @@ Page {
                     anchors { top: parent.top
                               left: parent.left
                               right: parent.right
-                              topMargin: Theme.paddingLarge
-                              leftMargin: Theme.horizontalPageMargin
-                              rightMargin: Theme.horizontalPageMargin
+                              topMargin: units.gu(2)
+                              leftMargin: units.gu(2)
+                              rightMargin: units.gu(2)
                             }
                     text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
-                    color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
-                    font.pixelSize: Theme.fontSizeMedium
+                    font.pixelSize: FontUtils.sizeToPixels("medium")
                 }
 
                 Label {
@@ -118,55 +137,108 @@ Page {
                     anchors { bottom: parent.bottom
                               left: parent.left
                               right: parent.right
-                              bottomMargin: Theme.paddingLarge
-                              leftMargin: Theme.horizontalPageMargin
-                              rightMargin: Theme.horizontalPageMargin
+                              bottomMargin: units.gu(2)
+                              leftMargin: units.gu(2)
+                              rightMargin: units.gu(2)
                             }
                     text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
-                    color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-                    font.pixelSize: Theme.fontSizeSmall
+                    color: UbuntuColors.coolGrey
+                    font.pixelSize: FontUtils.sizeToPixels("small")
                 }
             }
 
-            TextSwitch {
-                id: streamTitles
+            ListItem {
+                width: parent.width
 
-                text: qsTr("Show broadcast titles")
-                checked: showBroadcastTitles.value
-            }
+                Label {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        margins: units.gu(2)
+                    }
 
-            TextSwitch {
-                id: chatTtB
-
-                text: qsTr("Chat flows from bottom to top")
-                checked: chatFlowBtT.value
-            }
-
-            ComboBox {
-                id: gameQ
-
-                label: qsTr("Game posters quality")
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("High") }
-                    MenuItem { text: qsTr("Medium") }
-                    MenuItem { text: qsTr("Low") }
+                    text: qsTr("Show broadcast titles") }
+                Switch {
+                    id: streamTitles
+                    anchors {
+                        right: parent.right
+                        top: parent.top
+                        margins: units.gu(2)
+                    }
+                    checked: showBroadcastTitles.value
                 }
-                currentIndex: imageSizes.indexOf(gameImageSize.value)
             }
 
-            ComboBox {
-                id: previewQ
+            ListItem {
+                width: parent.width
 
-                label: qsTr("Stream previews quality")
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("High") }
-                    MenuItem { text: qsTr("Medium") }
-                    MenuItem { text: qsTr("Low") }
+                Label {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        margins: units.gu(2)
+                    }
+
+                    text: qsTr("Chat flows from bottom to top") }
+
+                Switch {
+                    id: chatTtB
+                    anchors {
+                        right: parent.right
+                        top: parent.top
+                        margins: units.gu(2)
+                    }
+                    checked: chatFlowBtT.value
                 }
-                currentIndex: imageSizes.indexOf(channelImageSize.value)
+            }
+
+            ListItem {
+                width: parent.width
+                height: gameQ.height + units.gu(4)
+
+                OptionSelector {
+                    id: gameQ
+
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        margins: units.gu(2)
+                    }
+
+                    text: qsTr("Game posters quality")
+                    model: [
+                        qsTr("High"),
+                        qsTr("Medium"),
+                        qsTr("Low")
+                    ]
+                    selectedIndex: imageSizes.indexOf(gameImageSize.value)
+                }
+            }
+
+            ListItem {
+                width: parent.width
+                height: previewQ.height + units.gu(4)
+
+                OptionSelector {
+                    id: previewQ
+
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        margins: units.gu(2)
+                    }
+
+                    text: qsTr("Stream previews quality")
+                    model: [
+                        qsTr("High"),
+                        qsTr("Medium"),
+                        qsTr("Low")
+                    ]
+                    selectedIndex: imageSizes.indexOf(channelImageSize.value)
+                }
             }
         }
-
-        VerticalScrollDecorator { flickable: parent }
     }
 }
