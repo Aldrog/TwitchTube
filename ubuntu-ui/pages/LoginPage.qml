@@ -19,21 +19,21 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Web 0.2
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
 
     property bool needExit: false
     // Status for NavigationCover
     property string navStatus: qsTr("Settings")
 
-    PageHeader {
+    header: PageHeader {
         id: head
         title: qsTr("Log into Twitch account")
     }
 
-    SilicaWebView {
+    WebView {
         id: twitchLogin
 
         anchors {
@@ -42,10 +42,26 @@ Page {
             left: parent.left
             right: parent.right
         }
+
+        onUrlChanged: {
+            var newurl = url.toString()
+            if(newurl.indexOf("http://localhost") === 0) {
+                var params = newurl.substring(newurl.lastIndexOf('/') + 1)
+                if(params.indexOf("#access_token") >= 0) {
+                    authToken.value = params.split('=')[1].split('&')[0]
+                    mainWindow.userChanged()
+                }
+                pageStack.pop()
+            }
+        }
+
         onNavigationRequested: {
-            var url = request.url.toString()
-            if(url.indexOf("http://localhost") === 0) {
-                var params = url.substring(url.lastIndexOf('/') + 1)
+            var rurl = request.url.toString()
+            console.log(request)
+            console.log(rurl)
+            console.log(url)
+            if(rurl.indexOf("http://localhost") === 0) {
+                var params = rurl.substring(rurl.lastIndexOf('/') + 1)
                 if(params.indexOf("#access_token") >= 0) {
                     authToken.value = params.split('=')[1].split('&')[0]
                 }
@@ -55,10 +71,10 @@ Page {
                     pageStack.pop()
             }
             else
-                request.action = SilicaWebView.AcceptRequest;
+                request.action = WebView.AcceptRequest;
         }
         url: encodeURI("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=n57dx0ypqy48ogn1ac08buvoe13bnsu&redirect_uri=http://localhost&scope=user_read user_follows_edit chat_login")
     }
 
-    onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
+    //onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
 }

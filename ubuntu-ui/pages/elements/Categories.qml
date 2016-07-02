@@ -47,7 +47,7 @@ Item {
 
         Action {
             text: qsTr("Following")
-            visible: following && mainWindow.username
+            visible: following && authToken.value
             onTriggered: {
                 pageStack.pop()
                 pageStack.push(Qt.resolvedUrl("../FollowedPage.qml"))

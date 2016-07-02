@@ -27,6 +27,8 @@ MainView {
 
     property string username
 
+    signal userChanged
+
     // objectName for functional testing purposes (autopilot-qt5)
     objectName: "mainView"
 

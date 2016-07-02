@@ -52,6 +52,8 @@ Tools::~Tools() { }
 int Tools::clearCookies() {
     QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
     if(dataPaths.size()) {
+        qDebug() << QDir(dataPaths[0]).entryList();
+#ifdef OS_SAILFISH
         QDir webData(QDir(dataPaths.at(0)).filePath(".QtWebKit"));
         if(webData.exists()) {
             if(webData.removeRecursively())
@@ -61,6 +63,17 @@ int Tools::clearCookies() {
         }
         else
             return 1;
+#elif OS_UBUNTU
+        QDir webData(QDir(dataPaths.at(0)));
+        if(webData.exists()) {
+            if(webData.removeRecursively())
+                return 0;
+            else
+                return -1;
+        }
+        else
+            return 1;
+#endif
     }
     return -2;
 }

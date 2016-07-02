@@ -30,16 +30,22 @@ Page {
     property string navStatus: qsTr("Settings")
 
     function getName() {
-        HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
-            var user = JSON.parse(data)
-            name = user.display_name
-            mainWindow.username = user.name
-        })
+        if(authToken.value) {
+            HTTP.getRequest("https://api.twitch.tv/kraken/user?oauth_token=" + authToken.value, function(data) {
+                var user = JSON.parse(data)
+                name = user.display_name
+                mainWindow.username = user.name
+            })
+        } else {
+            name = ""
+            mainWindow.username = ""
+        }
     }
 
-    Component.onCompleted: {
-        if(authToken.value)
-            getName()
+    Component.onCompleted: getName()
+    Connections {
+        target: mainWindow
+        onUserChanged: getName()
     }
 
     header: PageHeader {
@@ -90,29 +96,25 @@ Page {
                 height: lblAcc1.height + lblAcc2.height + 2*units.gu(2) + units.gu(1)
 
                 trailingActions: ListItemActions {
-                    actions: [Action {
-                    id: accountAction
-                    text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
-                    iconName: "go-next"
+                    actions: [
+                        Action {
+                            id: accountAction
+                            text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
+                            iconName: "go-next"
 
-                    onTriggered: {
-                        console.log("old token:", authToken.value)
-                        if(!authToken.value) {
-                            var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-                            lpage.statusChanged.connect(function() {
-                                if(lpage.status === PageStatus.Deactivating) {
-                                    getName()
+                            onTriggered: {
+                                console.log("old token:", authToken.value)
+                                if(!authToken.value) {
+                                    var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
                                 }
-                            })
+                                else {
+                                    authToken.value = ""
+                                    console.log("Cookie cleaning script result code:", cpptools.clearCookies())
+                                    mainWindow.userChanged()
+                                }
+                            }
                         }
-                        else {
-                            authToken.value = ""
-                            console.log("Cookie cleaning script result code:", cpptools.clearCookies())
-                            name = ""
-                            mainWindow.username = ""
-                        }
-                    }
-                }]
+                    ]
                 }
 
                 onClicked: accountAction.trigger()
