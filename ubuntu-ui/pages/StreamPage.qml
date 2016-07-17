@@ -124,6 +124,46 @@ Page {
     header: PageHeader {
         title: channel
         flickable: main
+
+        trailingActionBar.actions: [
+            Action {
+                enabled: mainWindow.username
+                iconName: followed ? "starred" : "non-starred"
+                name: followed ? qsTr("Unfollow") : qsTr("Follow")
+
+                onTriggered: {
+                    if(!followed) {
+                        HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                            if(data)
+                                followed = true
+                        })
+                    } else {
+                        HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                            if(data === 204)
+                                followed = false
+                        })
+                    }
+                }
+            },
+
+            Action {
+                iconName: "settings"
+                name: qsTr("Quality")
+                onTriggered: {
+                    pageStack.push(streamSettings, { chatOnly: chatMode, audioOnly: audioMode, channel: channel })
+                }
+            }
+        ]
+    }
+
+    QualityChooserPage {
+        id: streamSettings
+        onAccepted: {
+            chatMode = chatOnly
+            audioMode = audioOnly
+            console.log("Chat mode", chatMode)
+            console.log("Audio mode", audioMode)
+        }
     }
 
     Timer {

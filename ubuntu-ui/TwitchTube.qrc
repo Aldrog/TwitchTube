@@ -8,6 +8,7 @@
         <file>pages/FollowedGamesPage.qml</file>
         <file>pages/SearchPage.qml</file>
         <file>pages/StreamPage.qml</file>
+        <file>pages/QualityChooserPage.qml</file>
         <file>pages/SettingsPage.qml</file>
         <file>pages/LoginPage.qml</file>
         <file>pages/elements/Categories.qml</file>
