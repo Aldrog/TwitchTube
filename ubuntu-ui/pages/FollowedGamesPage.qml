@@ -28,10 +28,13 @@ Page {
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
 
-    allowedOrientations: Orientation.All
+    header: PageHeader {
+        title: qsTr("Followed Games")
+        flickable: mainContainer
+    }
 
     GridWrapper {
-        header.title: qsTr("Followed Games")
+        id: mainContainer
 
         grids: [
         GamesGrid {
@@ -53,9 +56,5 @@ Page {
 
             parameters: { "fromFollowings": true }
         }]
-
-        Categories {
-            following: false
-        }
     }
 }

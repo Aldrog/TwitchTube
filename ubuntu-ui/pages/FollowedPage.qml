@@ -38,6 +38,13 @@ Page {
             id: categories
             games: false
         }
+
+        trailingActionBar.actions: [
+            Action {
+                iconName: "view-expand"
+                onTriggered: pageStack.push(Qt.resolvedUrl("FollowedGamesPage.qml"))
+            }
+        ]
     }
 
     GridWrapper {
