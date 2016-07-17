@@ -17,8 +17,8 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
-import Sailfish.Silica 1.0
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 import "elements"
 import "../js/httphelper.js" as HTTP
 
@@ -27,35 +27,51 @@ Page {
 
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
+    property bool showOffline: false
 
-    allowedOrientations: Orientation.All
+    header: PageHeader {
+        title: qsTr("Followed Channels")
+        flickable: mainContainer
+
+        leadingActionBar.actions: categories.actions
+        Categories {
+            id: categories
+            games: false
+        }
+
+        trailingActionBar.actions: [
+            Action {
+                iconName: "view-expand"
+                onTriggered: pageStack.push(Qt.resolvedUrl("FollowedGamesPage.qml"))
+            }
+        ]
+    }
 
     GridWrapper {
-        header.title: qsTr("Followed Games")
-
+        id: mainContainer
         grids: [
-        GamesGrid {
-            id: gridGames
+        ChannelsGrid {
+            id: gridChannels
 
             function loadContent() {
-                var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
+                var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
                 console.log(url)
-                HTTP.getRequest(url,function(data) {
+                HTTP.getRequest(url, function(data) {
                     if (data) {
                         offset += countOnPage
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.follows)
-                            games.append(result.follows[i])
+                        for (var i in result.streams)
+                            channels.append(result.streams[i])
                     }
                 })
             }
 
-            parameters: { "fromFollowings": true }
+            onLoadMoreAvailableChanged: {
+                if(!loadMoreAvailable && !showOffline) {
+                    showOffline = true
+                }
+            }
         }]
-
-        Categories {
-            following: false
-        }
     }
 }

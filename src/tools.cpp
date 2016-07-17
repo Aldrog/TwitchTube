@@ -22,17 +22,24 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDebug>
+
+#ifdef OS_SAILFISH
 #include <QDBusReply>
+#endif
 
 Tools::Tools(QObject *parent) :
-    QObject(parent),
-    mceReqInterface("com.nokia.mce",
+    QObject(parent)
+#ifdef OS_SAILFISH
+  , mceReqInterface("com.nokia.mce",
                     "/com/nokia/mce/request",
                     "com.nokia.mce.request",
                     QDBusConnection::connectToBus(QDBusConnection::SystemBus, "system"))
+#endif
 {
+#ifdef OS_SAILFISH
     pauseRefresher = new QTimer();
     connect(pauseRefresher, SIGNAL(timeout()), this, SLOT(refreshPause()));
+#endif
 }
 Tools::~Tools() { }
 
@@ -45,6 +52,8 @@ Tools::~Tools() { }
 int Tools::clearCookies() {
     QStringList dataPaths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
     if(dataPaths.size()) {
+        qDebug() << QDir(dataPaths[0]).entryList();
+#ifdef OS_SAILFISH
         QDir webData(QDir(dataPaths.at(0)).filePath(".QtWebKit"));
         if(webData.exists()) {
             if(webData.removeRecursively())
@@ -54,10 +63,22 @@ int Tools::clearCookies() {
         }
         else
             return 1;
+#elif OS_UBUNTU
+        QDir webData(QDir(dataPaths.at(0)));
+        if(webData.exists()) {
+            if(webData.removeRecursively())
+                return 0;
+            else
+                return -1;
+        }
+        else
+            return 1;
+#endif
     }
     return -2;
 }
 
+#ifdef OS_SAILFISH
 // true - screen blanks (default)
 // false - no blanking
 void Tools::setBlankingMode(bool state)
@@ -80,3 +101,4 @@ void Tools::refreshPause() {
 
     mceReqInterface.call(QLatin1String("req_display_blanking_pause"));
 }
+#endif

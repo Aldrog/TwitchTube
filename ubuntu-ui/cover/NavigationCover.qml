@@ -17,39 +17,14 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOOLS_H
-#define TOOLS_H
+import QtQuick 2.1
+import Sailfish.Silica 1.0
 
-#include <QObject>
-#include <QTimer>
+CoverBackground {
+    property string status: pageStack.currentPage.navStatus
 
-#ifdef OS_SAILFISH
-#include <QDBusConnection>
-#include <QDBusInterface>
-
-const int PAUSE_PERIOD = 50000; //ms
-#endif
-
-class Tools : public QObject
-{
-    Q_OBJECT
-public:
-    Tools(QObject *parent = 0);
-    ~Tools();
-
-    Q_INVOKABLE int clearCookies();
-#ifdef OS_SAILFISH
-    Q_INVOKABLE void setBlankingMode(bool state);
-#endif
-public slots:
-#ifdef OS_SAILFISH
-    void refreshPause();
-#endif
-protected:
-#ifdef OS_SAILFISH
-    QDBusInterface mceReqInterface;
-    QTimer* pauseRefresher;
-#endif
-};
-
-#endif // TOOLS_H
+    CoverPlaceholder {
+        icon.source: "../images/icon.png"
+        text: status
+    }
+}

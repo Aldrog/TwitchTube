@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=TwitchTube
+Exec=TwitchTube
+Icon=TwitchTube/TwitchTube.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
