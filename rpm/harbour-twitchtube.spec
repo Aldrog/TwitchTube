@@ -13,7 +13,7 @@ Name:       harbour-twitchtube
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Twitch.tv client for Sailfish
-Version:    1.0
+Version:    1.1
 Release:    1
 Group:      Applications/Multimedia
 License:    GPLv3
@@ -31,7 +31,7 @@ BuildRequires:  pkgconfig(Qt5Multimedia)
 BuildRequires:  desktop-file-utils
 
 %description
-Twitch.tv client for Sailfish OS
+Free and opensource Twitch client
 
 
 %prep

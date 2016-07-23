@@ -6,6 +6,7 @@ SilicaFlickable {
 
     property alias grids: container.data
     property alias header: mainHeader
+    property int gridsShown: 2
 
     anchors.fill: parent
     contentHeight: container.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
@@ -24,14 +25,24 @@ SilicaFlickable {
     }
 
     PushUpMenu {
-        id: loadMoreMenu
-        enabled: grids[grids.length - 1].offset < grids[grids.length - 1].totalCount
-        visible: grids[grids.length - 1].offset < grids[grids.length - 1].totalCount
+        id: loadGridMenu
+        enabled: gridsShown < grids.length || grids[gridsShown - 1].offset < grids[gridsShown - 1].totalCount
+        visible: gridsShown < grids.length || grids[gridsShown - 1].offset < grids[gridsShown - 1].totalCount
 
         MenuItem {
-            text: qsTr("Load more")
+            id: loadMoreOption
+
+            text: root.grids[gridsShown - 1].offset < root.grids[gridsShown - 1].totalCount ?
+                      qsTr("Load more") :
+                      (grids[gridsShown] ? grids[gridsShown].loadText : "")
             onClicked: {
-                grids[grids.length - 1].loadContent()
+                if(root.grids[gridsShown - 1].offset < root.grids[gridsShown - 1].totalCount)
+                    grids[gridsShown - 1].loadContent()
+                else {
+                    grids[gridsShown].visible = true
+                    grids[gridsShown].loadContent()
+                    gridsShown++
+                }
             }
         }
     }

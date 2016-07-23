@@ -34,7 +34,7 @@ Page {
         header.title: qsTr("Top Channels")
 
         grids: [
-        ChannelsGrid {
+        StreamsGrid {
             id: gridChannels
 
             function loadContent() {

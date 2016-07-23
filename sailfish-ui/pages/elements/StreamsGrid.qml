@@ -48,8 +48,8 @@ SilicaGridView {
 
     model: ListModel { id: channelsList }
     cellWidth: width/row
-    // 1:1 is the actual aspect ratio of logos
-    cellHeight: cellWidth * 1/1
+    // 5:8 is the actual aspect ratio of previews
+    cellHeight: cellWidth * 5/8
 
     delegate: BackgroundItem {
         id: delegate
@@ -64,32 +64,47 @@ SilicaGridView {
         }
 
         Image {
-            id: logoImage
+            id: previewImage
 
-            source: channel.logo
+            source: preview[channelImageSize.value]
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
         }
 
         OpacityRampEffect {
-            property real effHeight: name.height
-            sourceItem: logoImage
+            property real effHeight: (showBroadcastTitles.value && title.text) ? (title.height + title.y) : name.height
+            sourceItem: previewImage
             direction: OpacityRamp.BottomToTop
-            offset: 1 - 1.25 * (effHeight / logoImage.height)
-            slope: logoImage.height / effHeight
+            offset: 1 - 1.25 * (effHeight / previewImage.height)
+            slope: previewImage.height / effHeight
         }
 
         Label {
             id: name
 
             anchors {
-                left: logoImage.left; leftMargin: Theme.paddingMedium
-                right: logoImage.right; rightMargin: Theme.paddingSmall
+                left: previewImage.left; leftMargin: Theme.paddingMedium
+                right: previewImage.right; rightMargin: Theme.paddingSmall
                 topMargin: Theme.paddingSmall
             }
             text: channel.display_name
             truncationMode: TruncationMode.Fade
             color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+            font.pixelSize: Theme.fontSizeSmall
+        }
+
+        Label {
+            id: title
+
+            visible: showBroadcastTitles.value
+            anchors {
+                left: previewImage.left; leftMargin: Theme.paddingMedium
+                right: previewImage.right; rightMargin: Theme.paddingSmall
+                top: name.bottom; topMargin: -Theme.paddingSmall
+            }
+            text: channel.status
+            truncationMode: TruncationMode.Fade
+            color: delegate.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
             font.pixelSize: Theme.fontSizeSmall
         }
     }

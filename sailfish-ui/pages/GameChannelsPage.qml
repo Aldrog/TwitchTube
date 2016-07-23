@@ -97,7 +97,7 @@ Page {
             }]
 
         grids: [
-        ChannelsGrid {
+        StreamsGrid {
             id: gridChannels
 
             function loadContent() {

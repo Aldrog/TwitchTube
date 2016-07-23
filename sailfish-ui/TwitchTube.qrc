@@ -12,6 +12,7 @@
         <file>pages/SettingsPage.qml</file>
         <file>pages/FollowedGamesPage.qml</file>
         <file>pages/elements/Categories.qml</file>
+        <file>pages/elements/StreamsGrid.qml</file>
         <file>pages/elements/ChannelsGrid.qml</file>
         <file>pages/elements/GamesGrid.qml</file>
         <file>pages/elements/GridWrapper.qml</file>

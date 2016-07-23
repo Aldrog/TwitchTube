@@ -28,7 +28,6 @@ Page {
 
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
-    property bool showOffline: false
 
     onStatusChanged: {
         if(status === PageStatus.Active)
@@ -39,29 +38,51 @@ Page {
         header.title: qsTr("Followed Channels")
 
         grids: [
-        ChannelsGrid {
-            id: gridChannels
+            StreamsGrid {
+                id: gridChannels
 
-            function loadContent() {
-                var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
-                console.log(url)
-                HTTP.getRequest(url, function(data) {
-                    if (data) {
-                        offset += countOnPage
-                        var result = JSON.parse(data)
-                        totalCount = result._total
-                        for (var i in result.streams)
-                            channels.append(result.streams[i])
-                    }
-                })
-            }
+                function loadContent() {
+                    var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
+                    console.log(url)
+                    HTTP.getRequest(url, function(data) {
+                        if (data) {
+                            offset += countOnPage
+                            var result = JSON.parse(data)
+                            totalCount = result._total
+                            for (var i in result.streams)
+                                channels.append(result.streams[i])
+                        }
+                    })
+                }
+            },
 
-            onLoadMoreAvailableChanged: {
-                if(!loadMoreAvailable && !showOffline) {
-                    showOffline = true
+            ChannelsGrid {
+                id: gridOffline
+
+                property string loadText: "Show offline"
+
+                visible: false
+                autoLoad: false
+
+                header: SectionHeader {
+                    text: qsTr("Offline")
+                }
+
+                function loadContent() {
+                    var url = "https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels?limit=" + countOnPage + "&offset=" + offset + "&sortby=last_broadcast"
+                    console.log(url)
+                    HTTP.getRequest(url, function(data) {
+                        if (data) {
+                            offset += countOnPage
+                            var result = JSON.parse(data)
+                            totalCount = result._total
+                            for (var i in result.follows)
+                                channels.append(result.follows[i])
+                        }
+                    })
                 }
             }
-        }]
+        ]
 
         Categories {
             following: false

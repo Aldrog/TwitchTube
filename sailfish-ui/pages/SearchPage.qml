@@ -34,7 +34,7 @@ Page {
         header.visible: false
 
         grids: [
-        ChannelsGrid {
+        StreamsGrid {
             id: gridResults
 
             property string querry: ""

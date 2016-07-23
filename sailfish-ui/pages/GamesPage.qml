@@ -31,6 +31,7 @@ Page {
     allowedOrientations: Orientation.All
 
     GridWrapper {
+        id: gridContainer
         header.title: qsTr("Top Games")
 
         grids: [
@@ -47,10 +48,12 @@ Page {
                         totalCount = result._total
                         for (var i in result.top)
                             games.append(result.top[i].game)
+                        gridContainer.gridsChanged()
                     }
                 })
             }
         }]
+
         Categories {
             games: false
         }

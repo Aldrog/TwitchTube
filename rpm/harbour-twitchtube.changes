@@ -5,6 +5,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Jul 18 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.1-1
+- Support audio only streams
+- Include Client-ID to Twitch API calls
+
 * Sun Nov 15 2015 Andrew Penkrat <contact.aldrog@gmail.com> 1.0-1
 - 20% more Kappa
 - UX issues fixes
