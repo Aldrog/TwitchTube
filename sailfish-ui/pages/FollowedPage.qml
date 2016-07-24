@@ -37,6 +37,8 @@ Page {
     GridWrapper {
         header.title: qsTr("Followed Channels")
 
+        contentHeight: gridChannels.height + header.height + gridOffline.height - gridOffline.headerItem.height + Theme.paddingLarge
+
         grids: [
             StreamsGrid {
                 id: gridChannels
@@ -59,7 +61,7 @@ Page {
             ChannelsGrid {
                 id: gridOffline
 
-                property string loadText: "Show offline"
+                property string loadText: qsTr("Show offline")
 
                 visible: false
                 autoLoad: false
