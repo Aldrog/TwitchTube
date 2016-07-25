@@ -25,34 +25,36 @@ import "../js/httphelper.js" as HTTP
 Page {
     id: page
 
+    property string channel
+    property string display
     // Status for NavigationCover
-    property string navStatus: qsTr("Channels")
+    property string navStatus: display
 
     allowedOrientations: Orientation.All
 
     GridWrapper {
-        header.title: qsTr("Top Channels")
+        header.title: qsTr("%1 VODs").arg(display)
 
         grids: [
-        StreamsGrid {
-            id: gridChannels
+        VodsGrid {
+            id: gridHighlights
 
             function loadContent() {
-                var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
+                var url = "https://api.twitch.tv/kraken/channels/" + channel + "/videos?hls=true&limit=" + countOnPage + "&offset=" + offset
                 HTTP.getRequest(url,function(data) {
                     if (data) {
                         offset += countOnPage
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.streams)
-                            channels.append(result.streams[i])
+                        for (var i in result.videos)
+                            vods.append(result.videos[i])
                     }
                 })
             }
         }]
 
         Categories {
-            channels: false
+            following: false
         }
     }
 }

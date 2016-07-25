@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>Main.qml</file>
-        <file>pages/ChannelsPage.qml</file>
+        <file>pages/TopStreamsPage.qml</file>
         <file>pages/GameChannelsPage.qml</file>
-        <file>pages/GamesPage.qml</file>
+        <file>pages/TopGamesPage.qml</file>
         <file>pages/StreamPage.qml</file>
         <file>pages/FollowedPage.qml</file>
         <file>pages/LoginPage.qml</file>
@@ -11,10 +11,12 @@
         <file>pages/SearchPage.qml</file>
         <file>pages/SettingsPage.qml</file>
         <file>pages/FollowedGamesPage.qml</file>
+        <file>pages/ChannelPage.qml</file>
         <file>pages/elements/Categories.qml</file>
         <file>pages/elements/StreamsGrid.qml</file>
         <file>pages/elements/ChannelsGrid.qml</file>
         <file>pages/elements/GamesGrid.qml</file>
+        <file>pages/elements/VodsGrid.qml</file>
         <file>pages/elements/GridWrapper.qml</file>
         <file>cover/NavigationCover.qml</file>
         <file>cover/StreamCover.qml</file>
@@ -24,4 +26,3 @@
         <file>images/icon.png</file>
     </qresource>
 </RCC>
-

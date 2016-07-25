@@ -23,7 +23,7 @@ import Sailfish.Silica 1.0
 SilicaGridView {
     id: grid
 
-    property alias channels: grid.model
+    property alias vods: grid.model
     property bool loadMoreAvailable: offset < totalCount
     property int row: isPortrait ? 2 : 3
     // In brackets must be row lengths for portrait and landscape orientations
@@ -46,10 +46,10 @@ SilicaGridView {
     }
     interactive: false
 
-    model: ListModel { id: channelsList }
+    model: ListModel { id: vodsList }
     cellWidth: width/row
-    // 1:1 is the actual aspect ratio of logos
-    cellHeight: cellWidth * 1/1
+    // 16:9 is the actual aspect ratio of previews
+    cellHeight: cellWidth * 9/16
 
     delegate: BackgroundItem {
         id: delegate
@@ -59,36 +59,36 @@ SilicaGridView {
 
         onClicked: {
             var properties = parameters
-            properties.channel = channel.name
-            properties.display = channel.display_name
-            pageStack.push (Qt.resolvedUrl("../ChannelPage.qml"), properties)
+            properties.vodId = _id
+            pageStack.push (Qt.resolvedUrl("../VodPage.qml"), properties)
         }
 
         Image {
-            id: logoImage
+            id: previewImage
 
-            source: channel.logo
+            source: preview
+            fillMode: Image.PreserveAspectCrop
             anchors.fill: parent
             anchors.margins: Theme.paddingSmall
         }
 
         OpacityRampEffect {
-            property real effHeight: name.height
-            sourceItem: logoImage
+            property real effHeight: vodTitle.height
+            sourceItem: previewImage
             direction: OpacityRamp.BottomToTop
-            offset: 1 - 1.25 * (effHeight / logoImage.height)
-            slope: logoImage.height / effHeight
+            offset: 1 - 1.25 * (effHeight / previewImage.height)
+            slope: previewImage.height / effHeight
         }
 
         Label {
-            id: name
+            id: vodTitle
 
             anchors {
-                left: logoImage.left; leftMargin: Theme.paddingMedium
-                right: logoImage.right; rightMargin: Theme.paddingSmall
+                left: previewImage.left; leftMargin: Theme.paddingMedium
+                right: previewImage.right; rightMargin: Theme.paddingSmall
                 topMargin: Theme.paddingSmall
             }
-            text: channel.display_name
+            text: title
             truncationMode: TruncationMode.Fade
             color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             font.pixelSize: Theme.fontSizeSmall
@@ -96,7 +96,7 @@ SilicaGridView {
     }
 
     ViewPlaceholder {
-        enabled: channels.count <= 0
-        text: qsTr("No channels to show")
+        enabled: vods.count <= 0
+        text: qsTr("No VODs to show")
     }
 }

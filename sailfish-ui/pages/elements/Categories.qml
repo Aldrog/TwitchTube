@@ -45,13 +45,13 @@ PullDownMenu {
 
     MenuItem {
         text: qsTr("Channels")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../ChannelsPage.qml"))
+        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../TopStreamsPage.qml"))
         visible: channels
     }
 
     MenuItem {
         text: qsTr("Games")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../GamesPage.qml"))
+        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../TopGamesPage.qml"))
         visible: games
     }
 }

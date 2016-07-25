@@ -40,7 +40,7 @@ ApplicationWindow
         player.stop()
     }
 
-    initialPage: Component { GamesPage { } }
+    initialPage: Component { TopGamesPage { } }
     cover: Qt.resolvedUrl("cover/NavigationCover.qml")
 
     Component.onCompleted: {
