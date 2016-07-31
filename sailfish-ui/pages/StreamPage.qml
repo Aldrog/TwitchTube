@@ -142,7 +142,24 @@ Page {
             MenuItem {
                 text: qsTr("Past Broadcasts & Highlights")
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), {channel: channel, display: channelDisplay})
+                    var page = pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), {channel: channel, display: channelDisplay})
+                    console.log(PageStatus.Deactivating, PageNavigation.Back)
+                    page.statusChanged.connect(function() {
+                        if(page.status === PageStatus.Deactivating && page._navigation === PageNavigation.Back) {
+                            mainWindow.stopAudio()
+                            video.play()
+                            if(!twitchChat.connected) {
+                                twitchChat.reopenSocket()
+                                twitchChat.join(channel)
+                            }
+                        }
+                    })
+                    mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+                    video.pause()
+                    if(audioMode)
+                        mainWindow.playAudio()
+                    if(twitchChat.connected)
+                        twitchChat.disconnect()
                 }
             }
 
