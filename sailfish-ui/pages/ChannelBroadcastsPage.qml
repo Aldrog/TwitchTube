@@ -33,7 +33,7 @@ Page {
     allowedOrientations: Orientation.All
 
     GridWrapper {
-        header.title: qsTr("%1 Broadcasts").arg(display)
+        header.title: qsTr("Broadcasts by %1").arg(display)
 
         grids: [
             VodsGrid {
@@ -54,7 +54,10 @@ Page {
             }]
 
         Categories {
-            following: false
+            search: mainWindow.currentCategory !== "search"
+            following: mainWindow.currentCategory !== "following"
+            channels: mainWindow.currentCategory !== "channels"
+            games: mainWindow.currentCategory !== "games"
         }
     }
 }

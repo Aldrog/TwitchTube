@@ -38,7 +38,7 @@ Page {
     }
 
     GridWrapper {
-        header.title: qsTr("%1 Highlights").arg(display)
+        header.title: qsTr("Highlights by %1").arg(display)
 
         grids: [
             VodsGrid {
@@ -59,7 +59,10 @@ Page {
             }]
 
         Categories {
-            following: false
+            search: mainWindow.currentCategory !== "search"
+            following: mainWindow.currentCategory !== "following"
+            channels: mainWindow.currentCategory !== "channels"
+            games: mainWindow.currentCategory !== "games"
         }
     }
 }

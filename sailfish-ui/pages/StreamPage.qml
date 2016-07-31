@@ -28,7 +28,7 @@ Page {
 
     property var url
     property string channel
-    property string username
+    property string channelDisplay
     property bool followed
     property bool chatMode: false
     property bool audioMode: false
@@ -140,8 +140,15 @@ Page {
             id: streamMenu
 
             MenuItem {
+                text: qsTr("Past Broadcasts & Highlights")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), {channel: channel, display: channelDisplay})
+                }
+            }
+
+            MenuItem {
                 text: qsTr("Follow")
-                onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
                     if(data)
                         followed = true
                 })
@@ -150,7 +157,7 @@ Page {
 
             MenuItem {
                 text: qsTr("Unfollow")
-                onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
                     if(data === 204)
                         followed = false
                 })

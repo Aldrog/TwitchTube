@@ -28,30 +28,44 @@ PullDownMenu {
 
     MenuItem {
         text: qsTr("Settings")
-        onClicked: pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"))
+        onClicked: {
+            pageStack.push(Qt.resolvedUrl("../SettingsPage.qml"))
+        }
     }
 
     MenuItem {
         text: qsTr("Search")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../SearchPage.qml"))
+        onClicked: {
+            mainWindow.currentCategory = "search"
+            pageStack.replaceAbove(null, Qt.resolvedUrl("../SearchPage.qml"))
+        }
         visible: search
     }
 
     MenuItem {
         text: qsTr("Following")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../FollowedPage.qml"))
+        onClicked: {
+            mainWindow.currentCategory = "following"
+            pageStack.replaceAbove(null, Qt.resolvedUrl("../FollowedPage.qml"))
+        }
         visible: following && mainWindow.username
     }
 
     MenuItem {
         text: qsTr("Channels")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../TopStreamsPage.qml"))
+        onClicked: {
+            mainWindow.currentCategory = "channels"
+            pageStack.replaceAbove(null, Qt.resolvedUrl("../TopStreamsPage.qml"))
+        }
         visible: channels
     }
 
     MenuItem {
         text: qsTr("Games")
-        onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("../TopGamesPage.qml"))
+        onClicked: {
+            mainWindow.currentCategory = "games"
+            pageStack.replaceAbove(null, Qt.resolvedUrl("../TopGamesPage.qml"))
+        }
         visible: games
     }
 }

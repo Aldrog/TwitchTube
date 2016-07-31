@@ -60,6 +60,7 @@ SilicaGridView {
         onClicked: {
             var properties = parameters
             properties.channel = channel.name
+            properties.channelDisplay = channel.display_name
             pageStack.push (Qt.resolvedUrl("../StreamPage.qml"), properties)
         }
 

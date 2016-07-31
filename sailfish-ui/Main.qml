@@ -30,6 +30,7 @@ ApplicationWindow
     property string currentChannel
     property string username
     property string audioUrl
+    property string currentCategory: "games"
     property bool playing: player.playbackState == MediaPlayer.PlayingState
 
     function playAudio() {
