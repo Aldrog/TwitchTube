@@ -32,20 +32,15 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    onStatusChanged: {
-        if(status === PageStatus.Active)
-            pageStack.pushAttached(Qt.resolvedUrl("ChannelBroadcastsPage.qml"), {channel: channel, display: display})
-    }
-
     GridWrapper {
-        header.title: qsTr("%1 Highlights").arg(display)
+        header.title: qsTr("%1 Broadcasts").arg(display)
 
         grids: [
             VodsGrid {
-                id: gridHighlights
+                id: gridBroadcasts
 
                 function loadContent() {
-                    var url = "https://api.twitch.tv/kraken/channels/" + channel + "/videos?broadcasts=false&hls=true&limit=" + countOnPage + "&offset=" + offset
+                    var url = "https://api.twitch.tv/kraken/channels/" + channel + "/videos?broadcasts=true&hls=true&limit=" + countOnPage + "&offset=" + offset
                     HTTP.getRequest(url,function(data) {
                         if (data) {
                             offset += countOnPage
