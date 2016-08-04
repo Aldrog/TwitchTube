@@ -63,7 +63,7 @@ void registerSettings(QQuickView *view) {
 
     QMLSettings *streamQuality = new QMLSettings();
     streamQuality->setKey("Video/StreamQuality");
-    streamQuality->setDefaultValue("medium");
+    streamQuality->setDefaultValue(2);
     view->rootContext()->setContextProperty("streamQuality", streamQuality);
 }
 

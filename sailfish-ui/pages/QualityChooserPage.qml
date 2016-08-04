@@ -4,14 +4,14 @@ import Sailfish.Silica 1.0
 Dialog {
     id: page
 
-    property var qualities: ["chunked", "high", "medium", "low", "mobile"]
+    property var qualities //: ["chunked", "high", "medium", "low", "mobile"]
     property bool chatOnly
     property bool audioOnly
 
     allowedOrientations: Orientation.All
 
     onAccepted: {
-        streamQuality.value = qualities[qualityChooser.currentIndex]
+        streamQuality.value = qualityChooser.currentIndex
         chatOnly = chatOnlySwitch.checked
         audioOnly = audioOnlySwitch.checked
     }
@@ -39,14 +39,13 @@ Dialog {
 
                 width: parent.width
                 label: qsTr("Quality")
-                currentIndex: qualities.indexOf(streamQuality.value)
+                currentIndex: streamQuality.value < qualities.selectableQualities.length ? streamQuality.value : (qualities.selectableQualities.length - 1)
 
                 menu: ContextMenu {
-                    MenuItem { text: qsTr("Source") }
-                    MenuItem { text: qsTr("High") }
-                    MenuItem { text: qsTr("Medium") }
-                    MenuItem { text: qsTr("Low") }
-                    MenuItem { text: qsTr("Mobile") }
+                    Repeater {
+                        model: qualities.selectableQualities
+                        delegate: MenuItem { text: qualities[modelData].name }
+                    }
                 }
             }
 

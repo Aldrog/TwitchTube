@@ -51,7 +51,7 @@ void IrcChat::join(const QString channel) {
     sock->write(("PASS " + userpass + "\r\n").toStdString().c_str());
     sock->write(("NICK " + username + "\r\n").toStdString().c_str());
     // Join channel's chat room
-    qDebug() << sock->write(("JOIN #" + channel + "\r\n").toStdString().c_str());
+    sock->write(("JOIN #" + channel + "\r\n").toStdString().c_str());
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(badgesReceived(QNetworkReply*)));

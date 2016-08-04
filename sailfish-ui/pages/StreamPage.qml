@@ -26,7 +26,7 @@ import "../js/httphelper.js" as HTTP
 Page {
     id: page
 
-    property var url
+    property var urls
     property string channel
     property string channelDisplay
     property bool followed
@@ -42,6 +42,36 @@ Page {
         }
     }
 
+    function findUrls(list) {
+        var res = ({selectableQualities: []})
+        var currentUrlId = ""
+        var currentUrlName = ""
+        for (var i in list) {
+            if(list[i].substring(0, 12) === "#EXT-X-MEDIA") {
+                currentUrlId = list[i].match(/GROUP-ID="([^"]+)"/)[1]
+                currentUrlName = list[i].match(/NAME="([^"]+)"/)[1]
+                if(list[i].indexOf("DEFAULT=YES") >= 0)
+                    res.selectableQualities.push(currentUrlId)
+            }
+            if(list[i][0] !== '#' && list[i] !== "") {
+                res[currentUrlId] = {
+                    name: currentUrlName,
+                    url: list[i]
+                }
+                console.log(list[i])
+                console.log(currentUrlId, res[currentUrlId])
+                for (var j in res[currentUrlId]) {
+                    console.log(j, res[currentUrlId][j])
+                }
+            }
+        }
+        console.log(res.selectableQualities)
+        console.log(streamQuality.value < res.selectableQualities.length ?
+                        res.selectableQualities[streamQuality.value] :
+                        res.selectableQualities[res.selectableQualities.length - 1])
+        return res
+    }
+
     function loadStreamInfo() {
         HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
             if (tokendata) {
@@ -49,16 +79,17 @@ Page {
                 HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
                     if (data) {
                         var videourls = data.split('\n')
-                        url = {
+                        urls = findUrls(videourls)
+                        /*{
                             chunked: findUrl(videourls, "chunked"),
                             high: findUrl(videourls, "high"),
                             medium: findUrl(videourls, "medium"),
                             low: findUrl(videourls, "low"),
                             mobile: findUrl(videourls, "mobile"),
                             audio: findUrl(videourls, "audio_only")
-                        }
+                        }*/
                         video.play()
-                        mainWindow.audioUrl = url.audio
+                        mainWindow.audioUrl = urls.audio_only.url
                     }
                 })
             }
@@ -184,7 +215,7 @@ Page {
             MenuItem {
                 text: qsTr("Quality")
                 onClicked: {
-                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { chatOnly: chatMode, audioOnly: audioMode, channel: channel })
+                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, chatOnly: chatMode, audioOnly: audioMode, channel: channel })
                     dialog.accepted.connect(function() {
                         chatMode = dialog.chatOnly
                         audioMode = dialog.audioOnly
@@ -205,7 +236,11 @@ Page {
                 id: video
 
                 anchors.fill: parent
-                source: audioMode ? url["audio"] : url[streamQuality.value]
+                source: audioMode ? urls["audio"].url :
+                                    urls[streamQuality.value < urls.selectableQualities.length ?
+                                         urls.selectableQualities[streamQuality.value] :
+                                         urls.selectableQualities[urls.selectableQualities.length - 1]
+                                        ].url
 
                 onErrorChanged: console.error("video error:", errorString)
 
