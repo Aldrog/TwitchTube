@@ -25,5 +25,6 @@
         <file>images/heart_crossed.png</file>
         <file>images/icon.png</file>
         <file>pages/ChannelBroadcastsPage.qml</file>
+        <file>pages/VodPage.qml</file>
     </qresource>
 </RCC>

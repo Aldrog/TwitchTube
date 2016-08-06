@@ -4,7 +4,11 @@ import Sailfish.Silica 1.0
 Dialog {
     id: page
 
-    property var qualities //: ["chunked", "high", "medium", "low", "mobile"]
+    property var qualities
+
+    // Set to false to forbid audio and chat only modes
+    property bool allowVideoDisable: true
+
     property bool chatOnly
     property bool audioOnly
 
@@ -12,8 +16,10 @@ Dialog {
 
     onAccepted: {
         streamQuality.value = qualityChooser.currentIndex
-        chatOnly = chatOnlySwitch.checked
-        audioOnly = audioOnlySwitch.checked
+        if(allowVideoDisable) {
+            chatOnly = chatOnlySwitch.checked
+            audioOnly = audioOnlySwitch.checked
+        }
     }
 
     SilicaFlickable {
@@ -22,7 +28,7 @@ Dialog {
 
         DialogHeader {
             id: header
-            title: qsTr("Stream properties")
+            title: qsTr("Playback options")
         }
 
         Column {
@@ -53,6 +59,7 @@ Dialog {
                 id: chatOnlySwitch
                 checked: chatOnly
                 text: qsTr("Chat only")
+                visible: !allowVideoDisable
 
                 onCheckedChanged: {
                     if(checked)
@@ -64,6 +71,7 @@ Dialog {
                 id: audioOnlySwitch
                 checked: audioOnly
                 text: qsTr("Audio only")
+                visible: !allowVideoDisable
 
                 onCheckedChanged: {
                     if(checked)

@@ -59,7 +59,8 @@ SilicaGridView {
 
         onClicked: {
             var properties = parameters
-            properties.vodId = _id
+            properties.vodId = ~~(_id.substring(1))
+            console.log(properties.vodId, _id)
             pageStack.push (Qt.resolvedUrl("../VodPage.qml"), properties)
         }
 
