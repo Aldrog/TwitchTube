@@ -5,6 +5,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Fri Aug 5 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.1.1-1
+- Fix stream fetching with undefault quality names
+- Fix followed channel being considered as unfollowed by stream page menu
+
 * Mon Jul 18 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.1-1
 - Support audio only streams
 - Include Client-ID to Twitch API calls

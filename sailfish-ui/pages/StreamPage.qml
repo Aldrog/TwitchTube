@@ -58,17 +58,9 @@ Page {
                     name: currentUrlName,
                     url: list[i]
                 }
-                console.log(list[i])
-                console.log(currentUrlId, res[currentUrlId])
-                for (var j in res[currentUrlId]) {
-                    console.log(j, res[currentUrlId][j])
-                }
             }
         }
-        console.log(res.selectableQualities)
-        console.log(streamQuality.value < res.selectableQualities.length ?
-                        res.selectableQualities[streamQuality.value] :
-                        res.selectableQualities[res.selectableQualities.length - 1])
+        console.log("Available qualities:", res.selectableQualities)
         return res
     }
 
@@ -80,14 +72,6 @@ Page {
                     if (data) {
                         var videourls = data.split('\n')
                         urls = findUrls(videourls)
-                        /*{
-                            chunked: findUrl(videourls, "chunked"),
-                            high: findUrl(videourls, "high"),
-                            medium: findUrl(videourls, "medium"),
-                            low: findUrl(videourls, "low"),
-                            mobile: findUrl(videourls, "mobile"),
-                            audio: findUrl(videourls, "audio_only")
-                        }*/
                         video.play()
                         mainWindow.audioUrl = urls.audio_only.url
                     }
@@ -100,10 +84,10 @@ Page {
         if(mainWindow.username) {
             HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
                 if(data)
-                    return true
+                    followed = true
             })
         }
-        return false
+        followed = false
     }
 
     onChatModeChanged: {
@@ -149,7 +133,7 @@ Page {
 
     Component.onCompleted: {
         loadStreamInfo()
-        followed = checkFollow()
+        checkFollow()
     }
 
     Timer {
@@ -236,11 +220,10 @@ Page {
                 id: video
 
                 anchors.fill: parent
-                source: audioMode ? urls["audio"].url :
-                                    urls[streamQuality.value < urls.selectableQualities.length ?
-                                         urls.selectableQualities[streamQuality.value] :
-                                         urls.selectableQualities[urls.selectableQualities.length - 1]
-                                        ].url
+                source: urls[audioMode ? "audio_only" :
+                             urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
+                                                      streamQuality.value : urls.selectableQualities.length - 1]
+                            ].url
 
                 onErrorChanged: console.error("video error:", errorString)
 
