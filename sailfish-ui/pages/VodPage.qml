@@ -54,14 +54,20 @@ Page {
     }
 
     function loadVodInfo() {
-        HTTP.getRequest("http://api.twitch.tv/api/vods/" + vodId + "/access_token", function (tokendata) {
+        HTTP.getRequest("http://api.twitch.tv/api/vods/" + vodId + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/vod/" + vodId + ".m3u8?allow_source=true&sig=" + token.sig + "&token=" + token.token), function (data) {
+                HTTP.getRequest(encodeURI("http://usher.twitch.tv/vod/" + vodId + ".m3u8?allow_source=true&" +
+                                          "sig=" + token.sig + "&token=" + token.token + "&p=" + Math.floor(Math.random() * 1e8)),
+                                function (data, err) {
                     if (data) {
                         var videourls = data.split('\n')
                         urls = findUrls(videourls)
                         video.play()
+                    } else {
+                        if(err === 403) {
+                            videoStatus.text = qsTr("You do not have access to this video")
+                        }
                     }
                 })
             }
@@ -119,6 +125,7 @@ Page {
 
             MenuItem {
                 text: qsTr("Quality")
+                enabled: urls != null
                 onClicked: {
                     pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, allowVideoDisable: true })
                 }
@@ -131,7 +138,6 @@ Page {
             color: "black"
             anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
             height: isPortrait ? screen.width * 9/16 : screen.width
-            visible: true
 
             Video {
                 id: video
@@ -142,6 +148,7 @@ Page {
                             ].url
 
                 onErrorChanged: console.error("video error:", errorString)
+                visible: !videoStatus.visible
 
                 BusyIndicator {
                     anchors.centerIn: parent
@@ -156,6 +163,15 @@ Page {
                         console.log(page.state)
                     }
                 }
+            }
+
+            Label {
+                id: videoStatus
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                color: Theme.secondaryColor
+                visible: text !== ""
             }
         }
     }

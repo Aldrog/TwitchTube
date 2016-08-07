@@ -65,10 +65,12 @@ Page {
     }
 
     function loadStreamInfo() {
-        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
+        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
+                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&" +
+                                          "sig=" + token.sig + "&token=" + token.token + "&type=any&p=" + Math.floor(Math.random() * 1e8)),
+                                function (data) {
                     if (data) {
                         var videourls = data.split('\n')
                         urls = findUrls(videourls)
@@ -198,6 +200,7 @@ Page {
 
             MenuItem {
                 text: qsTr("Quality")
+                enabled: urls != null
                 onClicked: {
                     var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, chatOnly: chatMode, audioOnly: audioMode, channel: channel })
                     dialog.accepted.connect(function() {
