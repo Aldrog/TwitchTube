@@ -72,9 +72,14 @@ Page {
 
     onStatusChanged: {
         if(status === PageStatus.Activating) {
+            mainWindow.currentVodId = vodId
+            mainWindow.cover = Qt.resolvedUrl("../cover/VodCover.qml")
             cpptools.setBlankingMode(false)
         }
         if(status === PageStatus.Deactivating) {
+            if (_navigation === PageNavigation.Back) {
+                mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+            }
             cpptools.setBlankingMode(true)
         }
     }

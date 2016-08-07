@@ -28,6 +28,7 @@ ApplicationWindow
     id: mainWindow
 
     property string currentChannel
+    property int currentVodId
     property string username
     property string audioUrl
     property string currentCategory: "games"

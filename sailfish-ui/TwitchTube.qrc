@@ -26,5 +26,6 @@
         <file>images/icon.png</file>
         <file>pages/ChannelBroadcastsPage.qml</file>
         <file>pages/VodPage.qml</file>
+        <file>cover/VodCover.qml</file>
     </qresource>
 </RCC>
