@@ -212,5 +212,32 @@ Page {
                 text: vodDetails.description
             }
         }
+
+        ScrollDecorator { flickable: main }
+    }
+
+    states: State {
+        name: "fullscreen"
+        PropertyChanges {
+            target: main
+            contentHeight: page.height
+        }
+
+        PropertyChanges {
+            target: infoContainer
+            visible: false
+        }
+
+        PropertyChanges {
+            target: vodMenu
+            visible: false
+            active: false
+        }
+
+        PropertyChanges {
+            target: page
+            showNavigationIndicator: false; backNavigation: false
+            allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
+        }
     }
 }
