@@ -27,7 +27,7 @@ Page {
 
     property var urls
     property int vodId
-    property string channelDisplay
+    property var vodDetails
     property bool active: Qt.application.active
     property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
 
@@ -117,8 +117,9 @@ Page {
         id: main
 
         anchors.fill: parent
-        contentHeight: isPortrait ? page.height : (5/3 * Screen.width)
-        //onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
+        contentHeight: videoBackground.height + Theme.paddingMedium +
+                       infoContainer.height +
+                       Theme.paddingLarge
 
         PullDownMenu {
             id: vodMenu
@@ -155,14 +156,6 @@ Page {
                     running: video.playbackState !== MediaPlayer.PlayingState
                     size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
                 }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        page.state = !page.state ? "fullscreen" : ""
-                        console.log(page.state)
-                    }
-                }
             }
 
             Label {
@@ -172,6 +165,51 @@ Page {
                 horizontalAlignment: Text.AlignHCenter
                 color: Theme.secondaryColor
                 visible: text !== ""
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    page.state = !page.state ? "fullscreen" : ""
+                    console.log(page.state)
+                }
+            }
+        }
+
+        Column {
+            id: infoContainer
+
+            anchors {
+                top: videoBackground.bottom
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+                topMargin: Theme.paddingMedium
+            }
+
+            spacing: Theme.paddingSmall
+
+            Label {
+                id: titleLabel
+                width: parent.width
+                wrapMode: Text.Wrap
+                font.family: Theme.fontFamilyHeading
+                font.pixelSize: Theme.fontSizeLarge
+                color: Theme.highlightColor
+                text: vodDetails.title
+            }
+
+            Separator {
+                visible: descriptionLabel.text !== ""
+                width: parent.width
+            }
+
+            Label {
+                id: descriptionLabel
+                width: parent.width
+                wrapMode: Text.Wrap
+                text: vodDetails.description
             }
         }
     }
