@@ -47,6 +47,7 @@ Page {
                     name: currentUrlName,
                     url: list[i]
                 }
+                console.log(list[i])
             }
         }
         console.log("Available qualities:", res.selectableQualities)
@@ -151,9 +152,13 @@ Page {
                 onErrorChanged: console.error("video error:", errorString)
                 visible: !videoStatus.visible
 
+                onDurationChanged: timeline.maximumValue = duration
+
                 BusyIndicator {
                     anchors.centerIn: parent
-                    running: video.playbackState !== MediaPlayer.PlayingState
+                    running: video.status === MediaPlayer.NoMedia
+                          || video.status === MediaPlayer.Loading
+                          || video.status === MediaPlayer.Stalled
                     size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
                 }
             }
@@ -167,8 +172,49 @@ Page {
                 visible: text !== ""
             }
 
+            IconButton {
+                id: playbackControlButton
+                anchors {
+                    left: parent.left
+                    bottom: parent.bottom
+                    leftMargin: Theme.paddingSmall
+                    bottomMargin: Theme.paddingSmall
+                }
+                icon.source: video.playbackState === MediaPlayer.PlayingState ?
+                                 "image://theme/icon-m-pause" : "image://theme/icon-m-play"
+
+                onClicked: {
+                    if(video.playbackState === MediaPlayer.PlayingState)
+                        video.pause()
+                    else
+                        video.play()
+                }
+            }
+
+            Slider {
+                id: timeline
+                anchors {
+                    left: playbackControlButton.right
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                enabled: video.seekable
+
+                minimumValue: 0
+                value: video.position
+                valueText: Format.formatDuration(value, maximumValue > 360 ? Format.DurationLong : Format.DurationShort)
+
+                onReleased: video.seek(value)
+            }
+
             MouseArea {
-                anchors.fill: parent
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: timeline.top
+                }
+
                 onClicked: {
                     page.state = !page.state ? "fullscreen" : ""
                     console.log(page.state)
@@ -225,6 +271,16 @@ Page {
 
         PropertyChanges {
             target: infoContainer
+            visible: false
+        }
+
+        PropertyChanges {
+            target: playbackControlButton
+            visible: false
+        }
+
+        PropertyChanges {
+            target: timeline
             visible: false
         }
 
