@@ -37,30 +37,40 @@ Page {
     property bool isPortrait: !isLandscape
     property bool fullscreenConditions: isLandscape && main.visibleArea.yPosition === 0 && !main.moving && !state && video.visible
 
-    function findUrl(s, q) {
-        for (var x in s) {
-            if (s[x].substring(0,4) === "http" && s[x].indexOf(q) >= 0)
-                return s[x]
+    function findUrls(list) {
+        var res = ({selectableQualities: []})
+        var currentUrlId = ""
+        var currentUrlName = ""
+        for (var i in list) {
+            if(list[i].substring(0, 12) === "#EXT-X-MEDIA") {
+                currentUrlId = list[i].match(/GROUP-ID="([^"]+)"/)[1]
+                currentUrlName = list[i].match(/NAME="([^"]+)"/)[1]
+                if(list[i].indexOf("DEFAULT=YES") >= 0)
+                    res.selectableQualities.push(currentUrlId)
+            }
+            if(list[i][0] !== '#' && list[i] !== "") {
+                res[currentUrlId] = {
+                    name: currentUrlName,
+                    url: list[i]
+                }
+            }
         }
+        console.log("Available qualities:", res.selectableQualities)
+        return res
     }
 
     function loadStreamInfo() {
-        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token", function (tokendata) {
+        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&sig=" + token.sig + "&token=" + token.token + "&type=any"), function (data) {
+                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&" +
+                                          "sig=" + token.sig + "&token=" + token.token + "&type=any&p=" + Math.floor(Math.random() * 1e8)),
+                                function (data) {
                     if (data) {
                         var videourls = data.split('\n')
-                        url = {
-                            chunked: findUrl(videourls, "chunked"),
-                            high: findUrl(videourls, "high"),
-                            medium: findUrl(videourls, "medium"),
-                            low: findUrl(videourls, "low"),
-                            mobile: findUrl(videourls, "mobile"),
-                            audio: findUrl(videourls, "audio_only")
-                        }
+                        urls = findUrls(videourls)
                         video.play()
-                        mainWindow.audioUrl = url.audio
+                        mainWindow.audioUrl = urls.audio_only.url
                     }
                 })
             }
@@ -71,10 +81,10 @@ Page {
         if(mainWindow.username) {
             HTTP.getRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel, function(data) {
                 if(data)
-                    return true
+                    followed = true
             })
         }
-        return false
+        followed = false
     }
 
     onChatModeChanged: {
