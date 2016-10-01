@@ -5,6 +5,12 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Oct 1 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.1-1
+- Add Client-ID to /api requests (enables unauthorized users to watch streams and videos)
+
+* Mon Aug 15 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2-1
+- View past broadcasts and highlights
+
 * Fri Aug 5 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.1.1-1
 - Fix stream fetching with undefault quality names
 - Fix followed channel being considered as unfollowed by stream page menu
