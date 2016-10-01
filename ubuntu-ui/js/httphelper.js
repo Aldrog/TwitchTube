@@ -18,66 +18,54 @@
  */
 .pragma library
 
-function getRequest(url, callback, publicAPI) {
+function getRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("GET", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }
 	request.onreadystatechange = function() {
 		if (request.readyState === XMLHttpRequest.DONE) {
             if (request.status && request.status === 200) {
-				callback(request.responseText)
+                callback(request.responseText, false)
 			} else {
 				console.log("Error accessing url", url)
 				console.log("HTTP:", request.status, request.statusText)
-				callback(false)
+                callback(false, request.status)
 			}
 		}
 	}
 	request.send()
 }
 
-function putRequest(url, callback, publicAPI) {
+function putRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("PUT", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }
 	request.onreadystatechange = function() {
 		if (request.readyState === XMLHttpRequest.DONE) {
 			if (request.status && request.status === 200) {
-				callback(request.responseText)
+                callback(request.responseText)
 			} else {
 				console.log("HTTP:", request.status, request.statusText)
-				callback(false)
+                callback(false)
 			}
 		}
 	}
 	request.send()
 }
 
-function deleteRequest(url, callback, publicAPI) {
+function deleteRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("DELETE", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }

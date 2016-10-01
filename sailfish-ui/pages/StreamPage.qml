@@ -65,7 +65,7 @@ Page {
     }
 
     function loadStreamInfo() {
-        HTTP.getRequest("http://api.twitch.tv/api/channels/" + channel + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
+        HTTP.getRequest("https://api.twitch.tv/api/channels/" + channel + "/access_token" + (authToken.value ? ("?oauth_token=" + authToken.value) : ""), function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
                 HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&" +
@@ -232,7 +232,9 @@ Page {
 
                 BusyIndicator {
                     anchors.centerIn: parent
-                    running: video.playbackState !== MediaPlayer.PlayingState
+                    running: video.status === MediaPlayer.NoMedia
+                          || video.status === MediaPlayer.Loading
+                          || video.status === MediaPlayer.Stalled
                     size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
                 }
 

@@ -47,7 +47,7 @@ Page {
                         for (var i in result.follows)
                             games.append(result.follows[i])
                     }
-                }, true)
+                })
             }
 
             parameters: { "fromFollowings": true }

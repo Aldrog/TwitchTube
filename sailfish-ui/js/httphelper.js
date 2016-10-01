@@ -18,15 +18,11 @@
  */
 .pragma library
 
-function getRequest(url, callback, publicAPI) {
+function getRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("GET", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }
@@ -44,15 +40,11 @@ function getRequest(url, callback, publicAPI) {
 	request.send()
 }
 
-function putRequest(url, callback, publicAPI) {
+function putRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("PUT", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }
@@ -69,15 +61,11 @@ function putRequest(url, callback, publicAPI) {
 	request.send()
 }
 
-function deleteRequest(url, callback, publicAPI) {
+function deleteRequest(url, callback) {
 	var request = new XMLHttpRequest()
     request.open("DELETE", url)
-    if(url.indexOf("https://api.twitch.tv/kraken") === 0) {
-        // Kraken API
-        request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
-        request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
-    } else if(publicAPI) {
-        // Experimental API
+    if(url.indexOf("https://api.twitch.tv/kraken") === 0 || url.indexOf("https://api.twitch.tv/api") === 0) {
+        // Public APIs
         request.setRequestHeader("Accept", "application/vnd.twitchtv.v3+json")
         request.setRequestHeader("Client-ID", "n57dx0ypqy48ogn1ac08buvoe13bnsu")
     }
