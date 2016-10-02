@@ -177,8 +177,8 @@ Page {
                 anchors {
                     left: parent.left
                     bottom: parent.bottom
-                    leftMargin: Theme.paddingSmall
-                    bottomMargin: Theme.paddingSmall
+                    leftMargin: Theme.paddingMedium
+                    bottomMargin: Theme.paddingMedium
                 }
                 icon.source: video.playbackState === MediaPlayer.PlayingState ?
                                  "image://theme/icon-m-pause" : "image://theme/icon-m-play"
@@ -195,16 +195,22 @@ Page {
                 id: timeline
                 anchors {
                     left: playbackControlButton.right
+                    // IconButton and Slider both already include margins, so let's move them closer
+                    leftMargin: -Theme.paddingMedium
                     right: parent.right
                     bottom: parent.bottom
                 }
                 enabled: video.seekable
 
                 minimumValue: 0
-                value: video.position
-                valueText: Format.formatDuration(value, maximumValue > 360 ? Format.DurationLong : Format.DurationShort)
+                valueText: Format.formatDuration(value/1000, maximumValue/1000 > 3600 ? Format.DurationLong : Format.DurationShort)
 
                 onReleased: video.seek(value)
+
+                Binding on value{
+                    when: !pressed
+                    value: video.position
+                }
             }
 
             MouseArea {
