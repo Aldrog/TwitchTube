@@ -64,7 +64,7 @@ Page {
                     if (data) {
                         var videourls = data.split('\n')
                         urls = findUrls(videourls)
-                        video.play()
+                        video.startPlayback()
                     } else {
                         if(err === 403) {
                             videoStatus.text = qsTr("You do not have access to this video")
@@ -94,10 +94,10 @@ Page {
     onActiveChanged: {
         if(page.status === PageStatus.Active) {
             if(active) {
-                video.play()
+                video.startPlayback()
             }
             else {
-                video.pause()
+                video.stopPlayback()
             }
         }
     }
@@ -129,7 +129,10 @@ Page {
                 text: qsTr("Quality")
                 enabled: urls != null
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, allowVideoDisable: true })
+                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, allowVideoDisable: false })
+                    dialog.accepted.connect(function() {
+                        video.checkSource()
+                    })
                 }
             }
         }
@@ -144,10 +147,28 @@ Page {
             Video {
                 id: video
 
+                function stopPlayback() {
+                    stop()
+                    source = ""
+                }
+
+                function startPlayback() {
+                    source = urls[urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
+                                                           streamQuality.value : urls.selectableQualities.length - 1]
+                                 ].url
+                    play()
+                }
+
+                function checkSource() {
+                    if(source !== urls[urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
+                                                                streamQuality.value : urls.selectableQualities.length - 1]
+                                      ].url) {
+                        stopPlayback()
+                        startPlayback()
+                    }
+                }
+
                 anchors.fill: parent
-                source: urls[urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
-                                                      streamQuality.value : urls.selectableQualities.length - 1]
-                            ].url
 
                 onErrorChanged: console.error("video error:", errorString)
                 visible: !videoStatus.visible

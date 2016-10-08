@@ -14,6 +14,8 @@ Dialog {
 
     allowedOrientations: Orientation.All
 
+    Component.onCompleted: console.log(allowVideoDisable)
+
     onAccepted: {
         streamQuality.value = qualityChooser.currentIndex
         if(allowVideoDisable) {
@@ -59,7 +61,7 @@ Dialog {
                 id: chatOnlySwitch
                 checked: chatOnly
                 text: qsTr("Chat only")
-                visible: !allowVideoDisable
+                visible: allowVideoDisable
 
                 onCheckedChanged: {
                     if(checked)
@@ -71,7 +73,7 @@ Dialog {
                 id: audioOnlySwitch
                 checked: audioOnly
                 text: qsTr("Audio only")
-                visible: !allowVideoDisable
+                visible: allowVideoDisable
 
                 onCheckedChanged: {
                     if(checked)

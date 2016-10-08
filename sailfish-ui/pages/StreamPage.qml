@@ -117,9 +117,10 @@ Page {
     onActiveChanged: {
         if(page.status === PageStatus.Active) {
             if(active) {
-                if(!audioMode)
+                if(!audioMode) {
                     mainWindow.stopAudio()
-                video.startPlayback()
+                    video.startPlayback()
+                }
                 if(!twitchChat.connected) {
                     twitchChat.reopenSocket()
                     twitchChat.join(channel)
@@ -134,10 +135,14 @@ Page {
     }
 
     onAudioModeChanged: {
-        if(audioMode === true)
+        if(audioMode === true) {
+            video.stopPlayback()
             mainWindow.playAudio()
-        else
+        }
+        else {
             mainWindow.stopAudio()
+            video.startPlayback()
+        }
     }
 
     Component.onCompleted: {
@@ -208,9 +213,9 @@ Page {
                 onClicked: {
                     var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, chatOnly: chatMode, audioOnly: audioMode, channel: channel })
                     dialog.accepted.connect(function() {
+                        video.checkSource()
                         chatMode = dialog.chatOnly
                         audioMode = dialog.audioOnly
-                        video.checkSource()
                     })
                 }
             }
