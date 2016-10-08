@@ -162,7 +162,7 @@ Page {
         id: main
 
         anchors.fill: parent
-        contentHeight: isPortrait ? page.height : (chatMode ? page.height : (5/3 * Screen.width))
+        contentHeight: isPortrait ? page.height : ((chatMode || audioMode) ? page.height : (5/3 * Screen.width))
         //onContentHeightChanged: console.log(contentHeight, height + Screen.width, Screen.width, chat.height)
 
         PullDownMenu {
@@ -282,7 +282,7 @@ Page {
                 right: parent.right
                 top: chatFlowBtT.value ? videoBackground.bottom : undefined
                 bottom: chatFlowBtT.value ? undefined : parent.bottom
-                topMargin: chatMode ? Theme.paddingLarge : Theme.paddingMedium
+                topMargin: (chatMode || audioMode) ? Theme.paddingLarge : Theme.paddingMedium
                 bottomMargin: Theme.paddingMedium
             }
             // Maybe it's better to replace ternary operators with if else blocks
