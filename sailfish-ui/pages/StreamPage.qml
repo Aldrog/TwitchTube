@@ -74,7 +74,7 @@ Page {
                     if (data) {
                         var videourls = data.split('\n')
                         urls = findUrls(videourls)
-                        video.play()
+                        video.startPlayback()
                         mainWindow.audioUrl = urls.audio_only.url
                     }
                 })
@@ -93,8 +93,9 @@ Page {
     }
 
     onChatModeChanged: {
-        if(chatMode)
-            video.stop()
+        if(chatMode) {
+            video.stopPlayback()
+        }
     }
 
     allowedOrientations: Orientation.All
@@ -116,21 +117,27 @@ Page {
     onActiveChanged: {
         if(page.status === PageStatus.Active) {
             if(active) {
-                mainWindow.stopAudio()
-                video.play()
+                if(!audioMode)
+                    mainWindow.stopAudio()
+                video.startPlayback()
                 if(!twitchChat.connected) {
                     twitchChat.reopenSocket()
                     twitchChat.join(channel)
                 }
             }
             else {
-                video.pause()
-                if(audioMode)
-                    mainWindow.playAudio()
+                video.stopPlayback()
                 if(twitchChat.connected)
                     twitchChat.disconnect()
             }
         }
+    }
+
+    onAudioModeChanged: {
+        if(audioMode === true)
+            mainWindow.playAudio()
+        else
+            mainWindow.stopAudio()
     }
 
     Component.onCompleted: {
@@ -163,8 +170,7 @@ Page {
                     console.log(PageStatus.Deactivating, PageNavigation.Back)
                     page.statusChanged.connect(function() {
                         if(page.status === PageStatus.Deactivating && page._navigation === PageNavigation.Back) {
-                            mainWindow.stopAudio()
-                            video.play()
+                            video.startPlayback()
                             if(!twitchChat.connected) {
                                 twitchChat.reopenSocket()
                                 twitchChat.join(channel)
@@ -172,9 +178,7 @@ Page {
                         }
                     })
                     mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
-                    video.pause()
-                    if(audioMode)
-                        mainWindow.playAudio()
+                    video.stopPlayback()
                     if(twitchChat.connected)
                         twitchChat.disconnect()
                 }
@@ -206,6 +210,7 @@ Page {
                     dialog.accepted.connect(function() {
                         chatMode = dialog.chatOnly
                         audioMode = dialog.audioOnly
+                        video.checkSource()
                     })
                 }
             }
@@ -221,13 +226,30 @@ Page {
 
             Video {
                 id: video
-
                 anchors.fill: parent
-                source: urls[audioMode ? "audio_only" :
-                             urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
-                                                      streamQuality.value : urls.selectableQualities.length - 1]
-                            ].url
 
+                function stopPlayback() {
+                    stop()
+                    source = ""
+                }
+
+                function startPlayback() {
+                    source = urls[urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
+                                                           streamQuality.value : urls.selectableQualities.length - 1]
+                                 ].url
+                    play()
+                }
+
+                function checkSource() {
+                    if(source !== urls[urls.selectableQualities[streamQuality.value < urls.selectableQualities.length ?
+                                                                streamQuality.value : urls.selectableQualities.length - 1]
+                                      ].url) {
+                        stopPlayback()
+                        startPlayback()
+                    }
+                }
+
+                autoLoad: false
                 onErrorChanged: console.error("video error:", errorString)
 
                 BusyIndicator {
@@ -242,7 +264,6 @@ Page {
                     anchors.fill: parent
                     onClicked: {
                         page.state = !page.state ? "fullscreen" : ""
-                        console.log(page.state)
                     }
                 }
             }

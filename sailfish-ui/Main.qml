@@ -35,11 +35,13 @@ ApplicationWindow
     property bool playing: player.playbackState == MediaPlayer.PlayingState
 
     function playAudio() {
+        player.source = audioUrl
         player.play()
     }
 
     function stopAudio() {
         player.stop()
+        player.source = ""
     }
 
     initialPage: Component { TopGamesPage { } }
@@ -59,7 +61,7 @@ ApplicationWindow
 
     MediaPlayer {
         id: player
-        source: audioUrl
+        autoLoad: false
         onSourceChanged: console.log(source)
     }
 }
