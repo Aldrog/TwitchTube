@@ -322,30 +322,37 @@ Page {
         SilicaListView {
             id: chat
 
+            property bool atEnd: true
+
             anchors {
                 left: parent.left
                 right: parent.right
                 top: chatFlowBtT.value ? chatMessage.bottom : videoBackground.bottom
                 bottom: chatFlowBtT.value ? parent.bottom : chatMessage.top
-                //topMargin: (chatMode && !chatFlowBtT.value) ? 0 : Theme.paddingMedium
-                //bottomMargin: 0//chatFlowBtT.value ? Theme.paddingLarge : Theme.paddingMedium
             }
 
-            highlightRangeMode: count > 0 ? ListView.StrictlyEnforceRange : ListView.NoHighlightRange
-            //preferredHighlightBegin: chat.height - currentItem.height
             preferredHighlightEnd: chat.height
             clip: true
             verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
+
+            onMovementStarted: atEnd = false
+            onMovementEnded: {
+                if(chat.atYEnd)
+                    atEnd = true
+            }
 
             model: twitchChat.messages
             delegate: Item {
                 height: lbl.height
                 width: chat.width
 
+                property bool viewed: false
+
                 ListView.onAdd: {
-                    if(chat.currentIndex >= chat.count - 3) {
+                    if(!viewed && chat.atEnd) {
                         chat.currentIndex = chat.count - 1
                     }
+                    viewed = true
                 }
 
                 Label {
