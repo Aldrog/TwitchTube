@@ -9,6 +9,7 @@
 - Fix playback issues on context changes (switching qualities, audio-only, minimizing)
 - Fix UI issues in VOD controls and quality chooser
 - Improve chat autoscroll logics
+- Screen can turn off when video isn't playing (e.g. in audio-only and minimized modes)
 
 * Sat Oct 1 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.1-1
 - Add Client-ID to /api requests (enables unauthorized users to watch streams and videos)
