@@ -284,7 +284,7 @@ Page {
                     anchors.centerIn: parent
                     running: video.status === MediaPlayer.NoMedia
                           || video.status === MediaPlayer.Loading
-                          || video.status === MediaPlayer.Stalled
+                          //|| video.status === MediaPlayer.Stalled
                     size: isPortrait ? BusyIndicatorSize.Medium : BusyIndicatorSize.Large
                 }
 
@@ -335,10 +335,16 @@ Page {
             clip: true
             verticalLayoutDirection: chatFlowBtT.value ? ListView.BottomToTop : ListView.TopToBottom
 
-            onMovementStarted: atEnd = false
+            onMovementStarted: {
+                atEnd = false
+                currentIndex = -1
+            }
+
             onMovementEnded: {
-                if(chat.atYEnd)
+                if(chat.atYEnd) {
                     atEnd = true
+                    currentIndex = count - 1
+                }
             }
 
             model: twitchChat.messages
