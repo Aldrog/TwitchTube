@@ -185,7 +185,6 @@ void IrcChat::emotesReceived(QNetworkReply *dataSource) {
 }
 
 void IrcChat::parseCommand(QString cmd) {
-    qDebug() << cmd;
     if(cmd.startsWith("PING ")) {
         sock->write("PONG\r\n");
         return;
@@ -290,6 +289,7 @@ void IrcChat::parseCommand(QString cmd) {
         userDisplayName = getParamValue(params, "display-name");
         return;
     }
+    qDebug() << "Unrecognized chat command:" << cmd;
 }
 
 QString IrcChat::getParamValue(QString params, QString param) {

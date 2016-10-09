@@ -84,11 +84,11 @@ int Tools::clearCookies() {
 void Tools::setBlankingMode(bool state)
 {
     if (state) {
-        qDebug() << "Screen blanking paused";
+        qDebug() << "Canceling screen blanking pause";
         mceReqInterface.call(QLatin1String("req_display_cancel_blanking_pause"));
         pauseRefresher->stop();
     } else {
-        qDebug() << "Screen blanking enabled";
+        qDebug() << "Pausing screen blanking";
         mceReqInterface.call(QLatin1String("req_display_blanking_pause"));
         pauseRefresher->start(PAUSE_PERIOD);
     }
