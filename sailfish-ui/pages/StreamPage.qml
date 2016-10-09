@@ -105,13 +105,11 @@ Page {
         if(status === PageStatus.Activating) {
             mainWindow.currentChannel = channel
             mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
-            cpptools.setBlankingMode(false)
         }
         if(status === PageStatus.Deactivating) {
             if (_navigation === PageNavigation.Back) {
                 mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
             }
-            cpptools.setBlankingMode(true)
         }
     }
 
@@ -259,6 +257,7 @@ Page {
                 function stopPlayback() {
                     stop()
                     source = ""
+                    cpptools.setBlankingMode(true)
                 }
 
                 function startPlayback() {
@@ -266,6 +265,7 @@ Page {
                                                            streamQuality.value : urls.selectableQualities.length - 1]
                                  ].url
                     play()
+                    cpptools.setBlankingMode(false)
                 }
 
                 function checkSource() {
