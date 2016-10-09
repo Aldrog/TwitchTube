@@ -95,6 +95,7 @@ Page {
     onChatModeChanged: {
         if(chatMode) {
             video.stopPlayback()
+            mainWindow.stopAudio()
         }
     }
 
@@ -114,12 +115,31 @@ Page {
         }
     }
 
+    Connections {
+        target: mainWindow
+
+        onAudioOn: {
+            if(chatMode) {
+                chatMode = false
+                audioMode = true
+            }
+        }
+
+        onAudioOff: {
+            if(audioMode) {
+                chatMode = true
+                audioMode = false
+            }
+        }
+    }
+
     onActiveChanged: {
         if(page.status === PageStatus.Active) {
             if(active) {
                 if(!audioMode) {
                     mainWindow.stopAudio()
-                    video.startPlayback()
+                    if(!chatMode)
+                        video.startPlayback()
                 }
                 if(!twitchChat.connected) {
                     twitchChat.reopenSocket()
@@ -135,13 +155,16 @@ Page {
     }
 
     onAudioModeChanged: {
-        if(audioMode === true) {
-            video.stopPlayback()
-            mainWindow.playAudio()
-        }
-        else {
-            mainWindow.stopAudio()
-            video.startPlayback()
+        if(active) {
+            if(audioMode === true) {
+                video.stopPlayback()
+                mainWindow.playAudio()
+            }
+            else {
+                mainWindow.stopAudio()
+                if(!chatMode)
+                    video.startPlayback()
+            }
         }
     }
 

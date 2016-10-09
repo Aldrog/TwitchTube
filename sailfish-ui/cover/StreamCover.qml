@@ -43,10 +43,14 @@ CoverBackground {
         CoverAction {
             iconSource: mainWindow.playing ? "image://theme/icon-m-speaker-mute" : "image://theme/icon-m-speaker"
             onTriggered: {
-                if(mainWindow.playing)
+                if(mainWindow.playing) {
                     mainWindow.stopAudio()
-                else
+                    mainWindow.audioOff()
+                }
+                else {
                     mainWindow.playAudio()
+                    mainWindow.audioOn()
+                }
             }
         }
     }

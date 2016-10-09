@@ -34,6 +34,9 @@ ApplicationWindow
     property string currentCategory: "games"
     property bool playing: player.playbackState == MediaPlayer.PlayingState
 
+    signal audioOn
+    signal audioOff
+
     function playAudio() {
         player.source = audioUrl
         player.play()
