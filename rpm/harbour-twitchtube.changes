@@ -5,6 +5,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sun Oct 9 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.2-1
+- Fix playback issues on context changes (switching qualities, audio-only, minimizing)
+- Fix UI issues in VOD controls and quality chooser
+- Improve chat autoscroll logics
+
 * Sat Oct 1 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.1-1
 - Add Client-ID to /api requests (enables unauthorized users to watch streams and videos)
 
