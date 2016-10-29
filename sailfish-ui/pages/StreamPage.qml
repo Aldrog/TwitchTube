@@ -347,6 +347,12 @@ Page {
                 }
             }
 
+            // This makes sure individual messages don't get lost
+            onAtYEndChanged: {
+                if(atEnd && !atYEnd)
+                    currentIndex = chat.count - 1
+            }
+
             model: twitchChat.messages
             delegate: Item {
                 height: lbl.height
@@ -354,6 +360,8 @@ Page {
 
                 property bool viewed: false
 
+                // This is the main handler for chat autoscroll, though it only works when messages count's increased
+                // above there's additional handler covering this case
                 ListView.onAdd: {
                     if(!viewed && chat.atEnd) {
                         chat.currentIndex = chat.count - 1

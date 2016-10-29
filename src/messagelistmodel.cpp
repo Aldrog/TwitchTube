@@ -43,8 +43,11 @@ QVariant MessageListModel::data(const QModelIndex &index, int role) const {
 }
 
 void MessageListModel::appendMessage(Message &message) {
-    if(rowCount() > MAX_MESSAGE_POOL) {
-        beginRemoveRows(QModelIndex(), 0, 0);
+    // When message pool's overflowed, we remove two messages on every second received message
+    // this way we can be sure that at least every second message addition increases messages count (which makes handling on QML side easier)
+    if(rowCount() > MAX_MESSAGE_POOL && rowCount() % 2 == 0) {
+        beginRemoveRows(QModelIndex(), 0, 1);
+        messageList.removeFirst();
         messageList.removeFirst();
         endRemoveRows();
     }
