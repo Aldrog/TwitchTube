@@ -5,6 +5,9 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Oct 31 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.3-1
+- Fix chat autoscroll not working after message pool overflow
+
 * Sun Oct 9 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.2-1
 - Fix playback issues on context changes (switching qualities, audio-only, minimizing)
 - Fix UI issues in VOD controls and quality chooser
