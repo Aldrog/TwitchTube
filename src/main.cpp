@@ -21,9 +21,7 @@
 #include <QtQuick>
 #endif
 
-#ifdef OS_SAILFISH
 #include <sailfishapp.h>
-#endif
 
 #include <QtQml>
 #include <QGuiApplication>
@@ -34,7 +32,7 @@
 #include "qmlsettings.h"
 #include "tools.h"
 
-//All app settings are declared here so it's easy to change default value or setting's key
+// All app settings are declared here so it's easy to change default value or setting's key
 void registerSettings(QQuickView *view) {
     QMLSettings *authToken = new QMLSettings();
     authToken->setKey("User/TwitchOAuth2Token");
@@ -69,16 +67,6 @@ void registerSettings(QQuickView *view) {
 
 int main(int argc, char *argv[])
 {
-    // SailfishApp::main() will display "qml/template.qml", if you need more
-    // control over initialization, you can use:
-    //
-    //   - SailfishApp::application(int, char *[]) to get the QGuiApplication *
-    //   - SailfishApp::createView() to get a new QQuickView * instance
-    //   - SailfishApp::pathTo(QString) to get a QUrl to a resource file
-    //
-    // To display the view, call "show()" (will show fullscreen on device).
-
-#ifdef OS_SAILFISH
     QGuiApplication *app(SailfishApp::application(argc, argv));
     QCoreApplication::setOrganizationName("harbour-twitchtube");
     QCoreApplication::setApplicationName("harbour-twitchtube");
@@ -87,22 +75,12 @@ int main(int argc, char *argv[])
     qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
 
     QQuickView *view(SailfishApp::createView());
-#else
-    QGuiApplication *app = new QGuiApplication(argc, argv);
-    QCoreApplication::setOrganizationName("twitchtube.aldrog");
-    QCoreApplication::setApplicationName("twitchtube.aldrog");
-    qmlRegisterType<IrcChat>("aldrog.twitchtube.ircchat", 1, 0, "IrcChat");
-    qmlRegisterType<MessageListModel>("aldrog.twitchtube.ircchat", 1, 0, "MessageListModel");
-    qmlRegisterType<QMLSettings>("aldrog.twitchtube.settings", 1, 0, "Setting");
-
-    QQuickView *view = new QQuickView();
-#endif
 
     registerSettings(view);
     Tools *tools = new Tools();
     view->rootContext()->setContextProperty("cpptools", tools);
 
-    view->setSource(QUrl("qrc:///Main.qml"));
+    view->setSource(SailfishApp::pathTo("qml/Main.qml"));
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->show();
     return app->exec();

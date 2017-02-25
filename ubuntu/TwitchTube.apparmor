@@ -1,8 +1,0 @@
-{
-    "policy_groups": [
-        "video",
-        "webview",
-        "networking"
-    ],
-    "policy_version": 1.3
-}

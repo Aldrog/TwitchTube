@@ -23,12 +23,10 @@
 #include <QObject>
 #include <QTimer>
 
-#ifdef OS_SAILFISH
 #include <QDBusConnection>
 #include <QDBusInterface>
 
 const int PAUSE_PERIOD = 50000; //ms
-#endif
 
 class Tools : public QObject
 {
@@ -38,18 +36,12 @@ public:
     ~Tools();
 
     Q_INVOKABLE int clearCookies();
-#ifdef OS_SAILFISH
     Q_INVOKABLE void setBlankingMode(bool state);
-#endif
 public slots:
-#ifdef OS_SAILFISH
     void refreshPause();
-#endif
 protected:
-#ifdef OS_SAILFISH
     QDBusInterface mceReqInterface;
     QTimer* pauseRefresher;
-#endif
 };
 
 #endif // TOOLS_H
