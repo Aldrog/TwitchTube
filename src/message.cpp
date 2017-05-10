@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2016 Andrew Penkrat
+ * Copyright © 2015-2017 Andrew Penkrat
  *
  * This file is part of TwitchTube.
  *
