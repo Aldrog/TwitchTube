@@ -1,5 +1,4 @@
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import "implementation"
 
 Dialog {
@@ -12,8 +11,6 @@ Dialog {
 
     property bool chatOnly
     property bool audioOnly
-
-    allowedOrientations: Orientation.All
 
     Component.onCompleted: console.log(allowVideoDisable)
 

@@ -18,7 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import harbour.twitchtube.ircchat 1.0
 import "implementation"
@@ -99,8 +98,6 @@ Page {
             mainWindow.stopAudio()
         }
     }
-
-    allowedOrientations: Orientation.All
 
     onStatusChanged: {
         if(status === PageStatus.Activating) {

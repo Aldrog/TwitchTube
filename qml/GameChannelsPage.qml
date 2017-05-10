@@ -18,8 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
-import QtGraphicalEffects 1.0
 import "implementation"
 import "js/httphelper.js" as HTTP
 
@@ -44,14 +42,12 @@ Page {
         }
     }
 
-    allowedOrientations: Orientation.All
-
     GridWrapper {
         header.title: game
         header.rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
 
         header.children: [
-            BackgroundItem {
+            IconButton {
                 id: switchFollow
 
                 visible: mainWindow.username
@@ -75,24 +71,6 @@ Page {
                             if(data === 204)
                                 followed = false
                         })
-                }
-
-                Image {
-                    id: heart
-                    anchors.fill: parent
-                    source: followed ? "../images/heart_crossed.png" : "../images/heart.png"
-                    visible: false
-                }
-                ColorOverlay {
-                    id: heartColor
-
-                    function overlayColor(color) {
-                        return Qt.rgba(color.r, color.g, color.b, color.a - Math.min(color.r, color.g, color.b))
-                    }
-
-                    anchors.fill: heart
-                    source: heart
-                    color: switchFollow.highlighted ? overlayColor(Theme.highlightColor) : overlayColor(Theme.primaryColor)
                 }
             }]
 

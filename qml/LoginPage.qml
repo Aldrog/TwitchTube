@@ -18,12 +18,10 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import "implementation"
 
 Page {
     id: page
-    allowedOrientations: Orientation.All
 
     property bool needExit: false
     // Status for NavigationCover

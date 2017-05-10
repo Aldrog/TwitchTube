@@ -18,7 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import "implementation"
 import "js/httphelper.js" as HTTP
 
@@ -37,8 +36,6 @@ Dialog {
             mainWindow.username = user.name
         })
     }
-
-    allowedOrientations: Orientation.All
 
     Component.onCompleted: {
         if(authToken.value)

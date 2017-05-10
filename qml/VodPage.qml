@@ -18,7 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import QtMultimedia 5.0
 import "implementation"
 import "js/httphelper.js" as HTTP
@@ -75,8 +74,6 @@ Page {
             }
         })
     }
-
-    allowedOrientations: Orientation.All
 
     onStatusChanged: {
         if(status === PageStatus.Activating) {

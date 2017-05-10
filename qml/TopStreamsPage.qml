@@ -18,7 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import "implementation"
 import "js/httphelper.js" as HTTP
 
@@ -27,8 +26,6 @@ Page {
 
     // Status for NavigationCover
     property string navStatus: qsTr("Streams")
-
-    allowedOrientations: Orientation.All
 
     GridWrapper {
         header.title: qsTr("Top Streams")

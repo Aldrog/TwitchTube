@@ -18,7 +18,6 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
 import "implementation"
 import "js/httphelper.js" as HTTP
 
@@ -29,8 +28,6 @@ Page {
     property string display
     // Status for NavigationCover
     property string navStatus: display
-
-    allowedOrientations: Orientation.All
 
     onStatusChanged: {
         if(status === PageStatus.Active)
