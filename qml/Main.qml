@@ -20,7 +20,7 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
-import "pages"
+import "implementation"
 import "js/httphelper.js" as HTTP
 
 ApplicationWindow
@@ -48,7 +48,7 @@ ApplicationWindow
     }
 
     initialPage: Component { TopGamesPage { } }
-    cover: Qt.resolvedUrl("cover/NavigationCover.qml")
+    cover: Qt.resolvedUrl("implementation/cover/NavigationCover.qml")
 
     Component.onCompleted: {
         if(authToken.value) {

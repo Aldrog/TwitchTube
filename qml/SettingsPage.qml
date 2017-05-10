@@ -19,7 +19,8 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import "../js/httphelper.js" as HTTP
+import "implementation"
+import "js/httphelper.js" as HTTP
 
 Dialog {
     id: page

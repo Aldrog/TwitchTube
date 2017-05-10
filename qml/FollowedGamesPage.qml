@@ -19,8 +19,8 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import "elements"
-import "../js/httphelper.js" as HTTP
+import "implementation"
+import "js/httphelper.js" as HTTP
 
 Page {
     id: page

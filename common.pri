@@ -15,3 +15,7 @@ HEADERS += \
     src/qmlsettings.h \
     src/message.h \
     src/messagelistmodel.h
+
+QML_FILES += $$files(qml/*.qml) \
+             $$files(qml/js/*.js) \
+             $$files(qml/images/*.png)

@@ -19,40 +19,43 @@
 
 import QtQuick 2.1
 import Sailfish.Silica 1.0
-import "elements"
-import "../js/httphelper.js" as HTTP
+import "implementation"
+import "js/httphelper.js" as HTTP
 
 Page {
     id: page
 
     // Status for NavigationCover
-    property string navStatus: qsTr("Streams")
+    property string navStatus: qsTr("Games")
 
     allowedOrientations: Orientation.All
 
     GridWrapper {
-        header.title: qsTr("Top Streams")
+        id: gridContainer
+        header.title: qsTr("Top Games")
 
         grids: [
-        StreamsGrid {
-            id: gridChannels
+        GamesGrid {
+            id: gridGames
 
             function loadContent() {
-                var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset
+                var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+                console.log(url)
                 HTTP.getRequest(url,function(data) {
                     if (data) {
                         offset += countOnPage
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.streams)
-                            channels.append(result.streams[i])
+                        for (var i in result.top)
+                            games.append(result.top[i].game)
+                        gridContainer.gridsChanged()
                     }
                 })
             }
         }]
 
         Categories {
-            channels: false
+            games: false
         }
     }
 }

@@ -6,9 +6,11 @@ DEFINES += OS_SAILFISH
 
 include(common.pri)
 
-QML_FILES += $$files(qml/*.qml,true) \
-             $$files(qml/*.js,true) \
-             $$files(qml/*.png,true)
+IMPLEMENTATION_FILES += $$files(qml-implementations/silica/*.qml,true)
+
+qml_implementation.files = qml-implementations/silica/*
+qml_implementation.path = /usr/share/$${TARGET}/qml/implementation
+INSTALLS += qml_implementation
 
 CONF_FILES += rpm/harbour-twitchtube.spec \
               rpm/harbour-twitchtube.yaml \
@@ -17,6 +19,7 @@ CONF_FILES += rpm/harbour-twitchtube.spec \
 TRANSLATIONS += $$files(translations/*.ts)
 
 OTHER_FILES += $${CONF_FILES} \
+               $${IMPLEMENTATION_FILES} \
                $${QML_FILES} \
                harbour-twitchtube.desktop
 
