@@ -30,7 +30,7 @@ BackgroundItem {
     Image {
         id: heart
         anchors.fill: parent
-        source: "../images/" + iconName + ".png"
+        source: "images/" + iconName + ".png"
         visible: false
     }
 
