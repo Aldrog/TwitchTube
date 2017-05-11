@@ -21,5 +21,24 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 Dialog {
+    id: dialog
+
+    property alias title: header.title
+    default property alias children: pageContents.children
+
     allowedOrientations: Orientation.All
+
+    SilicaFlickable {
+        id: rootFlickable
+        anchors.fill: parent
+
+        Column {
+            id: pageContents
+            DialogHeader {
+                id: header
+            }
+        }
+
+        VerticalScrollDecorator { flickable: rootFlickable }
+    }
 }

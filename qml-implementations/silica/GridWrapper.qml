@@ -20,28 +20,17 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-SilicaFlickable {
+Column {
     id: root
 
-    property alias grids: container.data
-    property alias header: mainHeader
-    property int gridsShown: 2
+    default property alias grids: root.data
+    property int gridsShown: 1
 
-    anchors.fill: parent
-    contentHeight: container.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
-
-    Column {
-        id: container
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: Theme.horizontalPageMargin
-        anchors.rightMargin: Theme.horizontalPageMargin
-        anchors.bottomMargin: Theme.paddingLarge
-
-        PageHeader {
-            id: mainHeader
-        }
-    }
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.leftMargin: Theme.horizontalPageMargin
+    anchors.rightMargin: Theme.horizontalPageMargin
+    anchors.bottomMargin: Theme.paddingLarge
 
     PushUpMenu {
         id: loadGridMenu
@@ -65,6 +54,4 @@ SilicaFlickable {
             }
         }
     }
-
-    VerticalScrollDecorator { flickable: root }
 }

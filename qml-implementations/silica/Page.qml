@@ -21,5 +21,38 @@ import QtQuick 2.1
 import Sailfish.Silica 1.0
 
 Page {
+    id: page
+
+    property alias title: header.title
+    property alias headerContent: headerContainer.children
+    default property alias children: pageContent.children
+
     allowedOrientations: Orientation.All
+
+    SilicaFlickable {
+        id: rootFlickable
+        anchors.fill: parent
+        contentHeight: pageContent.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
+
+        Column {
+            id: pageContent
+            width: parent.width
+
+            PageHeader {
+                id: header
+                rightMargin: Theme.horizontalPageMargin + (headerContainer.width > 0 ? headerContainer.width + Theme.paddingMedium : 0)
+                visible: title
+
+                Row {
+                    id: headerContainer
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.horizontalPageMargin
+                    height: Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)
+                }
+            }
+        }
+
+        VerticalScrollDecorator { flickable: rootFlickable }
+    }
 }

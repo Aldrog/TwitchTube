@@ -27,11 +27,11 @@ Page {
     // Status for NavigationCover
     property string navStatus: qsTr("Games")
 
+    title: qsTr("Top Games")
+
     GridWrapper {
         id: gridContainer
-        header.title: qsTr("Top Games")
 
-        grids: [
         GamesGrid {
             id: gridGames
 
@@ -49,7 +49,7 @@ Page {
                     }
                 })
             }
-        }]
+        }
 
         Categories {
             games: false

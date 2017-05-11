@@ -42,40 +42,35 @@ Page {
         }
     }
 
+    title: game
+
+    headerContent: [
+        IconButton {
+            id: switchFollow
+
+            visible: mainWindow.username
+
+            iconName: followed ? "heart_crossed" : "heart"
+
+            Component.onCompleted: checkIfFollowed()
+            onVisibleChanged: checkIfFollowed()
+
+            onClicked: {
+                if(!followed)
+                    HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+                        if(data)
+                            followed = true
+                    })
+                else
+                    HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
+                        if(data === 204)
+                            followed = false
+                    })
+            }
+        }]
+
+
     GridWrapper {
-        header.title: game
-        header.rightMargin: Theme.horizontalPageMargin + (switchFollow.visible ? (switchFollow.width + Theme.paddingMedium) : 0)
-
-        header.children: [
-            IconButton {
-                id: switchFollow
-
-                visible: mainWindow.username
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: Theme.horizontalPageMargin
-                height: visible ? (Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)) : 0
-                width: height
-
-                iconName: followed ? "heart_crossed" : "heart"
-
-                Component.onCompleted: checkIfFollowed()
-                onVisibleChanged: checkIfFollowed()
-
-                onClicked: {
-                    if(!followed)
-                        HTTP.putRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
-                            if(data)
-                                followed = true
-                        })
-                    else
-                        HTTP.deleteRequest("https://api.twitch.tv/api/users/" + username + "/follows/games/" + game + "?oauth_token=" + authToken.value, function(data) {
-                            if(data === 204)
-                                followed = false
-                        })
-                }
-            }]
-
         grids: [
         StreamsGrid {
             id: gridChannels

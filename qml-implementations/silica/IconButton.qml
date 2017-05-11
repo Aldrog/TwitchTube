@@ -24,6 +24,9 @@ import Sailfish.Silica 1.0
 BackgroundItem {
     property string iconName
 
+    height: parent.height
+    width: height
+
     Image {
         id: heart
         anchors.fill: parent
