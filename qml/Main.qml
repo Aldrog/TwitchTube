@@ -25,8 +25,6 @@ import "js/httphelper.js" as HTTP
 Window {
     id: mainWindow
 
-    property string currentChannel
-    property int currentVodId
     property string username
     property string audioUrl
     property string currentCategory: "games"
@@ -46,7 +44,6 @@ Window {
     }
 
     initialPage: Component { TopGamesPage { } }
-    cover: Qt.resolvedUrl("implementation/cover/NavigationCover.qml")
 
     Component.onCompleted: {
         if(authToken.value) {

@@ -101,12 +101,11 @@ Page {
 
     onStatusChanged: {
         if(status === PageStatus.Activating) {
-            mainWindow.currentChannel = channel
-            mainWindow.cover = Qt.resolvedUrl("../cover/StreamCover.qml")
+            mainWindow.streamOpened(channel)
         }
         if(status === PageStatus.Deactivating) {
             if (_navigation === PageNavigation.Back) {
-                mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+                mainWindow.streamClosed()
             }
         }
     }
@@ -201,7 +200,7 @@ Page {
                             }
                         }
                     })
-                    mainWindow.cover = Qt.resolvedUrl("../cover/NavigationCover.qml")
+                    mainWindow.streamClosed()
                     video.stopPlayback()
                     if(twitchChat.connected)
                         twitchChat.disconnect()

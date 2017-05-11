@@ -20,26 +20,6 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-ApplicationWindow {
-    property string currentChannel
-    property int currentVodId
-
-    signal streamOpened(string channel)
-    signal streamClosed
-    signal vodOpened(int vodId)
-    signal vodClosed
-
-    cover: Qt.resolvedUrl("cover/NavigationCover.qml")
-
-    onStreamOpened: {
-        currentChannel = channel
-        cover = Qt.resolvedUrl("cover/StreamCover.qml")
-    }
-    onStreamClosed: cover = Qt.resolvedUrl("cover/NavigationCover.qml")
-
-    onVodOpened: {
-        currentVodId = vodId
-        cover = Qt.resolvedUrl("cover/VodCover.qml")
-    }
-    onVodClosed: cover = Qt.resolvedUrl("cover/NavigationCover.qml")
+Dialog {
+    allowedOrientations: Orientation.All
 }
