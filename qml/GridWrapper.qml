@@ -18,7 +18,7 @@
  */
 
 import QtQuick 2.1
-import Sailfish.Silica 1.0
+import "implementation"
 
 Column {
     id: root
@@ -30,7 +30,7 @@ Column {
     anchors.right: parent.right
     anchors.leftMargin: Theme.horizontalPageMargin
     anchors.rightMargin: Theme.horizontalPageMargin
-    anchors.bottomMargin: Theme.paddingLarge
+    anchors.bottomMargin: Theme.bottomPageMargin
 
     ContentLoader {
         id: loadGridMenu
