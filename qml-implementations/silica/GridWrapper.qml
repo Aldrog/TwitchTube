@@ -32,25 +32,24 @@ Column {
     anchors.rightMargin: Theme.horizontalPageMargin
     anchors.bottomMargin: Theme.paddingLarge
 
-    PushUpMenu {
+    ContentLoader {
         id: loadGridMenu
-        enabled: gridsShown < grids.length || grids[gridsShown - 1].offset < grids[gridsShown - 1].totalCount
         visible: gridsShown < grids.length || grids[gridsShown - 1].offset < grids[gridsShown - 1].totalCount
 
-        MenuItem {
-            id: loadMoreOption
+        text: {
+            if(root.grids[gridsShown - 1].offset >= root.grids[gridsShown - 1].totalCount && grids[gridsShown])
+                return grids[gridsShown].loadText
+            else
+                return ""
+        }
 
-            text: root.grids[gridsShown - 1].offset < root.grids[gridsShown - 1].totalCount ?
-                      qsTr("Load more") :
-                      (grids[gridsShown] ? grids[gridsShown].loadText : "")
-            onClicked: {
-                if(root.grids[gridsShown - 1].offset < root.grids[gridsShown - 1].totalCount)
-                    grids[gridsShown - 1].loadContent()
-                else {
-                    grids[gridsShown].visible = true
-                    grids[gridsShown].loadContent()
-                    gridsShown++
-                }
+        onTriggered: {
+            if(root.grids[gridsShown - 1].offset < root.grids[gridsShown - 1].totalCount)
+                grids[gridsShown - 1].loadContent()
+            else {
+                grids[gridsShown].visible = true
+                grids[gridsShown].loadContent()
+                gridsShown++
             }
         }
     }
