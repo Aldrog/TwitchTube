@@ -6,7 +6,8 @@ DEFINES += OS_SAILFISH
 
 include(common.pri)
 
-IMPLEMENTATION_FILES += $$files(qml-implementations/silica/*.qml,true)
+IMPLEMENTATION_FILES += $$files(qml-implementations/silica/*.qml,true) \
+                        $$files(qml-implementations/silica/images/*.png)
 
 qml_implementation.files = qml-implementations/silica/*
 qml_implementation.path = /usr/share/$${TARGET}/qml/implementation
