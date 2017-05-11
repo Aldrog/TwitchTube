@@ -22,12 +22,15 @@ import QtGraphicalEffects 1.0
 import Sailfish.Silica 1.0
 
 BackgroundItem {
+    property string iconName
+
     Image {
         id: heart
         anchors.fill: parent
-        source: followed ? "../images/heart_crossed.png" : "../images/heart.png"
+        source: "../images/" + iconName + ".png"
         visible: false
     }
+
     ColorOverlay {
         id: heartColor
 

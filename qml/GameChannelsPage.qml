@@ -57,6 +57,8 @@ Page {
                 height: visible ? (Theme.itemSizeSmall - (isPortrait ? 0 : Theme.paddingSmall)) : 0
                 width: height
 
+                iconName: followed ? "heart_crossed" : "heart"
+
                 Component.onCompleted: checkIfFollowed()
                 onVisibleChanged: checkIfFollowed()
 
