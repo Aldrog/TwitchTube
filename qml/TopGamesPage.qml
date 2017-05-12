@@ -32,22 +32,33 @@ Page {
     GridWrapper {
         id: gridContainer
 
-        GamesGrid {
+        ImageGrid {
             id: gridGames
 
             function loadContent() {
-                var url = "https://api.twitch.tv/kraken/games/top?limit=" + countOnPage + "&offset=" + offset
+                var url = "https://api.twitch.tv/kraken/games/top?limit=" + pageSize + "&offset=" + offset
                 console.log(url)
                 HTTP.getRequest(url,function(data) {
                     if (data) {
-                        offset += countOnPage
+                        offset += pageSize
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.top)
-                            games.append(result.top[i].game)
+                        for (var i in result.top) {
+                            var game = result.top[i].game
+                            model.append({ images: game.box, title: game.name })
+                        }
                         gridContainer.gridsChanged()
                     }
                 })
+            }
+
+            rowSize: isPortrait ? 2 : 4
+            pageSize: 2*4 * 2
+            aspectRatio: 18/13
+            imageIndex: gameImageSize.value
+
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("GameChannelsPage.qml"), { game: item.title })
             }
         }
 
