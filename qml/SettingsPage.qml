@@ -37,6 +37,8 @@ Dialog {
         })
     }
 
+    title: qsTr("Settings")
+
     Component.onCompleted: {
         if(authToken.value)
             getName()
@@ -49,122 +51,59 @@ Dialog {
         chatFlowBtT.value = chatTtB.checked
     }
 
-    SilicaFlickable {
-        anchors.fill: parent
-        contentHeight: header.height + settingsContainer.height + Theme.paddingLarge // for bottom margin
+    InteractiveItem {
+        id: login
 
-        DialogHeader {
-            id: header
+        width: parent.width
+        title:    !authToken.value ? qsTr("Log in")        : qsTr("Log out")
+        subtitle: !authToken.value ? qsTr("Not logged in") : qsTr("Logged in as %1").arg(name)
 
-            dialog: page
-            title: qsTr("Settings")
-            acceptText: qsTr("Apply")
-            cancelText: qsTr("Cancel")
-        }
-
-        Column {
-            id: settingsContainer
-
-            anchors {
-                top: header.bottom
-                left: parent.left
-                right: parent.right
-            }
-
-            BackgroundItem {
-                id: login
-
-                width: parent.width
-                height: lblAcc1.height + lblAcc2.height + 2*Theme.paddingLarge + Theme.paddingSmall
-
-                onClicked: {
-                    console.log("old token:", authToken.value)
-                    if(!authToken.value) {
-                        var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-                        lpage.statusChanged.connect(function() {
-                            if(lpage.status === PageStatus.Deactivating) {
-                                getName()
-                            }
-                        })
+        onClicked: {
+            console.log("old token:", authToken.value)
+            if(!authToken.value) {
+                var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+                lpage.statusChanged.connect(function() {
+                    if(lpage.status === PageStatus.Deactivating) {
+                        getName()
                     }
-                    else {
-                        authToken.value = ""
-                        console.log("Cookie cleaning script result code:", cpptools.clearCookies())
-                        name = ""
-                        mainWindow.username = ""
-                    }
-                }
-
-                Label {
-                    id: lblAcc1
-
-                    anchors { top: parent.top
-                              left: parent.left
-                              right: parent.right
-                              topMargin: Theme.paddingLarge
-                              leftMargin: Theme.horizontalPageMargin
-                              rightMargin: Theme.horizontalPageMargin
-                            }
-                    text: !authToken.value ? qsTr("Not logged in") : (qsTr("Logged in as ") + name)
-                    color: login.highlighted ? Theme.highlightColor : Theme.primaryColor
-                    font.pixelSize: Theme.fontSizeMedium
-                }
-
-                Label {
-                    id: lblAcc2
-
-                    anchors { bottom: parent.bottom
-                              left: parent.left
-                              right: parent.right
-                              bottomMargin: Theme.paddingLarge
-                              leftMargin: Theme.horizontalPageMargin
-                              rightMargin: Theme.horizontalPageMargin
-                            }
-                    text: !authToken.value ? qsTr("Log in") : qsTr("Log out")
-                    color: login.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-                    font.pixelSize: Theme.fontSizeSmall
-                }
-            }
-
-            TextSwitch {
-                id: streamTitles
-
-                text: qsTr("Show broadcast titles")
-                checked: showBroadcastTitles.value
-            }
-
-            TextSwitch {
-                id: chatTtB
-
-                text: qsTr("Chat flows from bottom to top")
-                checked: chatFlowBtT.value
-            }
-
-            ComboBox {
-                id: gameQ
-
-                label: qsTr("Game posters quality")
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("High") }
-                    MenuItem { text: qsTr("Medium") }
-                    MenuItem { text: qsTr("Low") }
-                }
-                currentIndex: imageSizes.indexOf(gameImageSize.value)
-            }
-
-            ComboBox {
-                id: previewQ
-
-                label: qsTr("Stream previews quality")
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("High") }
-                    MenuItem { text: qsTr("Medium") }
-                    MenuItem { text: qsTr("Low") }
-                }
-                currentIndex: imageSizes.indexOf(channelImageSize.value)
+                })
+            } else {
+                authToken.value = ""
+                console.log("Cookie cleaning script result code:", cpptools.clearCookies())
+                name = ""
+                mainWindow.username = ""
             }
         }
 
-        VerticalScrollDecorator { flickable: parent }
+    }
+
+    TextSwitch {
+        id: streamTitles
+
+        text: qsTr("Show broadcast titles")
+        checked: showBroadcastTitles.value
+    }
+
+    TextSwitch {
+        id: chatTtB
+
+        text: qsTr("Chat flows from bottom to top")
+        checked: chatFlowBtT.value
+    }
+
+    ComboBox {
+        id: gameQ
+
+        label: qsTr("Game posters quality")
+        optionsList: { qsTr("High"), qsTr("Medium"), qsTr("Low") }
+        currentIndex: imageSizes.indexOf(gameImageSize.value)
+    }
+
+    ComboBox {
+        id: previewQ
+
+        label: qsTr("Stream previews quality")
+        optionsList: { qsTr("High"), qsTr("Medium"), qsTr("Low") }
+        currentIndex: imageSizes.indexOf(channelImageSize.value)
     }
 }
