@@ -20,37 +20,13 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 
-Dialog {
-    id: dialog
+TextField {
+    signal accepted(string text)
 
-    property alias title: header.title
-    property alias acceptText: header.acceptText
-    property alias cancelText: header.cancelText
-    default property alias data: pageContents.data
-
-    allowedOrientations: Orientation.All
-
-    SilicaFlickable {
-        id: rootFlickable
-        anchors {
-            fill: parent
-        }
-
-        contentHeight: pageContents.height + Theme.paddingLarge
-
-        Column {
-            id: pageContents
-            width: dialog.width
-
-            DialogHeader {
-                id: header
-
-                dialog: dialog
-                acceptText: qsTr("Apply")
-                cancelText: qsTr("Cancel")
-            }
-        }
-
-        VerticalScrollDecorator { flickable: rootFlickable }
+    EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+    EnterKey.enabled: text.length > 0 && twitchChat.connected && !twitchChat.anonymous
+    EnterKey.onClicked: {
+        accepted(text)
+        text = ""
     }
 }

@@ -25,4 +25,5 @@ pragma Singleton
 QtObject {
     readonly property int horizontalPageMargin: Theme.horizontalPageMargin
     readonly property int bottomPageMargin: Theme.paddingLarge
+    readonly property int chatFontPixelSize: Theme.fontSizeMedium
 }

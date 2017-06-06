@@ -24,10 +24,28 @@ Page {
     id: page
 
     property alias title: header.title
-    property alias headerContent: headerContainer.children
-    default property alias children: pageContent.children
+    property alias headerContent: headerContainer.data
+    default property alias data: pageContent.data
+    property alias flickable: rootFlickable
+
+    readonly property int landscapeOrientation: Orientation.Landscape | Orientation.LandscapeInverted
+    readonly property int portraitOrientation:  Orientation.Portrait  | Orientation.PortraitInverted
+
+    signal opened()
+    signal closed()
 
     allowedOrientations: Orientation.All
+
+    onStatusChanged: {
+        if(status === PageStatus.Activating) {
+            opened()
+        }
+        if(status === PageStatus.Deactivating) {
+            if (_navigation === PageNavigation.Back) {
+                closed()
+            }
+        }
+    }
 
     SilicaFlickable {
         id: rootFlickable
