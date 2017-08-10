@@ -92,7 +92,8 @@ void IrcChat::setAnonymous(bool newAnonymous) {
 }
 
 bool IrcChat::connected() {
-    return sock->state() == QTcpSocket::ConnectedState;
+    return sock->state() != QTcpSocket::UnconnectedState &&
+           sock->state() != QTcpSocket::ClosingState;
 }
 
 void IrcChat::setTextSize(int textSize) {
