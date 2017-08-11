@@ -54,17 +54,21 @@ Page {
         anchors.fill: parent
         contentHeight: pageContent.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
 
-        PullDownMenu {
-            id: contextMenu
+        Loader {
+            active: actions.length > 0
 
-            Repeater {
-                model: actions.length
-                delegate: MenuItem {
-                    text: actions[index].text
-                    visible: actions[index].visible
-                    enabled: actions[index].visible
+            sourceComponent: PullDownMenu {
+                id: contextMenu
 
-                    onClicked: actions[index].triggered()
+                Repeater {
+                    model: actions.length
+                    delegate: MenuItem {
+                        text: actions[index].text
+                        visible: actions[index].visible
+                        enabled: actions[index].visible
+
+                        onClicked: actions[index].triggered()
+                    }
                 }
             }
         }
