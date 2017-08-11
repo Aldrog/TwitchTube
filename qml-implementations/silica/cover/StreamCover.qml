@@ -20,7 +20,7 @@
 import QtQuick 2.1
 import Sailfish.Silica 1.0
 import QtMultimedia 5.0
-import "../js/httphelper.js" as HTTP
+import "../../js/httphelper.js" as HTTP
 
 // The most of this code was taken from Sailfish Silica components
 
