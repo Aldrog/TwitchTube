@@ -30,6 +30,3 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 # following CONFIG line
 CONFIG += sailfishapp_i18n
 
-DISTFILES += \
-    qml-implementations/silica/Action.qml
-
