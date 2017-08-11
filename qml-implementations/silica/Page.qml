@@ -28,6 +28,8 @@ Page {
     default property alias data: pageContent.data
     property alias flickable: rootFlickable
 
+    property list<Action> actions
+
     readonly property int landscapeOrientation: Orientation.Landscape | Orientation.LandscapeInverted
     readonly property int portraitOrientation:  Orientation.Portrait  | Orientation.PortraitInverted
 
@@ -51,6 +53,21 @@ Page {
         id: rootFlickable
         anchors.fill: parent
         contentHeight: pageContent.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
+
+        PullDownMenu {
+            id: contextMenu
+
+            Repeater {
+                model: actions.length
+                delegate: MenuItem {
+                    text: actions[index].text
+                    visible: actions[index].visible
+                    enabled: actions[index].visible
+
+                    onClicked: actions[index].triggered()
+                }
+            }
+        }
 
         Column {
             id: pageContent

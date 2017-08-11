@@ -87,6 +87,60 @@ Page {
         followed = false
     }
 
+    actions: [
+        Action {
+            text: qsTr("Past Broadcasts & Highlights")
+            onTriggered: {
+                var page = pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), {channel: channel, display: channelDisplay})
+                console.log(PageStatus.Deactivating, PageNavigation.Back)
+                page.statusChanged.connect(function() {
+                    if(page.status === PageStatus.Deactivating && page._navigation === PageNavigation.Back) {
+                        video.startPlayback()
+                        if(!twitchChat.connected) {
+                            twitchChat.reopenSocket()
+                            twitchChat.join(channel)
+                        }
+                    }
+                })
+                mainWindow.streamClosed()
+                video.stopPlayback()
+                if(twitchChat.connected)
+                    twitchChat.disconnect()
+            }
+        },
+
+        Action {
+            text: qsTr("Follow")
+            onTriggered: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                if(data)
+                    followed = true
+            })
+            visible: mainWindow.username && !followed
+        },
+
+        Action {
+            text: qsTr("Unfollow")
+            onTriggered: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
+                if(data === 204)
+                    followed = false
+            })
+            visible: mainWindow.username && followed
+        },
+
+        Action {
+            text: qsTr("Quality")
+            enabled: urls != null
+            onTriggered: {
+                var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, chatOnly: chatMode, audioOnly: audioMode, channel: channel })
+                dialog.accepted.connect(function() {
+                    video.checkSource()
+                    chatMode = dialog.chatOnly
+                    audioMode = dialog.audioOnly
+                })
+            }
+        }
+    ]
+
     onSourceChanged: video.startPlayback(source)
 
     onChatModeChanged: {
@@ -163,63 +217,7 @@ Page {
         onTriggered: page.state = "fullscreen"
     }
 
-//        contentHeight: isPortrait ? page.height : ((chatMode || audioMode) ? page.height : (5/3 * Screen.width))
-
-//        PullDownMenu {
-//            id: streamMenu
-
-//            MenuItem {
-//                text: qsTr("Past Broadcasts & Highlights")
-//                onClicked: {
-//                    var page = pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), {channel: channel, display: channelDisplay})
-//                    console.log(PageStatus.Deactivating, PageNavigation.Back)
-//                    page.statusChanged.connect(function() {
-//                        if(page.status === PageStatus.Deactivating && page._navigation === PageNavigation.Back) {
-//                            video.startPlayback()
-//                            if(!twitchChat.connected) {
-//                                twitchChat.reopenSocket()
-//                                twitchChat.join(channel)
-//                            }
-//                        }
-//                    })
-//                    mainWindow.streamClosed()
-//                    video.stopPlayback()
-//                    if(twitchChat.connected)
-//                        twitchChat.disconnect()
-//                }
-//            }
-
-//            MenuItem {
-//                text: qsTr("Follow")
-//                onClicked: HTTP.putRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
-//                    if(data)
-//                        followed = true
-//                })
-//                visible: mainWindow.username && !followed
-//            }
-
-//            MenuItem {
-//                text: qsTr("Unfollow")
-//                onClicked: HTTP.deleteRequest("https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels/" + channel + "?oauth_token=" + authToken.value, function(data) {
-//                    if(data === 204)
-//                        followed = false
-//                })
-//                visible: mainWindow.username && followed
-//            }
-
-//            MenuItem {
-//                text: qsTr("Quality")
-//                enabled: urls != null
-//                onClicked: {
-//                    var dialog = pageStack.push(Qt.resolvedUrl("QualityChooserPage.qml"), { qualities: urls, chatOnly: chatMode, audioOnly: audioMode, channel: channel })
-//                    dialog.accepted.connect(function() {
-//                        video.checkSource()
-//                        chatMode = dialog.chatOnly
-//                        audioMode = dialog.audioOnly
-//                    })
-//                }
-//            }
-//        }
+        //contentHeight: isPortrait ? page.height : ((chatMode || audioMode) ? page.height : (5/3 * Screen.width))
 
     VideoPlayer {
         id: video
