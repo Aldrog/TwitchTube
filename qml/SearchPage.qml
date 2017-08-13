@@ -28,30 +28,32 @@ Page {
     property string navStatus: qsTr("Search")
 
     GridWrapper {
-        header.visible: false
+        id: gridContainer
 
-        grids: [
-        StreamsGrid {
+        ImageGrid {
             id: gridResults
 
             property string querry: ""
 
             function loadContent() {
                 if(querry) {
-                    var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + countOnPage + "&offset=" + offset
+                    var url = "https://api.twitch.tv/kraken/search/streams?q=" + querry + "&limit=" + pageSize + "&offset=" + offset
                     console.log(url)
                     HTTP.getRequest(url,function(data) {
                         if (data) {
-                            offset += countOnPage
+                            offset += pageSize
                             var result = JSON.parse(data)
                             totalCount = result._total
-                            for (var i in result.streams)
-                                channels.append(result.streams[i])
+                            for (var i in result.streams) {
+                                var stream = result.streams[i]
+                                model.append({ images: stream.preview, title: stream.channel.display_name, subtitle: stream.channel.status, channel: stream.channel.name })
+                            }
                         }
                     })
                 }
                 else {
                     totalCount = 0
+                    model.clear()
                 }
             }
 
@@ -60,21 +62,32 @@ Page {
             // This prevents search field from loosing focus when grid changes
             currentIndex: -1
 
+            rowSize: isPortrait ? 2 : 3
+            pageSize: 2*3 * 3
+            aspectRatio: 9/16
+            imageIndex: channelImageSize.value
+            showSubtitles: showBroadcastTitles.value
+
+            onClicked: {
+                pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: item.channel, channelDisplay: item.title })
+            }
+
             header: SearchField {
                 id: searchQuerry
 
                 width: parent.width
                 placeholderText: qsTr("Search channels")
                 onTextChanged: {
-                    gridResults.channels.clear()
+                    gridResults.model.clear()
                     gridResults.offset = 0
                     gridResults.querry = text
                     gridResults.loadContent()
                 }
             }
-        }]
-        Categories {
-            search: false
         }
+    }
+
+    Categories {
+        search: false
     }
 }

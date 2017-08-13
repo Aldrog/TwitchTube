@@ -71,27 +71,40 @@ Page {
 
 
     GridWrapper {
-        grids: [
-        StreamsGrid {
+        id: gridContainer
+
+        ImageGrid {
             id: gridChannels
 
             function loadContent() {
-                var url = "https://api.twitch.tv/kraken/streams?limit=" + countOnPage + "&offset=" + offset + encodeURI("&game=" + game)
+                var url = "https://api.twitch.tv/kraken/streams?limit=" + pageSize + "&offset=" + offset + encodeURI("&game=" + game)
                 HTTP.getRequest(url,function(data) {
                     if (data) {
-                        offset += countOnPage
+                        offset += pageSize
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.streams)
-                            channels.append(result.streams[i])
+                        for (var i in result.streams) {
+                            var stream = result.streams[i]
+                            model.append({ images: stream.preview, title: stream.channel.display_name, subtitle: stream.channel.status, channel: stream.channel.name })
+                        }
                     }
                 })
             }
-        }]
 
-        Categories {
-            games: fromFollowings
-            following: !fromFollowings && mainWindow.username
+            rowSize: isPortrait ? 2 : 3
+            pageSize: 2*3 * 3
+            aspectRatio: 9/16
+            imageIndex: channelImageSize.value
+            showSubtitles: showBroadcastTitles.value
+
+            onClicked: {
+                pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: item.channel, channelDisplay: item.title })
+            }
         }
+    }
+
+    Categories {
+        games: fromFollowings
+        following: !fromFollowings && mainWindow.username
     }
 }

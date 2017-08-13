@@ -20,7 +20,7 @@
 import QtQuick 2.1
 import "implementation"
 
-Grid {
+GridView {
     id: grid
 
     property int rowSize
@@ -29,8 +29,7 @@ Grid {
     property bool autoLoad: true
     property bool showSubtitles: false
     property var imageIndex
-    property alias model: content.model
-    property alias delegate: content.delegate
+    property string loadText
 
     property int offset: 0
     property int totalCount: 0
@@ -42,23 +41,21 @@ Grid {
             loadContent()
     }
 
-    columns: rowSize
     width: parent.width
+    height: contentHeight
+    cellWidth: width/rowSize
+    cellHeight: cellWidth * aspectRatio
 
-    Repeater {
-        id: content
+    model: ListModel { }
+    delegate: ImageItem {
+        width: grid.cellWidth
+        height: grid.cellHeight
+        imageSource: imageIndex ? model.images[imageIndex] : model.image
+        title: model.title
+        subtitle: showSubtitles ? model.subtitle : ""
 
-        model: ListModel { }
-        delegate: ImageItem {
-            width: grid.width/rowSize
-            height: width * aspectRatio
-            imageSource: imageIndex ? model.images[imageIndex] : model.image
-            title: model.title
-            subtitle: showSubtitles ? model.subtitle : ""
-
-            onClicked: {
-                grid.clicked(model)
-            }
+        onClicked: {
+            grid.clicked(model)
         }
     }
 }

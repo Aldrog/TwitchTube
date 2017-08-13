@@ -27,31 +27,43 @@ Page {
     // Status for NavigationCover
     property string navStatus: qsTr("Following")
 
-    GridWrapper {
-        header.title: qsTr("Followed Games")
+    title: qsTr("Followed Games")
 
-        grids: [
-        GamesGrid {
+    GridWrapper {
+        id: gridContainer
+
+        ImageGrid {
             id: gridGames
 
             function loadContent() {
-                var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + countOnPage + "&offset=" + offset
-                HTTP.getRequest(url, function(data) {
+                var url = "https://api.twitch.tv/api/users/" + mainWindow.username + "/follows/games?limit=" + pageSize + "&offset=" + offset
+                console.log(url)
+                HTTP.getRequest(url,function(data) {
                     if (data) {
-                        offset += countOnPage
+                        offset += pageSize
                         var result = JSON.parse(data)
                         totalCount = result._total
-                        for (var i in result.follows)
-                            games.append(result.follows[i])
+                        for (var i in result.top) {
+                            var game = result.top[i].game
+                            model.append({ images: game.box, title: game.name })
+                        }
+                        gridContainer.gridsChanged()
                     }
                 })
             }
 
-            parameters: { "fromFollowings": true }
-        }]
+            rowSize: isPortrait ? 2 : 4
+            pageSize: 2*4 * 2
+            aspectRatio: 18/13
+            imageIndex: gameImageSize.value
 
-        Categories {
-            following: false
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("GameChannelsPage.qml"), { game: item.title, fromFollowing: true })
+            }
         }
+    }
+
+    Categories {
+        following: false
     }
 }

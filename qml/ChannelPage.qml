@@ -29,37 +29,52 @@ Page {
     // Status for NavigationCover
     property string navStatus: display
 
+    title: qsTr("Highlights by %1").arg(display)
+
     onStatusChanged: {
         if(status === PageStatus.Active)
             pageStack.pushAttached(Qt.resolvedUrl("ChannelBroadcastsPage.qml"), {channel: channel, display: display})
     }
 
     GridWrapper {
-        header.title: qsTr("Highlights by %1").arg(display)
+        id: gridContainer
 
-        grids: [
-            VodsGrid {
-                id: gridHighlights
+        ImageGrid {
+            id: gridHighlights
 
-                function loadContent() {
-                    var url = "https://api.twitch.tv/kraken/channels/" + channel + "/videos?broadcasts=false&hls=true&limit=" + countOnPage + "&offset=" + offset
-                    HTTP.getRequest(url,function(data) {
-                        if (data) {
-                            offset += countOnPage
-                            var result = JSON.parse(data)
-                            totalCount = result._total
-                            for (var i in result.videos)
-                                vods.append(result.videos[i])
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/channels/" + channel + "/videos?broadcasts=false&hls=true&limit=" + pageSize + "&offset=" + offset
+                HTTP.getRequest(url,function(data) {
+                    if (data) {
+                        offset += pageSize
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.videos) {
+                            var vod = result.videos[i]
+                            model.append({ image: vod.preview, title: vod.title, id: ~~(vod._id.substring(1)), description: vod.description })
                         }
-                    })
-                }
-            }]
+                        gridContainer.gridsChanged()
+                    }
+                })
+            }
 
-        Categories {
-            search: mainWindow.currentCategory !== "search"
-            following: mainWindow.currentCategory !== "following"
-            channels: mainWindow.currentCategory !== "channels"
-            games: mainWindow.currentCategory !== "games"
+            rowSize: isPortrait ? 2 : 3
+            pageSize: 2*3 * 3
+            aspectRatio: 9/16
+
+            onClicked: {
+                var properties = ({})
+                properties.vodId = item.id
+                properties.vodDetails = { title: item.title, description: item.description }
+                pageStack.push(Qt.resolvedUrl("VodPage.qml"), properties)
+            }
         }
+    }
+
+    Categories {
+        search: mainWindow.currentCategory !== "search"
+        following: mainWindow.currentCategory !== "following"
+        channels: mainWindow.currentCategory !== "channels"
+        games: mainWindow.currentCategory !== "games"
     }
 }

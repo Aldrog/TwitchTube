@@ -32,60 +32,84 @@ Page {
             pageStack.pushAttached(Qt.resolvedUrl("FollowedGamesPage.qml"))
     }
 
+    title: qsTr("Followed Streams")
+
+    //contentHeight: gridChannels.height + header.height + gridOffline.height - gridOffline.headerItem.height + Theme.paddingLarge
+
     GridWrapper {
-        header.title: qsTr("Followed Streams")
+        id: gridContainer
 
-        contentHeight: gridChannels.height + header.height + gridOffline.height - gridOffline.headerItem.height + Theme.paddingLarge
+        ImageGrid {
+            id: gridChannels
 
-        grids: [
-            StreamsGrid {
-                id: gridChannels
-
-                function loadContent() {
-                    var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + countOnPage + "&offset=" + offset + "&oauth_token=" + authToken.value
-                    console.log(url)
-                    HTTP.getRequest(url, function(data) {
-                        if (data) {
-                            offset += countOnPage
-                            var result = JSON.parse(data)
-                            totalCount = result._total
-                            for (var i in result.streams)
-                                channels.append(result.streams[i])
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/streams/followed?limit=" + pageSize + "&offset=" + offset + "&oauth_token=" + authToken.value
+                console.log(url)
+                HTTP.getRequest(url, function(data) {
+                    if (data) {
+                        offset += pageSize
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.streams) {
+                            var stream = result.streams[i]
+                            model.append({ images: stream.preview, title: stream.channel.display_name, subtitle: stream.channel.status, channel: stream.channel.name })
                         }
-                    })
-                }
-            },
-
-            ChannelsGrid {
-                id: gridOffline
-
-                property string loadText: qsTr("Show all channels")
-
-                visible: false
-                autoLoad: false
-
-                header: SectionHeader {
-                    text: qsTr("Channels")
-                }
-
-                function loadContent() {
-                    var url = "https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels?limit=" + countOnPage + "&offset=" + offset + "&sortby=last_broadcast"
-                    console.log(url)
-                    HTTP.getRequest(url, function(data) {
-                        if (data) {
-                            offset += countOnPage
-                            var result = JSON.parse(data)
-                            totalCount = result._total
-                            for (var i in result.follows)
-                                channels.append(result.follows[i])
-                        }
-                    })
-                }
+                        gridContainer.gridsChanged()
+                    }
+                })
             }
-        ]
 
-        Categories {
-            following: false
+            rowSize: isPortrait ? 2 : 3
+            pageSize: 2*3 * 3
+            aspectRatio: 9/16
+            imageIndex: channelImageSize.value
+            showSubtitles: showBroadcastTitles.value
+
+            onClicked: {
+                pageStack.push (Qt.resolvedUrl("StreamPage.qml"), { channel: item.channel, channelDisplay: item.title })
+            }
         }
+
+        ImageGrid {
+            id: gridOffline
+
+            loadText: qsTr("Show all channels")
+
+            visible: false
+            autoLoad: false
+
+            header: SectionHeader {
+                text: qsTr("Channels")
+            }
+
+            function loadContent() {
+                var url = "https://api.twitch.tv/kraken/users/" + mainWindow.username + "/follows/channels?limit=" + pageSize + "&offset=" + offset + "&sortby=last_broadcast"
+                console.log(url)
+                HTTP.getRequest(url, function(data) {
+                    if (data) {
+                        offset += pageSize
+                        var result = JSON.parse(data)
+                        totalCount = result._total
+                        for (var i in result.follows) {
+                            var channel = result.follows[i].channel
+                            model.append({ image: channel.logo, title: channel.display_name, channel: channel.name })
+                        }
+                        gridContainer.gridsChanged()
+                    }
+                })
+            }
+
+            rowSize: isPortrait ? 2 : 3
+            pageSize: 2*3 * 3
+            aspectRatio: 1
+
+            onClicked: {
+                pageStack.push (Qt.resolvedUrl("ChannelPage.qml"), { channel: item.channel, display: item.title })
+            }
+        }
+    }
+
+    Categories {
+        following: false
     }
 }
