@@ -62,11 +62,7 @@ Dialog {
             console.log("old token:", authToken.value)
             if(!authToken.value) {
                 var lpage = pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
-                lpage.statusChanged.connect(function() {
-                    if(lpage.status === PageStatus.Deactivating) {
-                        getName()
-                    }
-                })
+                lpage.closed.connect( getName )
             } else {
                 authToken.value = ""
                 console.log("Cookie cleaning script result code:", cpptools.clearCookies())

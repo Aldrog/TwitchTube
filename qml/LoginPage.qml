@@ -23,24 +23,18 @@ import "implementation"
 Page {
     id: page
 
-    property bool needExit: false
     // Status for NavigationCover
     property string navStatus: qsTr("Settings")
 
-    PageHeader {
-        id: head
-        title: qsTr("Log into Twitch account")
-    }
+    title: qsTr("Log into Twitch account")
+    addPadding: false
 
-    SilicaWebView {
+    WebView {
         id: twitchLogin
 
-        anchors {
-            top: head.bottom
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
+        width: page.width
+        height: page.height - page.header.height
+
         onNavigationRequested: {
             var url = request.url.toString()
             if(url.indexOf("http://localhost") === 0) {
@@ -48,16 +42,11 @@ Page {
                 if(params.indexOf("#access_token") >= 0) {
                     authToken.value = params.split('=')[1].split('&')[0]
                 }
-                if(status === PageStatus.Activating)
-                    needExit = true
-                else
-                    pageStack.pop()
+                page.forcePop()
             }
             else
-                request.action = SilicaWebView.AcceptRequest;
+                accept(request)
         }
         url: encodeURI("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=n57dx0ypqy48ogn1ac08buvoe13bnsu&redirect_uri=http://localhost&scope=user_read user_follows_edit chat_login")
     }
-
-    onStatusChanged: if(status === PageStatus.Active && needExit) pageStack.pop()
 }

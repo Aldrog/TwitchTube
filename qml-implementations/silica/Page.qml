@@ -27,19 +27,30 @@ Page {
     property alias headerContent: headerContainer.data
     default property alias data: pageContent.data
     property alias flickable: rootFlickable
+    property alias header: header
 
     property list<Action> actions
 
     readonly property int landscapeOrientation: Orientation.Landscape | Orientation.LandscapeInverted
     readonly property int portraitOrientation:  Orientation.Portrait  | Orientation.PortraitInverted
+    property bool addPadding: true
+
+    readonly property bool aboutToPop: false
 
     signal opened()
     signal closed()
 
+    function forcePop() {
+        if(status === PageStatus.Activating)
+            aboutToPop = true
+        else
+            pageStack.pop()
+    }
+
     allowedOrientations: Orientation.All
 
     onStatusChanged: {
-        if(status === PageStatus.Activating) {
+        if(status === PageStatus.Active) {
             opened()
         }
         if(status === PageStatus.Deactivating) {
@@ -47,12 +58,15 @@ Page {
                 closed()
             }
         }
+
+        if(status === PageStatus.Active && aboutToPop)
+            pageStack.pop()
     }
 
     SilicaFlickable {
         id: rootFlickable
         anchors.fill: parent
-        contentHeight: pageContent.height + Theme.paddingLarge - (header.visible ? 0 : header.height)
+        contentHeight: pageContent.implicitHeight + (addPadding ? Theme.paddingLarge : 0)
 
         Loader {
             active: actions.length > 0
