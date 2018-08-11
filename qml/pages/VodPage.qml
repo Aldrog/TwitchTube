@@ -55,11 +55,11 @@ Page {
     }
 
     function loadVodInfo() {
-        HTTP.getRequest("http://api.twitch.tv/api/vods/" + vodId + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
+        HTTP.getRequest("https://api.twitch.tv/api/vods/" + vodId + "/access_token?oauth_token=" + authToken.value, function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/vod/" + vodId + ".m3u8?allow_source=true&" +
-                                          "sig=" + token.sig + "&token=" + token.token + "&p=" + Math.floor(Math.random() * 1e8)),
+                HTTP.getRequest(encodeURI("https://usher.ttvnw.net/vod/" + vodId + ".m3u8?allow_source=true&" +
+                                          "nauthsig=" + token.sig + "&nauth=" + token.token + "&p=" + Math.floor(Math.random() * 1e8)),
                                 function (data, err) {
                     if (data) {
                         var videourls = data.split('\n')

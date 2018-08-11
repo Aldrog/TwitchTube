@@ -68,8 +68,8 @@ Page {
         HTTP.getRequest("https://api.twitch.tv/api/channels/" + channel + "/access_token" + (authToken.value ? ("?oauth_token=" + authToken.value) : ""), function (tokendata) {
             if (tokendata) {
                 var token = JSON.parse(tokendata)
-                HTTP.getRequest(encodeURI("http://usher.twitch.tv/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&" +
-                                          "sig=" + token.sig + "&token=" + token.token + "&type=any&p=" + Math.floor(Math.random() * 1e8)),
+                HTTP.getRequest(encodeURI("https://usher.ttvnw.net/api/channel/hls/" + channel + ".json?allow_source=true&allow_audio_only=true&" +
+                                          "sig=" + token.sig + "&token=" + token.token + "&p=" + Math.floor(Math.random() * 1e8)),
                                 function (data) {
                     if (data) {
                         var videourls = data.split('\n')
