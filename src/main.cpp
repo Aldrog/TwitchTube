@@ -30,7 +30,6 @@
 #include "ircchat.h"
 #include "message.h"
 #include "qmlsettings.h"
-#include "tools.h"
 
 // All app settings are declared here so it's easy to change default value or setting's key
 void registerSettings(QQuickView *view) {
@@ -77,8 +76,6 @@ int main(int argc, char *argv[])
     QQuickView *view(SailfishApp::createView());
 
     registerSettings(view);
-    Tools *tools = new Tools();
-    view->rootContext()->setContextProperty("cpptools", tools);
 
     view->setSource(SailfishApp::pathTo("qml/Main.qml"));
     view->setResizeMode(QQuickView::SizeRootObjectToView);

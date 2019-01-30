@@ -6,6 +6,8 @@
 Name:       harbour-twitchtube
 
 # >> macros
+%define __provides_exclude_from ^%{_datadir}/.*$
+%define __requires_exclude ^libBackports|libQTwitchApi|libQTwitchModels.*$
 # << macros
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}

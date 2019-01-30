@@ -1,0 +1,4 @@
+[submodule "QTwitch"]
+	path = QTwitch
+	url = https://github.com/Aldrog/QTwitch.git
+	branch = develop
