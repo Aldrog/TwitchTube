@@ -5,6 +5,9 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Aug 11 2018 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.4-1
+- Fix inaccessible VODs
+
 * Mon Oct 31 2016 Andrew Penkrat <contact.aldrog@gmail.com> 1.2.3-1
 - Fix chat autoscroll not working after message pool overflow
 
