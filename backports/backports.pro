@@ -3,7 +3,7 @@ QT         = core
 CONFIG    += exceptions
 TEMPLATE = lib
 
-DEFINES += QT_NO_USING_NAMESPACE QT_NO_FOREACH
+DEFINES += QT_NO_USING_NAMESPACE QT_NO_FOREACH Q_COMPILER_VARIADIC_TEMPLATES
 msvc:equals(QT_ARCH, i386): QMAKE_LFLAGS += /BASE:0x67000000
 
 CONFIG += optimize_full c++11
@@ -16,14 +16,15 @@ freebsd|openbsd: QMAKE_LFLAGS_NOUNDEF =
 HEADERS += \
         global/qrandom.h \
         global/qrandom_p.h \
-        global/qglobal_p.h \
-        private/qcore_unix_p.h \
+        global/qglobal.h \
+        kernel/qcore_unix_p.h \
         kernel/qdeadlinetimer.h
 
 SOURCES += \
         global/qrandom.cpp \
         kernel/qdeadlinetimer.cpp \
-        kernel/qelapsedtimer_unix.cpp
+        kernel/qelapsedtimer_unix.cpp \
+        kernel/qcore_unix.cpp
 
 unix {
     isEmpty(INSTALL_PREFIX): INSTALL_PREFIX = /usr

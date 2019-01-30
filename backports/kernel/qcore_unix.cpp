@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include <QtCore/private/qglobal_p.h>
+#include <QtCore/qglobal.h>
 #include "qcore_unix_p.h"
 #include "qelapsedtimer.h"
 
@@ -101,7 +101,7 @@ int qt_open64(const char *pathname, int flags, mode_t mode)
 
 #ifndef QT_BOOTSTRAPPED
 
-#if QT_CONFIG(poll_pollts)
+#if 0
 #  define ppoll pollts
 #endif
 
@@ -115,7 +115,7 @@ static inline bool time_update(struct timespec *tv, const struct timespec &start
     return tv->tv_sec >= 0;
 }
 
-#if QT_CONFIG(poll_poll)
+#if 0
 static inline int timespecToMillisecs(const struct timespec *ts)
 {
     return (ts == NULL) ? -1 :
@@ -128,9 +128,9 @@ int qt_poll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts);
 
 static inline int qt_ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts)
 {
-#if QT_CONFIG(poll_ppoll) || QT_CONFIG(poll_pollts)
+#if 1
     return ::ppoll(fds, nfds, timeout_ts, nullptr);
-#elif QT_CONFIG(poll_poll)
+#elif 0
     return ::poll(fds, nfds, timespecToMillisecs(timeout_ts));
 #else
     return qt_poll(fds, nfds, timeout_ts);

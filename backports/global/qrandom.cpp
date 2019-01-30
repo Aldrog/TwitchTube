@@ -59,7 +59,7 @@
 
 #ifdef Q_OS_UNIX
 #  include <fcntl.h>
-#  include <private/qcore_unix_p.h>
+#  include <kernel/qcore_unix_p.h>
 #else
 #  include <qt_windows.h>
 
