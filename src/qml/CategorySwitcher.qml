@@ -22,71 +22,61 @@ import Sailfish.Silica 1.0
 import QTwitch.Api 0.1
 
 PersistentPanel {
+    property alias category: config.category
+
     width: parent.width
     height: Theme.itemSizeLarge
     dock: Dock.Bottom
     open: true
+
+    InterfaceConfiguration {
+        id: config
+        property string category: "games"
+    }
 
     Row {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.bottom: parent.bottom
 
-        BackgroundItem {
+        CategoryButton {
             id: games
-            height: parent.height
-            width: height
-
-            Image {
-                anchors.fill: parent
-                source: "image://app-icons/games?" + (games.highlighted
-                                                        ? Theme.highlightColor
-                                                        : Theme.primaryColor)
+            icon: "image://app-icons/games"
+            active: category === "games"
+            onClicked: {
+                category = "games"
             }
         }
 
-        BackgroundItem {
+        CategoryButton {
             id: channels
-            height: parent.height
-            width: height
-
-            Image {
-                anchors.fill: parent
-                source: "image://app-icons/streams?" + (channels.highlighted
-                                                        ? Theme.highlightColor
-                                                        : Theme.primaryColor)
+            icon: "image://app-icons/streams"
+            active: category === "channels"
+            onClicked: {
+                category = "channels"
             }
         }
 
         Loader {
             active: Client.authorizationStatus === Client.Authorized
 
-            BackgroundItem {
+            CategoryButton {
                 id: follows
-                height: parent.height
-                width: height
-
-                Image {
-                    anchors.fill: parent
-                    source: "image://theme/icon-m-favorite-selected?" + (follows.highlighted
-                                                            ? Theme.highlightColor
-                                                            : Theme.primaryColor)
+                icon: "image://theme/icon-m-favorite-selected"
+                active: category === "follows"
+                onClicked: {
+                    category = "follows"
                 }
             }
         }
 
-        BackgroundItem {
+        CategoryButton {
             id: search
-            height: parent.height
-            width: height
-
-            Image {
-                anchors.fill: parent
-                source: "image://theme/icon-m-search?" + (search.highlighted
-                                                        ? Theme.highlightColor
-                                                        : Theme.primaryColor)
+            icon: "image://theme/icon-m-search"
+            active: category === "search"
+            onClicked: {
+                category = "search"
             }
-            onClicked: hide()
         }
     }
 }

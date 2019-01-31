@@ -29,6 +29,7 @@ ApplicationWindow {
     property string audioUrl
     property string currentCategory: "games"
     property bool playing: player.playbackState == MediaPlayer.PlayingState
+    readonly property bool isPortrait: pageStack.currentPage.isPortrait
 
     signal audioOn
     signal audioOff
@@ -44,68 +45,78 @@ ApplicationWindow {
     }
 
     initialPage: Component { Page {
-        SilicaGridView {
-            id: grid
-
-            property int rowSize: isPortrait ? 2 : 4
-            property real aspectRatio: 4/3
-//            anchors.fill: parent
-
-            header: PageHeader {
-                id: header
-                title: qsTr("Games")
-            }
-
-            anchors.leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
-            anchors.rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
-            cellWidth: width/rowSize
-            cellHeight: cellWidth * aspectRatio
-
-            model: TopGamesModel { }
-
-            delegate: BackgroundItem {
-                id: item
-
-                width: grid.cellWidth
-                height: grid.cellHeight
-
-                onClicked: {
-                    panel.show()
-                }
-
-                Image {
-                    id: img
-                    anchors.fill: parent
-                    anchors.margins: Theme.paddingSmall
-                    fillMode: Image.PreserveAspectCrop
-                    source: image
-                }
-
-                OpacityRampEffect {
-                    property real effHeight: name.height
-                    sourceItem: img
-                    direction: OpacityRamp.BottomToTop
-                    offset: 1 - 1.25 * (effHeight / img.height)
-                    slope: img.height / effHeight
-                }
-
-                Label {
-                    id: name
-                    anchors {
-                        left: img.left; leftMargin: Theme.paddingMedium
-                        right: img.right; rightMargin: Theme.paddingSmall
-                        topMargin: Theme.paddingSmall
-                    }
-                    truncationMode: TruncationMode.Fade
-                    color: item.highlighted ? Theme.highlightColor : Theme.primaryColor
-                    font.pixelSize: Theme.fontSizeSmall
-                    text: title
-                }
-            }
+        allowedOrientations: Orientation.All
+        SilicaFlickable {
+            id: root
             anchors.fill: parent
+            contentHeight: content.height + Theme.paddingLarge
 
-//            clip: true
-            VerticalScrollDecorator { flickable: grid }
+            Column {
+                id: content
+
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+                    rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+                }
+
+                PageHeader {
+                    id: header
+                    title: qsTr("Games")
+                }
+
+                SimpleGrid {
+                    id: grid
+
+                    dpiWidth: 250
+                    aspectRatio: 4/3
+
+                    model: TopGamesModel { }
+
+                    delegate: BackgroundItem {
+                        id: item
+
+                        width: grid.cellWidth
+                        height: grid.cellHeight
+
+                        onClicked: {
+                            panel.show()
+                        }
+
+                        Image {
+                            id: img
+                            anchors.fill: parent
+                            anchors.margins: Theme.paddingSmall
+                            fillMode: Image.PreserveAspectCrop
+                            source: image
+                        }
+
+                        OpacityRampEffect {
+                            property real effHeight: name.height
+                            sourceItem: img
+                            direction: OpacityRamp.BottomToTop
+                            offset: 1 - 1.25 * (effHeight / img.height)
+                            slope: img.height / effHeight
+                        }
+
+                        Label {
+                            id: name
+                            anchors {
+                                left: img.left; leftMargin: Theme.paddingMedium
+                                right: img.right; rightMargin: Theme.paddingSmall
+                                topMargin: Theme.paddingSmall
+                            }
+                            truncationMode: TruncationMode.Fade
+                            color: item.highlighted ? Theme.highlightColor : Theme.primaryColor
+                            font.pixelSize: Theme.fontSizeSmall
+                            text: title
+                        }
+                    }
+                }
+            }
+
+            VerticalScrollDecorator { flickable: root }
         }
     } }
 

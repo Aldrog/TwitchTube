@@ -20,6 +20,9 @@ HEADERS += \
 DISTFILES += qml/harbour-twitchtube.qml \
              qml/CategorySwitcher.qml \
              qml/PersistentPanel.qml \
+             qml/SimpleGrid.qml \
+             qml/InterfaceConfiguration.qml \
+             qml/CategoryButton.qml \
              qml/icons/streams.png \
              qml/icons/games.png \
              harbour-twitchtube.desktop

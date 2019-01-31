@@ -52,9 +52,9 @@ SilicaFlickable {
         } else if (_managedDock == Dock.Top)  {
             return panel.y + panel.height - contentY
         } else if (_managedDock == Dock.Right && panel.parent) {
-            return Screen.width - panel.x + contentX
+            return parent.width - panel.x + contentX
         } else if (_managedDock == Dock.Bottom && panel.parent) {
-            return Screen.height - panel.y + contentY
+            return parent.height - panel.y + contentY
         } else {
             return 0
         }
@@ -161,7 +161,7 @@ SilicaFlickable {
         if (_managedDock == Dock.Left) {
             return -panel.width
         } else if (_managedDock == Dock.Right && panel.parent) {
-            return Screen.width
+            return parent.width
         } else {
             return 0
         }
@@ -171,7 +171,7 @@ SilicaFlickable {
         if (_managedDock == Dock.Top) {
             return -panel.height
         } else if (_managedDock == Dock.Bottom && panel.parent) {
-            return Screen.height
+            return parent.height
         } else {
             return 0
         }
@@ -186,7 +186,7 @@ SilicaFlickable {
                 if (_managedDock == Dock.Left) {
                     return 0
                 } else if (_managedDock == Dock.Right && panel.parent) {
-                    return Screen.width - panel.width
+                    return parent.width - panel.width
                 } else {
                     return 0
                 }
@@ -195,7 +195,7 @@ SilicaFlickable {
                 if (_managedDock == Dock.Top) {
                     return 0
                 } else if (_managedDock == Dock.Bottom && panel.parent) {
-                    return Screen.height - panel.height
+                    return parent.height - panel.height
                 } else {
                     return 0
                 }
