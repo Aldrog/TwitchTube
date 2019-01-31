@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2017 Andrew Penkrat
+ * Copyright © 2015-2017, 2019 Andrew Penkrat
  *
  * This file is part of TwitchTube.
  *
@@ -17,9 +17,10 @@
  * along with TwitchTube.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
+import QtQuick 2.6
 import QtMultimedia 5.0
 import Sailfish.Silica 1.0
+import QTwitch.Models 0.1
 
 ApplicationWindow {
     id: mainWindow
@@ -42,7 +43,77 @@ ApplicationWindow {
         player.source = ""
     }
 
-    initialPage: Component { Page { } }
+    initialPage: Component { Page {
+        SilicaGridView {
+            id: grid
+
+            property int rowSize: isPortrait ? 2 : 4
+            property real aspectRatio: 4/3
+//            anchors.fill: parent
+
+            header: PageHeader {
+                id: header
+                title: qsTr("Games")
+            }
+
+            anchors.leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+            anchors.rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+            cellWidth: width/rowSize
+            cellHeight: cellWidth * aspectRatio
+
+            model: TopGamesModel { }
+
+            delegate: BackgroundItem {
+                id: item
+
+                width: grid.cellWidth
+                height: grid.cellHeight
+
+                onClicked: {
+                    panel.show()
+                }
+
+                Image {
+                    id: img
+                    anchors.fill: parent
+                    anchors.margins: Theme.paddingSmall
+                    fillMode: Image.PreserveAspectCrop
+                    source: image
+                }
+
+                OpacityRampEffect {
+                    property real effHeight: name.height
+                    sourceItem: img
+                    direction: OpacityRamp.BottomToTop
+                    offset: 1 - 1.25 * (effHeight / img.height)
+                    slope: img.height / effHeight
+                }
+
+                Label {
+                    id: name
+                    anchors {
+                        left: img.left; leftMargin: Theme.paddingMedium
+                        right: img.right; rightMargin: Theme.paddingSmall
+                        topMargin: Theme.paddingSmall
+                    }
+                    truncationMode: TruncationMode.Fade
+                    color: item.highlighted ? Theme.highlightColor : Theme.primaryColor
+                    font.pixelSize: Theme.fontSizeSmall
+                    text: title
+                }
+            }
+            anchors.fill: parent
+
+//            clip: true
+            VerticalScrollDecorator { flickable: grid }
+        }
+    } }
+
+    bottomMargin: panel.visibleSize
+
+    CategorySwitcher {
+        id: panel
+    }
 
     MediaPlayer {
         id: player

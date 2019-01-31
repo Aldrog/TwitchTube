@@ -7,15 +7,21 @@ SOURCES += \
     ircchat.cpp \
     qmlsettings.cpp \
     message.cpp \
-    messagelistmodel.cpp
+    messagelistmodel.cpp \
+    iconprovider.cpp
 
 HEADERS += \
     ircchat.h \
     qmlsettings.h \
     message.h \
-    messagelistmodel.h
+    messagelistmodel.h \
+    iconprovider.h
 
 DISTFILES += qml/harbour-twitchtube.qml \
+             qml/CategorySwitcher.qml \
+             qml/PersistentPanel.qml \
+             qml/icons/streams.png \
+             qml/icons/games.png \
              harbour-twitchtube.desktop
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172

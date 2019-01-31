@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2017 Andrew Penkrat
+ * Copyright © 2015-2017, 2019 Andrew Penkrat
  *
  * This file is part of TwitchTube.
  *
@@ -27,9 +27,19 @@
 #include <QGuiApplication>
 #include <QQuickView>
 
+#include <Models/topgamesmodel.h>
+#include <Models/streamsmodel.h>
+#include <Models/followedchannelsmodel.h>
+#include <Models/gamessearchmodel.h>
+#include <Models/streamssearchmodel.h>
+#include <Models/channelssearchmodel.h>
+#include <Api/client.h>
+#include <Api/qsettingscredentialsstorage.h>
+
 #include "ircchat.h"
 #include "message.h"
 #include "qmlsettings.h"
+#include "iconprovider.h"
 
 // All app settings are declared here so it's easy to change default value or setting's key
 void registerSettings(QQuickView *view) {
@@ -73,12 +83,27 @@ int main(int argc, char *argv[])
     qmlRegisterType<MessageListModel>("harbour.twitchtube.ircchat", 1, 0, "MessageListModel");
     qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
 
+    qmlRegisterType<QTwitch::Models::TopGamesModel>              ("QTwitch.Models", 0, 1, "TopGamesModel");
+    qmlRegisterType<QTwitch::Models::StreamsModel>               ("QTwitch.Models", 0, 1, "StreamsModel");
+    qmlRegisterType<QTwitch::Models::FollowedChannelsModel>      ("QTwitch.Models", 0, 1, "FollowedChannelsModel");
+    qmlRegisterType<QTwitch::Models::Legacy::GamesSearchModel>   ("QTwitch.Models", 0, 1, "GamesSearchModel");
+    qmlRegisterType<QTwitch::Models::Legacy::StreamsSearchModel> ("QTwitch.Models", 0, 1, "StreamsSearchModel");
+    qmlRegisterType<QTwitch::Models::Legacy::ChannelsSearchModel>("QTwitch.Models", 0, 1, "ChannelsSearchModel");
+
+    qmlRegisterSingletonType<QTwitch::Api::Client>("QTwitch.Api", 0, 1, "Client", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+        Q_UNUSED(engine)
+        Q_UNUSED(scriptEngine)
+        return QTwitch::Api::Client::getClient().get();
+    });
+    auto storage = std::make_unique<QTwitch::Api::QSettingsCredentialsStorage>(QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    QTwitch::Api::Client::getClient()->setCredentialsStorage(std::move(storage));
+
     QQuickView *view(SailfishApp::createView());
+    view->engine()->addImageProvider(QStringLiteral("app-icons"), new IconProvider);
 
     registerSettings(view);
 
-    view->setSource(SailfishApp::pathTo("qml/Main.qml"));
-    view->setResizeMode(QQuickView::SizeRootObjectToView);
+    view->setSource(SailfishApp::pathToMainQml());
     view->show();
     return app->exec();
 }
