@@ -50,7 +50,7 @@
 #include <unistd.h>
 
 #include <qatomic.h>
-#include "private/qcore_unix_p.h"
+#include "kernel/qcore_unix_p.h"
 
 #if defined(QT_NO_CLOCK_MONOTONIC) || defined(QT_BOOTSTRAPPED)
 // turn off the monotonic clock
