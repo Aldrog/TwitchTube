@@ -24,7 +24,7 @@ DISTFILES += qml/harbour-twitchtube.qml \
              qml/InterfaceConfiguration.qml \
              qml/CategoryButton.qml \
              qml/Chat.qml \
-             qml/QualityChooserPage.qml \
+             qml/QualityChooser.qml \
              qml/StreamPage.qml \
              qml/icons/streams.png \
              qml/icons/games.png \

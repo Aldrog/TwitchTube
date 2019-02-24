@@ -49,6 +49,8 @@ DockedPanel {
             label: qsTr("Quality")
 
             menu: ContextMenu {
+                id: menu
+
                 Repeater {
                     id: repeater
 

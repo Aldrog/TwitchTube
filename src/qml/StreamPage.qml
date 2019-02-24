@@ -23,6 +23,7 @@ import Sailfish.Silica 1.0
 import QTwitch.Models 0.1
 import QTwitch.Api 0.1
 import harbour.twitchtube.ircchat 1.0
+import Nemo.KeepAlive 1.1
 
 Page {
     id: page
@@ -56,6 +57,12 @@ Page {
     }
 
     Binding {
+        target: DisplayBlanking
+        property: "preventBlanking"
+        value: active && showVideo
+    }
+
+    Binding {
         target: mainWindow
         property: "showCategories"
         value: status !== PageStatus.Active && status !== PageStatus.Activating && !quality.expanded
@@ -78,11 +85,15 @@ Page {
     }
 
     SilicaFlickable {
+        id: flickable
+
         anchors.fill: parent
-        anchors.bottomMargin: quality.margin
+        anchors.bottomMargin: quality.visibleSize
         clip: quality.expanded
 
         PullDownMenu {
+            id: streamMenu
+
             MenuItem {
                 text: qsTr("Past Broadcasts & Highlights")
                 onClicked: {
@@ -182,16 +193,16 @@ Page {
     states: State {
         name: "fullscreen"
 
-        PropertyChanges {
-            target: chat
-            visible: false
-        }
-
 //        PropertyChanges {
-//            target: streamMenu
+//            target: chat
 //            visible: false
-//            active: false
 //        }
+
+        PropertyChanges {
+            target: streamMenu
+            visible: false
+            active: false
+        }
 
         PropertyChanges {
             target: page
