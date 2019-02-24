@@ -28,7 +28,7 @@ ApplicationWindow {
     property alias player: player
     property string currentCategory: "games"
     property bool playing: player.playbackState == MediaPlayer.PlayingState
-    property bool showCategories: true
+    property alias showCategories: panel.open
 
     function startPlayback(url) {
         console.log(url)
@@ -44,7 +44,7 @@ ApplicationWindow {
 
     function switchCategory(category) {
         if (category === "games")
-            pageStack.replaceAbove(Qt.resolvedUrl("GamesPage.qml"))
+            pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
     }
 
     initialPage: Component { GamesPage { } }
@@ -53,13 +53,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         switchCategory(panel.category)
-    }
-
-    onShowCategoriesChanged: {
-        if (showCategories)
-            panel.show()
-        else
-            panel.hide()
     }
 
     CategorySwitcher {
