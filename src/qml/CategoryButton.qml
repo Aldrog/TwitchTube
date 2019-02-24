@@ -22,15 +22,32 @@ import Sailfish.Silica 1.0
 
 BackgroundItem {
     property string icon
+    property alias text: label.text
     property bool active: false
 
-    height: parent.height
+    height: img.height + label.height
     width: height
 
     Image {
-        anchors.fill: parent
+        id: img
+        anchors {
+            top: parent.top
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: Theme.itemSizeSmall
+        height: width
         source: icon + "?" + (highlighted || active
                                ? Theme.highlightColor
                                : Theme.primaryColor)
+    }
+
+    Label {
+        id: label
+        anchors {
+            top: img.bottom
+            horizontalCenter: img.horizontalCenter
+        }
+        color: highlighted || active ? Theme.highlightColor : Theme.primaryColor
+        font.pixelSize: Theme.fontSizeExtraSmall
     }
 }

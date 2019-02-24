@@ -25,7 +25,7 @@ PersistentPanel {
     property alias category: config.category
 
     width: parent.width
-    height: Theme.itemSizeLarge
+    height: container.height
     dock: Dock.Bottom
     open: true
 
@@ -35,9 +35,9 @@ PersistentPanel {
     }
 
     Row {
+        id: container
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.bottom: parent.bottom
 
         CategoryButton {
             id: games
@@ -46,28 +46,31 @@ PersistentPanel {
             onClicked: {
                 category = "games"
             }
+            text: qsTr("Games")
         }
 
         CategoryButton {
-            id: channels
+            id: streams
             icon: "image://app-icons/streams"
-            active: category === "channels"
+            active: category === "streams"
             onClicked: {
-                category = "channels"
+                category = "streams"
             }
+            text: qsTr("Streams")
         }
 
         Loader {
             active: Client.authorizationStatus === Client.Authorized
 
-            CategoryButton {
+            sourceComponent: Component { CategoryButton {
                 id: follows
                 icon: "image://theme/icon-m-favorite-selected"
                 active: category === "follows"
                 onClicked: {
                     category = "follows"
                 }
-            }
+                text: qsTr("Follows")
+            } }
         }
 
         CategoryButton {
@@ -77,6 +80,7 @@ PersistentPanel {
             onClicked: {
                 category = "search"
             }
+            text: qsTr("Search")
         }
     }
 }

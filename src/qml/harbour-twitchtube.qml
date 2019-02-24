@@ -47,8 +47,6 @@ ApplicationWindow {
             pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
     }
 
-    initialPage: Component { GamesPage { } }
-
     bottomMargin: panel.visibleSize
 
     Component.onCompleted: {
