@@ -23,6 +23,7 @@ import QTwitch.Models 0.1
 
 Page {
     allowedOrientations: Orientation.All
+
     SilicaFlickable {
         id: root
         anchors.fill: parent

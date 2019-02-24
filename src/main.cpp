@@ -33,6 +33,8 @@
 #include <Models/gamessearchmodel.h>
 #include <Models/streamssearchmodel.h>
 #include <Models/channelssearchmodel.h>
+#include <Models/playlistmodel.h>
+#include <Models/userinfo.h>
 #include <Api/client.h>
 #include <Api/qsettingscredentialsstorage.h>
 
@@ -89,6 +91,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<QTwitch::Models::Legacy::GamesSearchModel>   ("QTwitch.Models", 0, 1, "GamesSearchModel");
     qmlRegisterType<QTwitch::Models::Legacy::StreamsSearchModel> ("QTwitch.Models", 0, 1, "StreamsSearchModel");
     qmlRegisterType<QTwitch::Models::Legacy::ChannelsSearchModel>("QTwitch.Models", 0, 1, "ChannelsSearchModel");
+    qmlRegisterType<QTwitch::Models::PlaylistModel>              ("QTwitch.Models", 0, 1, "PlaylistModel");
+    qmlRegisterType<QTwitch::Models::UserInfo>                   ("QTwitch.Models", 0, 1, "UserInfo");
 
     qmlRegisterSingletonType<QTwitch::Api::Client>("QTwitch.Api", 0, 1, "Client", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
         Q_UNUSED(engine)

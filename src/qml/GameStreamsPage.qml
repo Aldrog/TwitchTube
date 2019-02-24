@@ -66,8 +66,7 @@ Page {
                     height: grid.cellHeight
 
                     onClicked: {
-                        if(grid.model.nextAvailable())
-                            grid.model.next()
+                        pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
                     }
 
                     Image {

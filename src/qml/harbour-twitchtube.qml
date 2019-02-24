@@ -25,20 +25,19 @@ import QTwitch.Models 0.1
 ApplicationWindow {
     id: mainWindow
 
-    property string username
-    property string audioUrl
+    property alias player: player
     property string currentCategory: "games"
     property bool playing: player.playbackState == MediaPlayer.PlayingState
+    property bool showCategories: true
 
-    signal audioOn
-    signal audioOff
-
-    function playAudio() {
-        player.source = audioUrl
+    function startPlayback(url) {
+        console.log(url)
+        if(url)
+            player.source = url
         player.play()
     }
 
-    function stopAudio() {
+    function stopPlayback() {
         player.stop()
         player.source = ""
     }
@@ -52,13 +51,20 @@ ApplicationWindow {
 
     bottomMargin: panel.visibleSize
 
+    Component.onCompleted: {
+        switchCategory(panel.category)
+    }
+
+    onShowCategoriesChanged: {
+        if (showCategories)
+            panel.show()
+        else
+            panel.hide()
+    }
+
     CategorySwitcher {
         id: panel
         onCategoryChanged: switchCategory(category)
-    }
-
-    Component.onCompleted: {
-        switchCategory(panel.category)
     }
 
     MediaPlayer {
