@@ -66,6 +66,7 @@ ApplicationWindow {
         PushUpMenu {
             MenuItem {
                 text: qsTr("Settings")
+                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
         }
     }
