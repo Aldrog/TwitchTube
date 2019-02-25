@@ -41,7 +41,7 @@ Page {
 
             PageHeader {
                 id: header
-                title: qsTr("Streams")
+                title: qsTr("Live Channels")
             }
 
             SimpleGrid {

@@ -26,8 +26,8 @@ DISTFILES += qml/harbour-twitchtube.qml \
              qml/Chat.qml \
              qml/QualityChooser.qml \
              qml/StreamPage.qml \
-             qml/StreamsPage.qml \
-             qml/icons/streams.png \
+             qml/ChannelsPage.qml \
+             qml/icons/channels.png \
              qml/icons/games.png \
              harbour-twitchtube.desktop
 

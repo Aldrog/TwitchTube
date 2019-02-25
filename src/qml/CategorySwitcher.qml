@@ -51,13 +51,13 @@ PersistentPanel {
         }
 
         CategoryButton {
-            id: streams
-            icon: "image://app-icons/streams"
-            active: category === "streams"
+            id: channels
+            icon: "image://app-icons/channels"
+            active: category === "channels"
             onClicked: {
-                category = "streams"
+                category = "channels"
             }
-            text: qsTr("Streams")
+            text: qsTr("Channels")
         }
 
         Loader {

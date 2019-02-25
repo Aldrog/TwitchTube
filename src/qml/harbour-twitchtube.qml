@@ -45,8 +45,8 @@ ApplicationWindow {
     function switchCategory(category) {
         if (category === "games")
             pageStack.replaceAbove(null, Qt.resolvedUrl("GamesPage.qml"))
-        if (category === "streams")
-            pageStack.replaceAbove(null, Qt.resolvedUrl("StreamsPage.qml"))
+        if (category === "channels")
+            pageStack.replaceAbove(null, Qt.resolvedUrl("ChannelsPage.qml"))
         if (category === "follows")
             pageStack.replaceAbove(null, Qt.resolvedUrl("FollowsPage.qml"))
         if (category === "search")
