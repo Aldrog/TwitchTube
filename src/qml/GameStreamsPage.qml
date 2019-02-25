@@ -49,12 +49,11 @@ Page {
             SimpleGrid {
                 id: grid
 
-                dpiWidth: 300
-                aspectRatio: 9/16
+                dpiWidth: 350
+                cellHeight: model.imageHeight + 2*Theme.paddingSmall
 
                 model: StreamsModel {
-                    imageHeight: grid.cellHeight
-                    imageWidth: grid.cellWidth
+                    imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                     gameFilter: [ gameId ]
                     Component.onCompleted: reload()
                 }

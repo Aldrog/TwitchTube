@@ -41,16 +41,16 @@ Page {
 
             PageHeader {
                 id: header
-                title: qsTr("Games")
+                title: qsTr("Streams")
             }
 
             SimpleGrid {
                 id: grid
 
-                dpiWidth: 250
+                dpiWidth: 350
                 cellHeight: model.imageHeight + 2*Theme.paddingSmall
 
-                model: TopGamesModel {
+                model: StreamsModel {
                     imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                     Component.onCompleted: reload()
                 }
@@ -62,7 +62,7 @@ Page {
                     height: grid.cellHeight
 
                     onClicked: {
-                        pageStack.push(Qt.resolvedUrl("GameStreamsPage.qml"), {gameId: additionalData.gameId, gameTitle: title})
+                        pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
                     }
 
                     Image {

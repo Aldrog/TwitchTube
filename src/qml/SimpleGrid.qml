@@ -24,13 +24,11 @@ SilicaGridView {
     id: grid
 
     property real dpiWidth
-    readonly property int itemsPerRow: ~~(width / Theme.pixelRatio / dpiWidth)
-    property real aspectRatio
+    readonly property int itemsPerRow: Math.round(width / Theme.pixelRatio / dpiWidth)
 
     width: parent.width
     height: contentHeight
     cellWidth: width/itemsPerRow
-    cellHeight: cellWidth * aspectRatio
     // Flickable functionality is not actually needed here
     // It would probably be better to make this type a Grid with Repeater
     interactive: false
