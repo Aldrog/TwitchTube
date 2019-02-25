@@ -26,6 +26,7 @@ PersistentPanel {
 
     width: parent.width
     height: container.height
+    contentHeight: height
     dock: Dock.Bottom
     open: true
 

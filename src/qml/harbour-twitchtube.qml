@@ -55,12 +55,17 @@ ApplicationWindow {
 
     CategorySwitcher {
         id: panel
+        parent: _rotatingItem
         onCategoryChanged: switchCategory(category)
+        PushUpMenu {
+            MenuItem {
+                text: qsTr("Settings")
+            }
+        }
     }
 
     MediaPlayer {
         id: player
         autoLoad: false
-        onSourceChanged: console.log(source)
     }
 }

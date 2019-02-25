@@ -25,7 +25,7 @@ BackgroundItem {
     property alias text: label.text
     property bool active: false
 
-    height: img.height + label.height
+    height: img.height + label.height + Theme.paddingSmall
     width: height
 
     Image {

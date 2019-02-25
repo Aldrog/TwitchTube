@@ -52,9 +52,9 @@ SilicaFlickable {
         } else if (_managedDock == Dock.Top)  {
             return panel.y + panel.height - contentY
         } else if (_managedDock == Dock.Right && panel.parent) {
-            return parent.width - panel.x + contentX
+            return panel.parent.width - panel.x + contentX
         } else if (_managedDock == Dock.Bottom && panel.parent) {
-            return parent.height - panel.y + contentY
+            return panel.parent.height - panel.y + contentY
         } else {
             return 0
         }
