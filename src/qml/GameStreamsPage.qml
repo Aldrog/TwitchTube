@@ -27,7 +27,7 @@ Page {
 
     allowedOrientations: Orientation.All
     SilicaFlickable {
-        id: root
+        id: rootFlickable
         anchors.fill: parent
         contentHeight: content.height + Theme.paddingLarge
 
@@ -98,8 +98,13 @@ Page {
                     }
                 }
             }
+
+            ContentLoader {
+                model: grid.model
+                flickable: rootFlickable
+            }
         }
 
-        VerticalScrollDecorator { flickable: root }
+        VerticalScrollDecorator { flickable: rootFlickable }
     }
 }
