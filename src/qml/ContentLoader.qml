@@ -26,15 +26,20 @@ Item {
 
     property SilicaFlickable flickable
     property QtObject model
-    property bool trigger: flickable.contentY + flickable.height > loader.y && !triggerTimeout.running
+    property bool trigger: flickable.contentY + flickable.height > loader.y
+    signal triggered
 
     width: parent.width
     height: Theme.itemSizeExtraLarge
 
+    onTriggered: {
+        model.next()
+        triggerTimeout.start()
+    }
+
     onTriggerChanged: {
-        if (trigger) {
-            model.next()
-            triggerTimeout.start()
+        if (trigger && !triggerTimeout.running) {
+            triggered()
         }
     }
 
@@ -42,6 +47,10 @@ Item {
         id: triggerTimeout
         interval: 1000
         running: true
+        onTriggered: {
+            if (trigger)
+                triggered()
+        }
     }
 
     BusyIndicator {
