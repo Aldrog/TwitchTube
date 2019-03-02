@@ -58,43 +58,12 @@ Page {
                     Component.onCompleted: reload()
                 }
 
-                delegate: BackgroundItem {
-                    id: item
-
+                delegate: EntitledImage {
                     width: grid.cellWidth
                     height: grid.cellHeight
 
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
-                    }
-
-                    Image {
-                        id: img
-                        anchors.fill: parent
-                        anchors.margins: Theme.paddingSmall
-                        fillMode: Image.PreserveAspectCrop
-                        source: image
-                    }
-
-                    OpacityRampEffect {
-                        property real effHeight: name.height
-                        sourceItem: img
-                        direction: OpacityRamp.BottomToTop
-                        offset: 1 - 1.25 * (effHeight / img.height)
-                        slope: img.height / effHeight
-                    }
-
-                    Label {
-                        id: name
-                        anchors {
-                            left: img.left; leftMargin: Theme.paddingMedium
-                            right: img.right; rightMargin: Theme.paddingSmall
-                            topMargin: Theme.paddingSmall
-                        }
-                        truncationMode: TruncationMode.Fade
-                        color: item.highlighted ? Theme.highlightColor : Theme.primaryColor
-                        font.pixelSize: Theme.fontSizeSmall
-                        text: title
                     }
                 }
             }
