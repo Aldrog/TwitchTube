@@ -23,6 +23,7 @@ import QTwitch.Api 0.1
 
 PersistentPanel {
     property alias category: config.category
+    signal categorySelected(string category)
 
     width: parent.width
     height: container.height
@@ -46,6 +47,7 @@ PersistentPanel {
             active: category === "games"
             onClicked: {
                 category = "games"
+                categorySelected(category)
             }
             text: qsTr("Games")
         }
@@ -56,6 +58,7 @@ PersistentPanel {
             active: category === "channels"
             onClicked: {
                 category = "channels"
+                categorySelected(category)
             }
             text: qsTr("Channels")
         }
@@ -69,6 +72,7 @@ PersistentPanel {
                 active: category === "follows"
                 onClicked: {
                     category = "follows"
+                    categorySelected(category)
                 }
                 text: qsTr("Follows")
             } }
@@ -80,6 +84,7 @@ PersistentPanel {
             active: category === "search"
             onClicked: {
                 category = "search"
+                categorySelected(category)
             }
             text: qsTr("Search")
         }

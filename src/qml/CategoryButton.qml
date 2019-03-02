@@ -27,6 +27,7 @@ BackgroundItem {
 
     height: img.height + label.height + Theme.paddingSmall
     width: height
+    enabled: !active
 
     Image {
         id: img

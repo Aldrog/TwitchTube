@@ -62,7 +62,7 @@ ApplicationWindow {
     CategorySwitcher {
         id: panel
         parent: _rotatingItem
-        onCategoryChanged: switchCategory(category)
+        onCategorySelected: switchCategory(category)
         PushUpMenu {
             MenuItem {
                 text: qsTr("Settings")
