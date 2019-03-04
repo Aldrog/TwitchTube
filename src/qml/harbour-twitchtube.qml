@@ -61,7 +61,6 @@ ApplicationWindow {
 
     CategorySwitcher {
         id: panel
-        parent: _rotatingItem
         onCategorySelected: switchCategory(category)
         PushUpMenu {
             MenuItem {

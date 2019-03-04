@@ -47,6 +47,10 @@ SilicaFlickable {
     property bool _immediate
 
     function _visibleSize() {
+        if (panel.parent === __silica_applicationwindow_instance.contentItem) {
+            return 0
+        }
+
         if (_managedDock == Dock.Left) {
             return panel.x + panel.width - contentX
         } else if (_managedDock == Dock.Top)  {
