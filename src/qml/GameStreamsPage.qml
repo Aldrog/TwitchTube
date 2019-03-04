@@ -59,9 +59,6 @@ Page {
                 }
 
                 delegate: EntitledImage {
-                    width: grid.cellWidth
-                    height: grid.cellHeight
-
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
                     }
