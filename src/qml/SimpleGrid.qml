@@ -26,7 +26,12 @@ SilicaGridView {
     property real dpiWidth
     readonly property int itemsPerRow: Math.round(width / Theme.pixelRatio / dpiWidth)
 
-    width: parent.width
+    anchors {
+        left: parent.left
+        right: parent.right
+        leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+        rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+    }
     height: contentHeight
     cellWidth: width/itemsPerRow
     // Flickable functionality is not actually needed here

@@ -35,8 +35,6 @@ Page {
             anchors {
                 left: parent.left
                 right: parent.right
-                leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
-                rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
             }
 
             PageHeader {
