@@ -24,6 +24,10 @@ import QTwitch.Models 0.1
 Page {
     allowedOrientations: Orientation.All
 
+    InterfaceConfiguration {
+        id: config
+    }
+
     SilicaFlickable {
         id: rootFlickable
         anchors.fill: parent
@@ -45,7 +49,7 @@ Page {
             SimpleGrid {
                 id: grid
 
-                dpiWidth: 350
+                dpiWidth: config.channelCellSize
                 cellHeight: model.imageHeight + 2*Theme.paddingSmall
 
                 model: StreamsModel {

@@ -21,5 +21,14 @@ import QtQuick 2.6
 import Nemo.Configuration 1.0
 
 ConfigurationGroup {
+    property bool showStreamTitles: true
+    property bool connectToChat: true
+    property string category: "games"
+    property int qualityId: 1
+
+    property real gameCellSize: 250
+    property real channelCellSize: 350
+    property real userCellSize: 250
+
     path: "/apps/harbour-twitchtube/ui"
 }

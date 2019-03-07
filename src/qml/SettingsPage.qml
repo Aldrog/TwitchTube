@@ -33,8 +33,6 @@ Dialog {
 
     InterfaceConfiguration {
         id: config
-        property bool showStreamTitles: true
-        property bool connectToChat: true
     }
 
     Binding {

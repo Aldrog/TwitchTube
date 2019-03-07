@@ -33,7 +33,6 @@ PersistentPanel {
 
     InterfaceConfiguration {
         id: config
-        property string category: "games"
     }
 
     Row {

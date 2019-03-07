@@ -35,8 +35,6 @@ Page {
             anchors {
                 left: parent.left
                 right: parent.right
-                leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
-                rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
             }
 
             SearchField {
@@ -55,21 +53,71 @@ Page {
                         text: qsTr("Users")
                         onClicked: {
                             search.category = text
+                            grid.model = channelsSearch.createObject(grid)
                         }
                     }
                     MenuItem {
                         text: qsTr("Live Channels")
                         onClicked: {
                             search.category = text
+                            grid.model = streamsSearch.createObject(grid)
                         }
                     }
                     MenuItem {
                         text: qsTr("Games")
                         onClicked: {
                             search.category = text
+                            grid.model = gamesSearch.createObject(grid)
                         }
                     }
                 }
+            }
+
+            SimpleGrid {
+                id: grid
+
+                dpiWidth: 250
+                cellHeight: model.imageHeight + 2*Theme.paddingSmall
+
+                Component {
+                    id: channelsSearch
+                    ChannelsSearchModel {
+                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
+                        query: search.text
+                        onQueryChanged: reload()
+                    }
+                }
+
+                Component {
+                    id: streamsSearch
+                    StreamsSearchModel {
+                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
+                        query: search.text
+                        onQueryChanged: reload()
+                    }
+                }
+
+                Component {
+                    id: gamesSearch
+                    GamesSearchModel {
+                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
+                        query: search.text
+                        onQueryChanged: reload()
+                    }
+                }
+
+//                model: channelsSearch
+
+                delegate: EntitledImage {
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("GameStreamsPage.qml"), {gameId: additionalData.gameId, gameTitle: title})
+                    }
+                }
+            }
+
+            ContentLoader {
+                model: grid.model
+                flickable: rootFlickable
             }
         }
 

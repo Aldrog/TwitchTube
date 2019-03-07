@@ -36,7 +36,6 @@ DockedPanel {
 
     InterfaceConfiguration {
         id: config
-        property int qualityId: 1
     }
 
     Column {
