@@ -85,22 +85,22 @@ int main(int argc, char *argv[])
     qmlRegisterType<MessageListModel>("harbour.twitchtube.ircchat", 1, 0, "MessageListModel");
     qmlRegisterType<QMLSettings>("harbour.twitchtube.settings", 1, 0, "Setting");
 
-    qmlRegisterType<QTwitch::Models::TopGamesModel>              ("QTwitch.Models", 0, 1, "TopGamesModel");
-    qmlRegisterType<QTwitch::Models::StreamsModel>               ("QTwitch.Models", 0, 1, "StreamsModel");
-    qmlRegisterType<QTwitch::Models::FollowedChannelsModel>      ("QTwitch.Models", 0, 1, "FollowedChannelsModel");
-    qmlRegisterType<QTwitch::Models::Legacy::GamesSearchModel>   ("QTwitch.Models", 0, 1, "GamesSearchModel");
-    qmlRegisterType<QTwitch::Models::Legacy::StreamsSearchModel> ("QTwitch.Models", 0, 1, "StreamsSearchModel");
-    qmlRegisterType<QTwitch::Models::Legacy::ChannelsSearchModel>("QTwitch.Models", 0, 1, "ChannelsSearchModel");
-    qmlRegisterType<QTwitch::Models::PlaylistModel>              ("QTwitch.Models", 0, 1, "PlaylistModel");
-    qmlRegisterType<QTwitch::Models::UserInfo>                   ("QTwitch.Models", 0, 1, "UserInfo");
+    qmlRegisterType<QTwitch::Models::TopGamesModel>        ("QTwitch.Models", 0, 1, "TopGamesModel");
+    qmlRegisterType<QTwitch::Models::StreamsModel>         ("QTwitch.Models", 0, 1, "StreamsModel");
+    qmlRegisterType<QTwitch::Models::FollowedChannelsModel>("QTwitch.Models", 0, 1, "FollowedChannelsModel");
+    qmlRegisterType<QTwitch::Models::GamesSearchModel>     ("QTwitch.Models", 0, 1, "GamesSearchModel");
+    qmlRegisterType<QTwitch::Models::StreamsSearchModel>   ("QTwitch.Models", 0, 1, "StreamsSearchModel");
+    qmlRegisterType<QTwitch::Models::ChannelsSearchModel>  ("QTwitch.Models", 0, 1, "ChannelsSearchModel");
+    qmlRegisterType<QTwitch::Models::PlaylistModel>        ("QTwitch.Models", 0, 1, "PlaylistModel");
+    qmlRegisterType<QTwitch::Models::UserInfo>             ("QTwitch.Models", 0, 1, "UserInfo");
 
     qmlRegisterSingletonType<QTwitch::Api::Client>("QTwitch.Api", 0, 1, "Client", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
         Q_UNUSED(engine)
         Q_UNUSED(scriptEngine)
-        return QTwitch::Api::Client::getClient().get();
+        return QTwitch::Api::Client::get().get();
     });
     auto storage = std::make_unique<QTwitch::Api::QSettingsCredentialsStorage>(QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
-    QTwitch::Api::Client::getClient()->setCredentialsStorage(std::move(storage));
+    QTwitch::Api::Client::get()->authorization()->setCredentialsStorage(std::move(storage));
 
     QQuickView *view(SailfishApp::createView());
     view->engine()->addImageProvider(QStringLiteral("app-icons"), new IconProvider);

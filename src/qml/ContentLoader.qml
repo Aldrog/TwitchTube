@@ -21,41 +21,46 @@ import QtQuick 2.6
 import Sailfish.Silica 1.0
 import QTwitch.Models 0.1
 
-Item {
+Loader {
     id: loader
 
     property SilicaFlickable flickable
     property QtObject model
-    property bool trigger: flickable.contentY + flickable.height > loader.y
-    signal triggered
+
+    active: model.nextAvailable
 
     width: parent.width
     height: Theme.itemSizeExtraLarge
 
-    onTriggered: {
-        model.next()
-        triggerTimeout.start()
-    }
+    sourceComponent: Component { Item {
+        property bool trigger: loader.flickable.contentY + loader.flickable.height > loader.y
+        signal triggered
 
-    onTriggerChanged: {
-        if (trigger && !triggerTimeout.running) {
-            triggered()
-        }
-    }
-
-    Timer {
-        id: triggerTimeout
-        interval: 1000
-        running: true
         onTriggered: {
-            if (trigger)
-                triggered()
+            model.next()
+            triggerTimeout.start()
         }
-    }
 
-    BusyIndicator {
-        running: true
-        size: BusyIndicatorSize.Medium
-        anchors.centerIn: parent
-    }
+        onTriggerChanged: {
+            if (trigger && !triggerTimeout.running) {
+                triggered()
+            }
+        }
+
+        Timer {
+            id: triggerTimeout
+            interval: 1000
+            running: true
+            onTriggered: {
+                if (trigger)
+                    triggered()
+            }
+        }
+
+        BusyIndicator {
+            running: true
+            size: BusyIndicatorSize.Medium
+            anchors.centerIn: parent
+        }
+    } }
 }
