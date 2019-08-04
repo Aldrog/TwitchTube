@@ -29,10 +29,10 @@
 
 #include <Models/topgamesmodel.h>
 #include <Models/streamsmodel.h>
-#include <Models/followedchannelsmodel.h>
+#include <Models/followedstreamsmodel.h>
 #include <Models/gamessearchmodel.h>
 #include <Models/streamssearchmodel.h>
-#include <Models/channelssearchmodel.h>
+#include <Models/userssearchmodel.h>
 #include <Models/playlistmodel.h>
 #include <Models/userinfo.h>
 #include <Api/client.h>
@@ -87,10 +87,10 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<QTwitch::Models::TopGamesModel>        ("QTwitch.Models", 0, 1, "TopGamesModel");
     qmlRegisterType<QTwitch::Models::StreamsModel>         ("QTwitch.Models", 0, 1, "StreamsModel");
-    qmlRegisterType<QTwitch::Models::FollowedChannelsModel>("QTwitch.Models", 0, 1, "FollowedChannelsModel");
+    qmlRegisterType<QTwitch::Models::FollowedStreamsModel> ("QTwitch.Models", 0, 1, "FollowedStreamsModel");
     qmlRegisterType<QTwitch::Models::GamesSearchModel>     ("QTwitch.Models", 0, 1, "GamesSearchModel");
     qmlRegisterType<QTwitch::Models::StreamsSearchModel>   ("QTwitch.Models", 0, 1, "StreamsSearchModel");
-    qmlRegisterType<QTwitch::Models::ChannelsSearchModel>  ("QTwitch.Models", 0, 1, "ChannelsSearchModel");
+    qmlRegisterType<QTwitch::Models::UsersSearchModel>     ("QTwitch.Models", 0, 1, "UsersSearchModel");
     qmlRegisterType<QTwitch::Models::PlaylistModel>        ("QTwitch.Models", 0, 1, "PlaylistModel");
     qmlRegisterType<QTwitch::Models::UserInfo>             ("QTwitch.Models", 0, 1, "UserInfo");
 

@@ -1,6 +1,6 @@
 TARGET = harbour-twitchtube
 
-CONFIG += sailfishapp c++11
+CONFIG += sailfishapp $$CXX_VERSION
 
 SOURCES += \
     main.cpp \

@@ -47,76 +47,118 @@ Page {
             }
 
             ComboBox {
-                label: qsTr("What to search for")
+                label: qsTr("Search for")
                 menu: ContextMenu {
                     MenuItem {
                         text: qsTr("Users")
                         onClicked: {
                             search.category = text
-                            grid.model = channelsSearch.createObject(grid)
+                            gridLoader.category = "users"
                         }
                     }
                     MenuItem {
-                        text: qsTr("Live Channels")
+                        text: qsTr("Live Streams")
                         onClicked: {
                             search.category = text
-                            grid.model = streamsSearch.createObject(grid)
+                            gridLoader.category = "streams"
                         }
                     }
                     MenuItem {
                         text: qsTr("Games")
                         onClicked: {
                             search.category = text
-                            grid.model = gamesSearch.createObject(grid)
+                            gridLoader.category = "games"
                         }
                     }
                 }
             }
 
-            SimpleGrid {
-                id: grid
+            Component {
+                id: usersGrid
 
-                dpiWidth: 250
-                cellHeight: model.imageHeight + 2*Theme.paddingSmall
+                SimpleGrid {
+                    id: grid
 
-                Component {
-                    id: channelsSearch
-                    ChannelsSearchModel {
+                    dpiWidth: 250
+                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
+
+                    model: UsersSearchModel {
                         imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                         query: search.text
                         onQueryChanged: reload()
                     }
-                }
 
-                Component {
-                    id: streamsSearch
-                    StreamsSearchModel {
-                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
-                        query: search.text
-                        onQueryChanged: reload()
-                    }
-                }
-
-                Component {
-                    id: gamesSearch
-                    GamesSearchModel {
-                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
-                        query: search.text
-                        onQueryChanged: reload()
-                    }
-                }
-
-//                model: channelsSearch
-
-                delegate: EntitledImage {
-                    onClicked: {
-                        pageStack.push(Qt.resolvedUrl("GameStreamsPage.qml"), {gameId: additionalData.gameId, gameTitle: title})
+                    delegate: EntitledImage {
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("UserPage.qml"), {userId: additionalData.userId})
+                        }
                     }
                 }
             }
 
+            Component {
+                id: streamsGrid
+
+                SimpleGrid {
+                    id: grid
+
+                    dpiWidth: 250
+                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
+
+                    model: StreamsSearchModel {
+                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
+                        query: search.text
+                        onQueryChanged: reload()
+                    }
+
+                    delegate: EntitledImage {
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("StreamPage.qml"), {userId: additionalData.userId})
+                        }
+                    }
+                }
+            }
+
+            Component {
+                id: gamesGrid
+
+                SimpleGrid {
+                    id: grid
+
+                    dpiWidth: 250
+                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
+
+                    model: GamesSearchModel {
+                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
+                        query: search.text
+                        onQueryChanged: reload()
+                    }
+
+                    delegate: EntitledImage {
+                        onClicked: {
+                            pageStack.push(Qt.resolvedUrl("GameStreamsPage.qml"), {gameId: additionalData.gameId, gameTitle: title})
+                        }
+                    }
+                }
+            }
+
+            Loader {
+                id: gridLoader
+                property string category: "users"
+
+                width: parent.width
+                sourceComponent: {
+                    if (category === "users")
+                        return usersGrid
+                    if (category === "streams")
+                        return streamsGrid
+                    if (category === "games")
+                        return gamesGrid
+                }
+            }
+
             ContentLoader {
-                model: grid.model
+                model: gridLoader.item.model
                 flickable: rootFlickable
             }
         }
