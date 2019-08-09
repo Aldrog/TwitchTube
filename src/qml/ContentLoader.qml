@@ -30,30 +30,37 @@ Loader {
     active: model.nextAvailable
 
     width: parent.width
-    height: Theme.itemSizeExtraLarge
+    height: active ? Theme.itemSizeExtraLarge : Theme.paddingLarge
 
     sourceComponent: Component { Item {
-        property bool trigger: loader.flickable.contentY + loader.flickable.height > loader.y
-        signal triggered
+        property bool fresh: true
+        property bool processing: false
+        property bool active: !fresh && !processing
+        property bool trigger: active && loader.flickable.contentY + loader.flickable.height > loader.y
 
-        onTriggered: {
+        function activate() {
             model.next()
-            triggerTimeout.start()
         }
 
         onTriggerChanged: {
-            if (trigger && !triggerTimeout.running) {
-                triggered()
+            if (trigger) {
+                activate()
             }
         }
 
-        Timer {
-            id: triggerTimeout
-            interval: 1000
-            running: true
-            onTriggered: {
-                if (trigger)
-                    triggered()
+        Connections {
+            target: loader.flickable
+            onContentHeightChanged: processing = false
+        }
+
+        Connections {
+            target: loader.model
+            onRowsRemoved: {
+                fresh = true
+            }
+            onRowsInserted: {
+                processing = true
+                fresh = false
             }
         }
 
