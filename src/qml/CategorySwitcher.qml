@@ -63,7 +63,8 @@ PersistentPanel {
         }
 
         Loader {
-            active: Client.authorizationStatus === Client.Authorized
+            active: Client.authorization.status === Authorization.Authorized
+            width: active ? item.width : 0
 
             sourceComponent: Component { CategoryButton {
                 id: follows
