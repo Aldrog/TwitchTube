@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<QTwitch::Models::UsersSearchModel>     ("QTwitch.Models", 0, 1, "UsersSearchModel");
     qmlRegisterType<QTwitch::Models::PlaylistModel>        ("QTwitch.Models", 0, 1, "PlaylistModel");
     qmlRegisterType<QTwitch::Models::UserInfo>             ("QTwitch.Models", 0, 1, "UserInfo");
+    qmlRegisterUncreatableType<QTwitch::Api::AuthorizationManager> ("QTwitch.Api", 0, 1, "Authorization", "Client.authorization should be used.");
 
     qmlRegisterSingletonType<QTwitch::Api::Client>("QTwitch.Api", 0, 1, "Client", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
         Q_UNUSED(engine)

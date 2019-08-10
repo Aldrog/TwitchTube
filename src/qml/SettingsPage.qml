@@ -31,14 +31,11 @@ Dialog {
         config.connectToChat = chatConnection.checked
     }
 
+    onOpened: mainWindow.showCategories = false
+    onDone: mainWindow.showCategories = true
+
     InterfaceConfiguration {
         id: config
-    }
-
-    Binding {
-        target: mainWindow
-        property: "showCategories"
-        value: status !== PageStatus.Active && status !== PageStatus.Activating
     }
 
     DialogHeader {
@@ -52,18 +49,26 @@ Dialog {
         anchors.top: header.bottom
         width: parent.width
 
-        UserInfo { id: user } // TODO: Connect to Client's userId
+        UserInfo {
+            id: user
+            self: true
+        }
 
         ValueButton {
             id: login
 
+            property bool loggedIn: Client.authorization.status === Authorization.Authorized
+
             width: parent.width
-            label: Client.authorizationStatus === Client.Authorized ? qsTr("Log out") : qsTr("Sign in")
-            value: Client.authorizationStatus === Client.Authorized ? qsTr("Logged in as %1").arg(user.display) : qsTr("No account connected")
+            label: loggedIn ? qsTr("Log out") : qsTr("Sign in")
+            value: loggedIn ? qsTr("Logged in as %1").arg(user.display) : ""
 
             onClicked: {
+                if(loggedIn)
+                    Client.authorization.erase()
+                else
+                    pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
             }
-
         }
 
         TextSwitch {
