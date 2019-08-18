@@ -32,6 +32,7 @@ DISTFILES += qml/harbour-twitchtube.qml \
              qml/SearchPage.qml \
              qml/EntitledImage.qml \
              qml/LoginPage.qml \
+             qml/FollowsPage.qml \
              qml/icons/channels.png \
              qml/icons/games.png \
              harbour-twitchtube.desktop

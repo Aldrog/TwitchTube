@@ -30,6 +30,8 @@
 #include <Models/topgamesmodel.h>
 #include <Models/streamsmodel.h>
 #include <Models/followedstreamsmodel.h>
+#include <Models/followedusersmodel.h>
+#include <Models/followedgamesmodel.h>
 #include <Models/gamessearchmodel.h>
 #include <Models/streamssearchmodel.h>
 #include <Models/userssearchmodel.h>
@@ -88,6 +90,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<QTwitch::Models::TopGamesModel>        ("QTwitch.Models", 0, 1, "TopGamesModel");
     qmlRegisterType<QTwitch::Models::StreamsModel>         ("QTwitch.Models", 0, 1, "StreamsModel");
     qmlRegisterType<QTwitch::Models::FollowedStreamsModel> ("QTwitch.Models", 0, 1, "FollowedStreamsModel");
+    qmlRegisterType<QTwitch::Models::FollowedUsersModel>   ("QTwitch.Models", 0, 1, "FollowedUsersModel");
+    qmlRegisterType<QTwitch::Models::FollowedGamesModel>   ("QTwitch.Models", 0, 1, "FollowedGamesModel");
     qmlRegisterType<QTwitch::Models::GamesSearchModel>     ("QTwitch.Models", 0, 1, "GamesSearchModel");
     qmlRegisterType<QTwitch::Models::StreamsSearchModel>   ("QTwitch.Models", 0, 1, "StreamsSearchModel");
     qmlRegisterType<QTwitch::Models::UsersSearchModel>     ("QTwitch.Models", 0, 1, "UsersSearchModel");
