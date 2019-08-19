@@ -23,9 +23,6 @@ import Sailfish.Silica 1.0
 BackgroundItem {
     id: item
 
-    width: GridView.view.cellWidth
-    height: GridView.view.cellHeight
-
     Image {
         id: img
         anchors.fill: parent

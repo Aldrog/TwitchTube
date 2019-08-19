@@ -20,21 +20,27 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
 
-SilicaGridView {
+Grid {
     id: grid
 
     property real dpiWidth
-    readonly property int itemsPerRow: Math.round(width / Theme.pixelRatio / dpiWidth)
+    readonly property int contentWidth: width - leftPadding - rightPadding
+    property alias model: repeater.model
+    property alias delegate: repeater.delegate
+    property int cellWidth: contentWidth/columns
+    property int cellHeight
 
-    anchors {
-        left: parent.left
-        right: parent.right
-        leftMargin: Theme.horizontalPageMargin - Theme.paddingSmall
-        rightMargin: Theme.horizontalPageMargin - Theme.paddingSmall
+    leftPadding: Theme.horizontalPageMargin - Theme.paddingSmall
+    rightPadding: Theme.horizontalPageMargin - Theme.paddingSmall
+    width: parent.width
+    columns: Math.round(width / (Theme.pixelRatio * dpiWidth))
+
+    Repeater {
+        id: repeater
+        anchors.fill: parent
+        onItemAdded: {
+            item.width  = Qt.binding(function() { return grid.cellWidth  })
+            item.height = Qt.binding(function() { return grid.cellHeight })
+        }
     }
-    height: contentHeight
-    cellWidth: width/itemsPerRow
-    // Flickable functionality is not actually needed here
-    // It would probably be better to make this type a Grid with Repeater
-    interactive: false
 }
