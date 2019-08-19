@@ -27,10 +27,6 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    InterfaceConfiguration {
-        id: config
-    }
-
     SilicaFlickable {
         id: rootFlickable
         anchors.fill: parent
@@ -38,33 +34,18 @@ Page {
 
         Column {
             id: content
-
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
+            width: parent.width
 
             PageHeader {
                 id: header
                 title: gameTitle
             }
 
-            SimpleGrid {
+            StreamsGrid {
                 id: grid
-
-                dpiWidth: config.channelCellSize
-                cellHeight: model.imageHeight + 2*Theme.paddingSmall
-
                 model: StreamsModel {
-                    imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                     gameFilter: [ gameId ]
                     Component.onCompleted: reload()
-                }
-
-                delegate: EntitledImage {
-                    onClicked: {
-                        pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
-                    }
                 }
             }
 

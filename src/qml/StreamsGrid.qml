@@ -18,17 +18,25 @@
  */
 
 import QtQuick 2.6
-import Nemo.Configuration 1.0
+import Sailfish.Silica 1.0
 
-ConfigurationGroup {
-    property bool showStreamTitles: true
-    property bool connectToChat: true
-    property string category: "games"
-    property int qualityId: 1
+SimpleGrid {
+    cellHeight: model.imageHeight + 2*Theme.paddingSmall
+    dpiWidth: config.streamCellSize
 
-    property real gameCellSize: 250
-    property real streamCellSize: 350
-    property real userCellSize: 250
+    delegate: EntitledImage {
+        onClicked: {
+            pageStack.push(Qt.resolvedUrl("StreamPage.qml"), { userId: additionalData.userId })
+        }
+    }
 
-    path: "/apps/harbour-twitchtube/ui"
+    InterfaceConfiguration {
+        id: config
+    }
+
+    Binding {
+        target: model
+        property: "imageWidth"
+        value: cellWidth - 2*Theme.paddingSmall
+    }
 }

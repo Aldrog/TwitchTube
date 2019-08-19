@@ -31,11 +31,7 @@ Page {
 
         Column {
             id: content
-
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
+            width: parent.width
 
             SearchField {
                 id: search
@@ -53,17 +49,17 @@ Page {
                 menu: ContextMenu {
                     MenuItem {
                         id: usersMenu
-                        property Component grid: usersGrid
+                        readonly property Component grid: usersGrid
                         text: qsTr("Users")
                     }
                     MenuItem {
                         id: streamsMenu
-                        property Component grid: streamsGrid
+                        readonly property Component grid: streamsGrid
                         text: qsTr("Live Streams")
                     }
                     MenuItem {
                         id: gamesMenu
-                        property Component grid: gamesGrid
+                        readonly property Component grid: gamesGrid
                         text: qsTr("Games")
                     }
                 }
@@ -71,77 +67,36 @@ Page {
 
             Component {
                 id: usersGrid
-
-                SimpleGrid {
-                    id: grid
-
-                    dpiWidth: 250
-                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
-
+                UsersGrid {
                     model: UsersSearchModel {
-                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                         query: search.text
                         onQueryChanged: reload()
-                    }
-
-                    delegate: EntitledImage {
-                        onClicked: {
-                            pageStack.push(Qt.resolvedUrl("UserPage.qml"), {userId: additionalData.userId})
-                        }
                     }
                 }
             }
 
             Component {
                 id: streamsGrid
-
-                SimpleGrid {
-                    id: grid
-
-                    dpiWidth: 250
-                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
-
+                StreamsGrid {
                     model: StreamsSearchModel {
-                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                         query: search.text
                         onQueryChanged: reload()
-                    }
-
-                    delegate: EntitledImage {
-                        onClicked: {
-                            pageStack.push(Qt.resolvedUrl("StreamPage.qml"), {userId: additionalData.userId})
-                        }
                     }
                 }
             }
 
             Component {
                 id: gamesGrid
-
-                SimpleGrid {
-                    id: grid
-
-                    dpiWidth: 250
-                    cellHeight: model.imageHeight + 2*Theme.paddingSmall
-
+                GamesGrid {
                     model: GamesSearchModel {
-                        imageWidth: grid.cellWidth - 2*Theme.paddingSmall
                         query: search.text
                         onQueryChanged: reload()
-                    }
-
-                    delegate: EntitledImage {
-                        onClicked: {
-                            pageStack.push(Qt.resolvedUrl("GameStreamsPage.qml"), {gameId: additionalData.gameId, gameTitle: title})
-                        }
                     }
                 }
             }
 
             Loader {
                 id: gridLoader
-                property string category: "users"
-
                 width: parent.width
                 sourceComponent: gridSelector.currentItem.grid
             }
