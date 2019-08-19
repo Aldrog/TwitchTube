@@ -43,25 +43,25 @@ Page {
             }
 
             ComboBox {
+                id: gridSelector
                 label: qsTr("Show followed")
+                currentItem: streamsMenu
+
                 menu: ContextMenu {
                     MenuItem {
+                        id: usersMenu
+                        property Component grid: usersGrid
                         text: qsTr("Users")
-                        onClicked: {
-                            gridLoader.category = "users"
-                        }
                     }
                     MenuItem {
+                        id: streamsMenu
+                        property Component grid: streamsGrid
                         text: qsTr("Live Streams")
-                        onClicked: {
-                            gridLoader.category = "streams"
-                        }
                     }
                     MenuItem {
+                        id: gamesMenu
+                        property Component grid: gamesGrid
                         text: qsTr("Games")
-                        onClicked: {
-                            gridLoader.category = "games"
-                        }
                     }
                 }
             }
@@ -134,17 +134,8 @@ Page {
 
             Loader {
                 id: gridLoader
-                property string category: "users"
-
                 width: parent.width
-                sourceComponent: {
-                    if (category === "users")
-                        return usersGrid
-                    if (category === "streams")
-                        return streamsGrid
-                    if (category === "games")
-                        return gamesGrid
-                }
+                sourceComponent: gridSelector.currentItem.grid
             }
 
             ContentLoader {

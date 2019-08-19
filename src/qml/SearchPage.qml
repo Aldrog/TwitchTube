@@ -39,36 +39,32 @@ Page {
 
             SearchField {
                 id: search
-                property string category
                 width: parent.width
                 focus: true
-                placeholderText: qsTr("Search %1").arg(category)
+                placeholderText: qsTr("Search %1").arg(gridSelector.currentItem.text)
                 label: qsTr("Search")
             }
 
             ComboBox {
+                id: gridSelector
                 label: qsTr("Search for")
+                currentItem: usersMenu
+
                 menu: ContextMenu {
                     MenuItem {
+                        id: usersMenu
+                        property Component grid: usersGrid
                         text: qsTr("Users")
-                        onClicked: {
-                            search.category = text
-                            gridLoader.category = "users"
-                        }
                     }
                     MenuItem {
+                        id: streamsMenu
+                        property Component grid: streamsGrid
                         text: qsTr("Live Streams")
-                        onClicked: {
-                            search.category = text
-                            gridLoader.category = "streams"
-                        }
                     }
                     MenuItem {
+                        id: gamesMenu
+                        property Component grid: gamesGrid
                         text: qsTr("Games")
-                        onClicked: {
-                            search.category = text
-                            gridLoader.category = "games"
-                        }
                     }
                 }
             }
@@ -147,14 +143,7 @@ Page {
                 property string category: "users"
 
                 width: parent.width
-                sourceComponent: {
-                    if (category === "users")
-                        return usersGrid
-                    if (category === "streams")
-                        return streamsGrid
-                    if (category === "games")
-                        return gamesGrid
-                }
+                sourceComponent: gridSelector.currentItem.grid
             }
 
             ContentLoader {
