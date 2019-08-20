@@ -22,36 +22,29 @@ import Sailfish.Silica 1.0
 import QTwitch.Api 0.1
 import QTwitch.Models 0.1
 
-Dialog {
+Page {
     id: page
     allowedOrientations: Orientation.All
 
-    onAccepted: {
-        config.showStreamTitles = streamTitles.checked
-        config.connectToChat = chatConnection.checked
-    }
-
-    onOpened: mainWindow.showCategories = false
-    onDone: mainWindow.showCategories = true
+    Component.onCompleted: mainWindow.showCategories = false
+    Component.onDestruction: mainWindow.showCategories = true
 
     InterfaceConfiguration {
         id: config
     }
 
-    DialogHeader {
-        id: header
-        title: qsTr("Settings")
-        dialog: page
+    UserInfo {
+        id: user
+        self: true
     }
 
     Column {
         id: content
-        anchors.top: header.bottom
         width: parent.width
 
-        UserInfo {
-            id: user
-            self: true
+        PageHeader {
+            id: header
+            title: qsTr("Settings")
         }
 
         ValueButton {
@@ -76,6 +69,7 @@ Dialog {
 
             text: qsTr("Show stream titles")
             checked: config.showStreamTitles
+            onCheckedChanged: config.showStreamTitles = checked
         }
 
         TextSwitch {
@@ -83,6 +77,7 @@ Dialog {
 
             text: qsTr("Automatically connect to chat")
             checked: config.connectToChat
+            onCheckedChanged: config.connectToChat = checked
         }
     }
 }
