@@ -36,6 +36,7 @@ DISTFILES += qml/harbour-twitchtube.qml \
              qml/GamesGrid.qml \
              qml/StreamsGrid.qml \
              qml/UsersGrid.qml \
+             qml/UserPage.qml \
              qml/icons/channels.png \
              qml/icons/games.png \
              harbour-twitchtube.desktop

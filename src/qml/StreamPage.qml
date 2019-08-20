@@ -81,7 +81,7 @@ Page {
     }
 
     InterfaceConfiguration {
-        property bool connectToChat: true
+        id: config
     }
 
     SilicaFlickable {
@@ -97,7 +97,8 @@ Page {
             MenuItem {
                 text: qsTr("Past Broadcasts & Highlights")
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("ChannelPage.qml"), { channel: channel })
+                    pageStack.push(Qt.resolvedUrl("UserPage.qml"),
+                                   { userId: userId })
                 }
             }
 
@@ -136,6 +137,13 @@ Page {
                     }
                 }
             }
+        }
+
+        ViewPlaceholder {
+            enabled: page.orientation & Orientation.PortraitMask
+            text: qsTr("Chat is under reconstruction")
+            hintText: qsTr("Check back later")
+            verticalOffset: video.height / 2
         }
 
         /*
