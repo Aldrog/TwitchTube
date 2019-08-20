@@ -30,7 +30,7 @@ Loader {
     active: model.nextAvailable
 
     width: parent.width
-    height: active ? Theme.itemSizeExtraLarge : Theme.paddingLarge
+    height: active ? Theme.itemSizeExtraLarge : 0
 
     sourceComponent: Component { Item {
         property bool fresh: true
